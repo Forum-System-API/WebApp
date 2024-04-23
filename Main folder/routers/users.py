@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Response, status, HTTPException
 from data.models import User, LoginData
 from services import users_services
 
@@ -6,6 +6,15 @@ from services import users_services
 users_router = APIRouter(prefix='/users')
 
 
+@users_router.get('/')
+def get_users(sort: str | None=None):
+    
+    users = users_services.all()
+    
+    if sort and (sort == 'asc' or sort == 'desc'):
+        return users_services.sort(users, reverse=sort=='desc')
+    else:
+        return users
 
 @users_router.post('/register')
 def register(data: LoginData, response: Response):
@@ -19,13 +28,12 @@ def register(data: LoginData, response: Response):
         return{"message":f"Username {data.username} is taken." }
     
     
-@users_router.get('/')
-def get_users(sort: str | None=None):
-    
-    users = users_services.all()
-    
-    if sort and (sort == 'asc' or sort == 'desc'):
-        return users_services.sort(users, reverse=sort=='desc')
+@users_router.post('/login')
+def login(data: LoginData):
+    user = users_services.try_login(data.username, data.password)
+
+    if user:
+        token = users_services.create_token(user)
+        return {'token': token}
     else:
-        return users
-    
+        return 'Invalid login data'

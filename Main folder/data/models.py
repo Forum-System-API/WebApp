@@ -20,9 +20,9 @@ class User(BaseModel):
         return self.role == 'Admin'
     
     @classmethod
-    def from_query_result(cls, id, username, password, role):
+    def from_query_result(cls, user_id, username, password, role ):
         return cls(
-            id=id,
+            id=user_id,
             username=username,
             password=password,
             role=role
