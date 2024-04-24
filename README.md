@@ -13,7 +13,7 @@
 
 ### 2. Database
 **CHANGES TO FOLLOW**
-![database](./images/database.png)
+![database](./database.png)
 
 ### 3. Models
 3.1. `User`: **CHANGES TO FOLLOW**
