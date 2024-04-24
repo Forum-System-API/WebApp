@@ -5,10 +5,10 @@ from mariadb.connections import Connection
 def _get_connection() -> Connection:
     return connect(
         user='root',
-        password='root',
+        password='1234',
         host='localhost',
         port=3306,
-        database='web_client_demo_db'
+        database='webapp'
     )
 
 

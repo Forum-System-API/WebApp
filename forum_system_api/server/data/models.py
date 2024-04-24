@@ -1,12 +1,18 @@
 from pydantic import BaseModel, constr
-
+from enum import Enum
 
 TUsername = constr(pattern='^\w{2,30}$')
 
 
-class Role:
-    ADMIN = "admin"
-    ORDINARY_USER = "basic_user"
+class RoleEnum(str, Enum):
+    admin = "admin"
+    basic_user = "basic_user"
+
+class Role(BaseModel):
+    role: RoleEnum
+
+    class Config:
+        use_enum_values = True
 
 class User(BaseModel):
     id: int | None = None
