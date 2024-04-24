@@ -62,6 +62,9 @@ Replies to Users – One-to-Many:  A User can have many replies, but a Reply can
 
 ### 5. How to Install and Run the Project
 **CHANGES TO FOLLOW**
+- Navigate to /server and open a terminal
+- Run `uvicorn main:app`
+- Open a browser and type `http://127.0.0.1:8000/docs`. There should be documentation of the available endpoints.
 
 ### What to Include in the README:
 - Project's Title: ✔ 
