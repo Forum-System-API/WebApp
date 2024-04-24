@@ -15,6 +15,20 @@
 **CHANGES TO FOLLOW** - Vladi
 ![database](./database.png)
 
+Relationships between tables
+
+User to Topic – One-to-many: A User can create multiple Topics, but one Topic is created by one user.
+
+User to Category – Many-to-Many: Multiple users can have read access to multiple categories, and each category can be accessed by multiple Users. And only admins can create a Category.
+
+Category to Topic – One-to-many: A Category can have many Topics, but a Topic can be part of only one Category
+
+Topic to Reply – One-to-many: A Topic can have multiple replies, but a single reply can only belong to one Topic.
+
+User to Message – One-to-Many: A User can send multiple messages, but a message can belong to a single User.
+
+Replies to Users – One-to-Many:  A User can have many replies, but a Reply can belong to many Users.
+
 
 ### 3. Models
 3.1. `User`: **CHANGES TO FOLLOW** - Vladi
