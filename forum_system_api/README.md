@@ -31,7 +31,7 @@ Replies to Users – One-to-Many:  A User can have many replies, but a Reply can
 
 
 ### 3. Models
-3.1. `User`: **CHANGES TO FOLLOW** - Vladi
+3.1. `User`: **CHANGES TO FOLLOW** - Vladi 
 
 3.2. `Message`: **CHANGES TO FOLLOW** - Valkata
 
