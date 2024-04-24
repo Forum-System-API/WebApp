@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import BaseModel, constr
 from enum import Enum
 
@@ -41,10 +43,22 @@ class LoginData(BaseModel):
     password: str
 
 class Category(BaseModel): # - Valkata
-    pass 
+    category_id: int | None = None
+    category_name: str
+
+    @classmethod
+    def from_query_result(cls, category_id, category_name):
+        return cls(
+            category_id=category_id,
+            category_name=category_name
+        )
 
 class Message(BaseModel): # - Valkata
-    pass 
+    message_id: int | None = None
+    message_text: str
+    message_timestamp: datetime.date
+    message_author: User
+    message_recipient: User
 
 class Topic(BaseModel): # - Elena
     pass 
