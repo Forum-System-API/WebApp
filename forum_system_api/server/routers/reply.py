@@ -3,7 +3,7 @@ from fastapi import APIRouter, Response
 from data.models import Reply, UpdateReply
 
 
-replies_router = APIRouter(prefix='/topics')
+replies_router = APIRouter(prefix='/replies')
 
 # TO DO: implement endpoint which will create a new reply
 @replies_router.post('/', status_code=201)
