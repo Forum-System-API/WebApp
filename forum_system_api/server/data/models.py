@@ -60,8 +60,50 @@ class Message(BaseModel): # - Valkata
     message_author: User
     message_recipient: User
 
-class Topic(BaseModel): # - Elena
-    pass 
 
-class Reply(BaseModel): # - Elena
-    pass 
+# Elena
+class Topic(BaseModel): 
+    id: int 
+    title: str
+    category_id: int
+    user_ids: list[int]
+
+    @classmethod
+    def from_query_result(cls, id, title, category_id, user_ids=[]):
+        return cls(
+            id=id,
+            title=title,
+            category_id=category_id,
+            user_ids=user_ids)
+
+class UpdateTopic:
+    title: str
+    category_id: int
+
+# time,date?
+class Reply(BaseModel): 
+    id: int | None
+    text: str
+    upvotes: int 
+    downvotes: int
+    topic_id: int
+    topic_category_id: int
+    user_id: int
+    is_best: False
+
+    @classmethod
+    def from_query_result(cls, id, text, upvotes, downvotes, topic_id, topic_category_id, user_id, is_best):
+        return cls(
+            id=id,
+            text=text,
+            upvotes=upvotes,
+            downvotes=downvotes,
+            topic_id=topic_id,
+            topic_category_id=topic_category_id,
+            user_id=user_id,
+            is_best=is_best)
+
+class UpdateReply:
+    text: str
+    upvotes: int 
+    downvotes: int
