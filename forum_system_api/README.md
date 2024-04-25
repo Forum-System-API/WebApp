@@ -20,7 +20,7 @@
 
 - User to Message – One-to-Many: A User can send multiple messages, but a message can belong to a single User.
 
-- Replies to Users – One-to-Many:  A User can have many replies, but a Reply can belong to many Users.
+- Replies to Users – One-to-Many:  A User can have many replies, but a Reply can belong to only one User.
 
 - Category to Topic – One-to-many: A Category can have many Topics, but a Topic can be part of only one Category.
 
