@@ -89,7 +89,7 @@ class Reply(BaseModel):
     topic_id: int
     topic_category_id: int
     user_id: int
-    is_best: False
+    # is_best: False ? not sure how to make a reply the best one?
 
     @classmethod
     def from_query_result(cls, id, text, upvotes, downvotes, topic_id, topic_category_id, user_id, is_best):
