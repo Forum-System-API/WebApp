@@ -64,7 +64,7 @@
 4.4. Topic
 
 
-**CHANGES TO FOLLOW**
+**CHANGES TO FOLLOW** ok
 
 
 - ✔ GET /topics:
