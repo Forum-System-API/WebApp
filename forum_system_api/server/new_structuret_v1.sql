@@ -172,3 +172,8 @@ DEFAULT CHARACTER SET = latin1;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+INSERT INTO users (`username`,`password`,`role`) VALUES ('john_doe','securepassword123','basic_user');
+INSERT INTO users(`username`,`password`,`role`) VALUES ('john_doe','securepassword123','basic_user');
+INSERT INTO users(`username`,`password`,`role`) VALUES ('craig','securepassword1234','basic_user');
+INSERT INTO users(`username`,`password`,`role`) VALUES ('steven','securepassword1234','basic_user');
