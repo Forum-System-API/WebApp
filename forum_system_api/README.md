@@ -38,7 +38,10 @@
 - id &rarr; int 
 - title &rarr; str
 - category_id &rarr; int
-- user_id &rarr; list of ints
+- user_id &rarr; int
+- timestamp: datetime
+- best_reply_id: int | None
+#     is_locked: NO IDEA
 
 3.5.`Reply` model has the following attributes:
 - id &rarr; int 
@@ -46,9 +49,8 @@
 - upvotes &rarr; int 
 - downvotes &rarr; int 
 - topic_id &rarr; int
-- topic_category_id &rarr; int
 - user_id &rarr; int
-
+- timestamp &rarr; datetime
 
 ### 4. Endpoints
 
@@ -64,7 +66,7 @@
 4.4. Topic
 
 
-**CHANGES TO FOLLOW** ok
+**CHANGES TO FOLLOW** 
 
 
 - ✔ GET /topics:
@@ -85,9 +87,27 @@
     to follow: example code
 ]
 ```
-- ✔ POST /topic:
+- ✔ PUT /topics/{id}:
+    - It must (View Topic): Responds with a single Topic resource and a list of Reply resources.
+    - REQUEST: `GET http://127.0.0.1:8000/topics/1` 
+    - RESPONSE:
+```json
+[
+    to follow: example code
+]
+```
+- ✔ POST /topics:
     - It must (Create Topic): Requires authentication token; Topic data must contain at least a title and a Category.
     - REQUEST: `POST http://127.0.0.1:8000/topics` 
+    - RESPONSE:
+```json
+[
+    to follow: example code
+]
+```
+- ✔ DELETE /topics:
+    - Description: to follow
+    - REQUEST: 
     - RESPONSE:
 ```json
 [
@@ -100,8 +120,7 @@
 
 **CHANGES TO FOLLOW**
 
-
-- ✔ POST /reply:
+- ✔ POST /replies:
     - It must (Create Reply ): Requires authentication token; Reply data should contain at least text and is associated with a specific Topic.
     - REQUEST: `POST http://127.0.0.1:8000/replies` 
     - RESPONSE:
@@ -110,8 +129,8 @@
     to follow: example code
 ]
 ```
-- ✔ PUT /reply/{id}:
-    - It must (Upvote/Downvote a Reply): Requires authentication; A user should be able to change their downvotes to upvotes and vice versa but a reply can only be upvoted/downvoted once per user
+- ✔ PUT /replies/{id}:
+    - It must (Choose Best Reply): Requires authentication; Topic Author can select one best reply to their Topic.
     - REQUEST: `POST http://127.0.0.1:8000/replies/1` 
     - RESPONSE:
 ```json
@@ -119,9 +138,9 @@
     to follow: example code
 ]
 ```
-- ✔ PUT /reply/{id}:
-    - It must (Choose Best Reply): Requires authentication; Topic Author can select one best reply to their Topic.
-    - REQUEST: `POST http://127.0.0.1:8000/replies/1` 
+- ✔ DELETE /replies/{id}:
+    - Description: to follow
+    - REQUEST: 
     - RESPONSE:
 ```json
 [
