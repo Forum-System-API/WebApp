@@ -1,21 +1,65 @@
-# # Elena - changes to follow
-# from fastapi import APIRouter, Response
-# from data.models import Topic, UpdateTopic
+from fastapi import APIRouter, Response
+from data.models import Topic
+from services import topic_service
+from services import category_service
 
 
-# topics_router = APIRouter(prefix='/topics')
+topic_router = APIRouter(prefix='/topics')
 
-# # TO DO: implement endpoint which will show all of the topics
-# # @topics_router.get('/')
-# # def get_topics():
-# #        pass
+# shows a list of all the topics a certain category has - # pagination - query param - to follow
+@topic_router.get('/')  
+def get_topics(
+    sort: str | None = None,
+    sort_by: str | None = None,
+    search: str | None = None
+):
+    result = topic_service.all(search)
 
-# # TO DO: implement endpoint which will show all a soecific topic by its id
-# # @topics_router.get('/{id}')
-# # def get_topic_by_id():
-# #         pass
+    if sort and (sort == 'asc' or sort == 'desc'):
+        return topic_service.sort(result, reverse=sort == 'desc', attribute=sort_by)
+    else:
+        return result
 
-# # TO DO: implement endpoint which will create a new topic and increment the id by 1 from the last one
-# # @topics_router.post('/', status_code=201)
-# # def create_topic():
-# #     pass
+# shows a single topic and a list of its replies
+@topic_router.get('/{id}')
+def get_topic_by_id(id: int):
+    topic = topic_service.get_by_id(id)
+
+    if topic is None:
+        return Response(status_code=404)
+    else:
+        return topic
+
+# creates a new topic in a specific category
+@topic_router.post('/', status_code=201)
+def create_topic(topic: Topic):
+    if not topic_service.category_exists(topic.category_id):
+        return Response(status_code=400,
+                        content=f'Category {topic.category_id} does not exist')
+
+    return topic_service.create(topic)
+
+# updates a specific topic
+@topic_router.put('/{id}')
+def update_topic(id: int, topic: Topic):
+    if not topic_service.category_exists(topic.category_id):
+        return Response(status_code=400,
+                        content=f'Category {topic.category_id} does not exist')
+
+    existing_topic = topic_service.get_by_id(id)
+    if existing_topic is None:
+        return Response(status_code=404)
+    else:
+        return topic_service.update(existing_topic, topic)
+    
+# deletes a specific reply from a topic - to follow
+@topic_router.delete('/{id}')
+def delete_reply():
+    pass
+
+# deletes a specific topic and all of its replies
+@topic_router.delete('/{id}')
+def delete_topic(id: int):
+    topic_service.delete(id)
+
+    return Response(status_code=204)
