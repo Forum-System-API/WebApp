@@ -1,47 +1,75 @@
-# # Elena - changes to follow
-# from data.models import Topic, UpdateTopic, Reply
-# from data.database import insert_query, read_query, update_query
+from data.models import Topic
+from data.database import insert_query, read_query, update_query
 
-# # TO DO: implement logic which will show a list of all of the topics with their respected categories
-# def all():
-#     pass
 
-# # TO DO: implement logic which will show a specific topic 
-# def get_by_id():
-#     pass
+def all(search: str = None):
+    if search is None:
+        data = read_query(
+            '''SELECT id, title, category_id, user_id, timestamp, best_reply_id
+               FROM topics''')
+    else:
+        data = read_query(
+            '''SELECT id, title, category_id, user_id, timestamp, best_reply_id
+               FROM topics 
+               WHERE title LIKE ?''', (f'%{search}%',))
 
-# # TO DO: implement logic which will show a list of the topics in a specific category
-# def get_by_category():
-#     pass
+    return (Topic.from_query_result(*row) for row in data)
 
-# # TO DO: implement logic which will sort the current showing topics alphabetically
-# def sort():
-#     pass
+def sort(topics: list[Topic], *, attribute='title', reverse=False):
+    if attribute == 'title':
+        def sort_fn(t: Topic): return t.title
+    elif attribute == 'timestamp':
+        def sort_fn(t: Topic): return t.timestamp
+    else:
+        def sort_fn(t: Topic): return t.category_id
 
-# # TO DO: implement logic which will show a topic with all of its replies
-# def get_with_replies():
-#     pass
+    return sorted(topics, key=sort_fn, reverse=reverse)
 
-# # TO DO: implement logic which will create a new topic
-# def create():
-#     pass
+def get_by_id(id: int):
+    data = read_query(
+        '''SELECT id, title, category_id, user_id, timestamp, best_reply_id
+            FROM topics 
+            WHERE id = ?''', (id,))
 
-# # TO DO: implement logic which will check if a specific topic exist already
-# def exist():
-#     pass
+    return next((Topic.from_query_result(*row) for row in data), None)
 
-# # TO DO: implement logic which will update the title of the topic or its category
-# def update():
-#     pass
+def category_exists(category_id: int) -> bool:
+    return any(
+        read_query(
+            'SELECT category_id, name from categories where category_id = ?',
+            (category_id,)))
 
-# # TO DO: implement logic which will remove a reply from a topic
-# def remove_reply():
-#     pass
+def create(topic: Topic):
+    generated_id = insert_query(
+        'INSERT INTO topics(id,title,category_id,user_id,timestamp,best_reply_id) VALUES(?,?,?,?,?,?)',
+        (topic.title, topic.category_id, topic.user_id, topic.timestamp, topic.best_reply_id))
 
-# # TO DO: implement logic which will delete a topic
-# def delete():
-#     pass
+    topic.id = generated_id
 
-# # TO DO: implement logic which will stop the replies for a specific topic
-# def lock_topic():
-#     pass
+    return topic
+
+def update(old: Topic, new: Topic):
+    merged = Topic(
+        id=old.id,
+        title=new.title or old.title,
+        category_id=new.category_id or old.category_id,
+        user_id=old.user_id,
+        timestamp=old.timestamp,
+        best_reply_id=new.best_reply_id or old.best_reply_id)
+
+    update_query(
+        '''UPDATE topics SET
+           title = ?, category_id = ?, best_reply_id = ?
+           WHERE id = ? 
+        ''',
+        (merged.id, merged.title, merged.category_id, merged.user_id, merged.timestamp, merged.best_reply_id))
+
+    return merged
+
+
+def remove_reply_from_topic():
+    pass
+
+def delete(topic_id):
+    update_query('DELETE FROM topics WHERE id = ?', (topic_id,))
+
