@@ -61,50 +61,41 @@ class Message(BaseModel): # - Valkata
     message_recipient: User
 
 
-# # Elena - changes to follow
-# class Topic(BaseModel): 
-#     id: int 
-#     title: str
-#     category_id: int
-#     author_id: int # not sure? 
-#     user_ids: list[int]  # not needed - do this instead - v replies da se syhranqvat id-tata na users // ne moje da ima 3 best replie , ima samo edin zatova tuk
+class Topic(BaseModel): 
+    id: int 
+    title: str
+    category_id: int
+    user_id: int
+    timestamp: datetime
+    best_reply_id: int | None
+#     is_locked: to follow
 
-#     @classmethod
-#     def from_query_result(cls, id, title, category_id, user_ids=[]):
-#         return cls(
-#             id=id,
-#             title=title,
-#             category_id=category_id,
-#             user_ids=user_ids)
+    @classmethod
+    def from_query_result(cls, id, title, category_id, user_id, timestamp, best_reply_id):
+        return cls(
+            id=id,
+            title=title,
+            category_id=category_id,
+            user_id=user_id,
+            timestamp=timestamp,
+            best_reply_id=best_reply_id)
 
-# class UpdateTopic:
-#     title: str
-#     category_id: int
+class Reply(BaseModel): 
+    id: int 
+    text: str
+    upvotes: int
+    downvotes: int
+    topic_id: int
+    user_id: int
+    timestamp: datetime
 
-# # time,date? - kato v messages - sortiraneto da e s ID-to
-# class Reply(BaseModel): 
-#     id: int | None
-#     text: str
-#     upvotes: int 
-#     downvotes: int
-#     topic_id: int
-#     topic_category_id: int # not needed
-#     user_id: int
-#     # is_best: False ? not sure how to make a reply the best one? - not needed for every reply 
-
-#     @classmethod
-#     def from_query_result(cls, id, text, upvotes, downvotes, topic_id, topic_category_id, user_id, is_best):
-#         return cls(
-#             id=id,
-#             text=text,
-#             upvotes=upvotes,
-#             downvotes=downvotes,
-#             topic_id=topic_id,
-#             topic_category_id=topic_category_id,
-#             user_id=user_id,
-#             is_best=is_best)
-
-# class UpdateReply:
-#     text: str
-#     upvotes: int 
-#     downvotes: int
+    @classmethod
+    def from_query_result(cls, id, text, upvotes, downvotes, topic_id, user_id, timestamp):
+        return cls(
+            id=id,
+            text=text,
+            upvotes=upvotes,
+            downvotes=downvotes,
+            topic_id=topic_id,
+            user_id=user_id,
+            timestamp=timestamp)
