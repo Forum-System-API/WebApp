@@ -18,7 +18,7 @@ USE `webapp` ;
 -- Table `webapp`.`categories`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`categories` (
-  `category_id` INT(11) NOT NULL,
+  `category_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `is_private` TINYINT NOT NULL DEFAULT 0,
   `is_locked` TINYINT NOT NULL DEFAULT 0,
@@ -173,7 +173,14 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-INSERT INTO users (`username`,`password`,`role`) VALUES ('john_doe','securepassword123','basic_user');
+INSERT INTO users(`username`,`password`,`role`) VALUES ('john_doe','securepassword123','basic_user');
 INSERT INTO users(`username`,`password`,`role`) VALUES ('john_doe','securepassword123','basic_user');
 INSERT INTO users(`username`,`password`,`role`) VALUES ('craig','securepassword1234','basic_user');
 INSERT INTO users(`username`,`password`,`role`) VALUES ('steven','securepassword1234','basic_user');
+
+INSERT INTO categories(`name`) VALUES ('Arts');
+INSERT INTO categories(`name`) VALUES ('Sports');
+INSERT INTO categories(`name`) VALUES ('Science');
+INSERT INTO categories(`name`) VALUES ('News');
+INSERT INTO categories(`name`) VALUES ('Nature');
+INSERT INTO categories(`name`) VALUES ('Cooking');

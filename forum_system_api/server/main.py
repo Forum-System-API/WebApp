@@ -7,6 +7,8 @@ from routers.user import users_router
 # Valkata
 from routers.category import category_router
 from routers.message import message_router
+import uvicorn
+
 
 app = FastAPI()
 

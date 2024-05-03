@@ -1,6 +1,6 @@
 from data.database import read_query,update_query,insert_query
 from data.models import Message
-from datetime import datetime, timedelta
+#from datetime import datetime, timedelta
 from services.config import secret_key
 
 
@@ -10,6 +10,4 @@ def all(message_recipient):
     return data
 
 def write_message(recipient: str) -> Message | None:
-
-
     pass
