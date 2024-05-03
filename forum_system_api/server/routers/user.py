@@ -23,10 +23,10 @@ def register(data: LoginData, response: Response):
     user = user_service.create(data.username, data.password)
 
     if user:
-        return "Registration completed!"
+        return 'Registration completed!'
     else:
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"message": f"Username {data.username} is taken."}
+        return {'message': f'Username {data.username} is taken.'}
 
 
 @users_router.post('/login')
@@ -34,7 +34,7 @@ def login(data: LoginData, ):
     user = user_service.try_login(data.username, data.password)
 
     if user:
-        if user.username == "admin":
+        if user.username == 'admin':
             user.role = Role.ADMIN
             token = user_service.create_token(user)
             return {'token': token}
@@ -50,4 +50,4 @@ def login(data: LoginData, ):
 @users_router.get('/info')
 def user_info(x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
-    return {"username": user.username, "role": user.role}
+    return {'username': user.username, 'role': user.role}

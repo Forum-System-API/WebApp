@@ -6,8 +6,8 @@ TUsername = constr(pattern='^\w{2,30}$')
 
 
 class Role:
-    ADMIN = "admin"
-    ORDINARY_USER = "basic_user"
+    ADMIN = 'admin'
+    ORDINARY_USER = 'basic_user'
 
 class User(BaseModel):
     id: int | None = None

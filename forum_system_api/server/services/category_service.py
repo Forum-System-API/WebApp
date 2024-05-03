@@ -3,7 +3,7 @@ from data.models import Category
 
 
 def all():
-    data = read_query('''SELECT category_id, category_name FROM category''')
+    data = read_query('SELECT category_id, category_name FROM category')
     return data
 
 
