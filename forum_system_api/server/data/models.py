@@ -55,41 +55,41 @@ class Message(BaseModel): # - Valkata
     message_recipient: User
 
 
-class Topic(BaseModel): 
-    id: int 
-    title: str
-    category_id: int
-    user_id: int
-    timestamp: datetime
-    best_reply_id: int | None
-#     is_locked: to follow
+# class Topic(BaseModel): 
+#     id: int 
+#     title: str
+#     category_id: int
+#     user_id: int
+#     timestamp: datetime
+#     best_reply_id: int | None
+# #     is_locked: to follow
 
-    @classmethod
-    def from_query_result(cls, id, title, category_id, user_id, timestamp, best_reply_id):
-        return cls(
-            id=id,
-            title=title,
-            category_id=category_id,
-            user_id=user_id,
-            timestamp=timestamp,
-            best_reply_id=best_reply_id)
+#     @classmethod
+#     def from_query_result(cls, id, title, category_id, user_id, timestamp, best_reply_id):
+#         return cls(
+#             id=id,
+#             title=title,
+#             category_id=category_id,
+#             user_id=user_id,
+#             timestamp=timestamp,
+#             best_reply_id=best_reply_id)
 
-class Reply(BaseModel): 
-    id: int 
-    text: str
-    upvotes: int
-    downvotes: int
-    topic_id: int
-    user_id: int
-    timestamp: datetime
+# class Reply(BaseModel): 
+#     id: int 
+#     text: str
+#     upvotes: int
+#     downvotes: int
+#     topic_id: int
+#     user_id: int
+#     timestamp: datetime
 
-    @classmethod
-    def from_query_result(cls, id, text, upvotes, downvotes, topic_id, user_id, timestamp):
-        return cls(
-            id=id,
-            text=text,
-            upvotes=upvotes,
-            downvotes=downvotes,
-            topic_id=topic_id,
-            user_id=user_id,
-            timestamp=timestamp)
+#     @classmethod
+#     def from_query_result(cls, id, text, upvotes, downvotes, topic_id, user_id, timestamp):
+#         return cls(
+#             id=id,
+#             text=text,
+#             upvotes=upvotes,
+#             downvotes=downvotes,
+#             topic_id=topic_id,
+#             user_id=user_id,
+#             timestamp=timestamp)
