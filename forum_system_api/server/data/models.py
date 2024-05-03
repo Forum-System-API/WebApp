@@ -1,6 +1,7 @@
 import datetime
 
 from pydantic import BaseModel, constr
+
 TUsername = constr(pattern='^\w{2,30}$')
 
 
