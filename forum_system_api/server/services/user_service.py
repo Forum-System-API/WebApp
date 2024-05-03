@@ -4,6 +4,8 @@ from mariadb import IntegrityError
 import jwt
 from datetime import datetime, timedelta
 from services.config import secret_key
+_SEPARATOR = ';'
+
 
 
 def all():
@@ -22,7 +24,7 @@ def create(username:str, password:str) -> User|None:
     try:
         generated_id = insert_query(
             'INSERT INTO users(username, password, role) VALUES(?,?,?)',
-            (username, password, Role.ORDINARY_USER )
+            (username, password, Role.ORDINARY_USER)
         )
         return User(id = generated_id, username = username, password ='', role = Role.ORDINARY_USER)
     
@@ -43,25 +45,25 @@ def try_login(username: str, password: str) -> User | None:
     return user if user and user.password == password else None
 
 def create_token(user: User) -> str:
-    
-    payload = {
-        'user_id': user.id,
-        'username': user.username,
-        'exp': datetime.now() + timedelta(hours=1)
-    }
+    return f'{user.id}{_SEPARATOR}{user.username}'
 
-   
-    token = jwt.encode(payload, secret_key, algorithm='HS256')
-
-    return token
-
-
-def promote_user_to_admin(username:str):
-    user = User.get(username=username)
-    
+def is_authenticated(token: str) -> bool:
+    user_id, username = token.split(_SEPARATOR)
+    user = read_query(
+        '''SELECT user_id, username, password, role FROM users WHERE user_id = ? AND username = ?''',
+        (int(user_id), username)
+    )
     if user:
-        update_query('''UPDATE users SET role = ? WHERE username = ?''',(Role.ADMIN, username))
-        user.role = Role.ADMIN
-        return user
+        data = user[0]
+   
+        authenticated = bool(data[0] == int(user_id) and data[1] == username)
+   
+        return authenticated
     else:
-        return None
+        return False
+    
+   
+    
+def from_token(token: str) -> User | None:
+    _,username = token.split(_SEPARATOR)
+    return find_by_username(username)

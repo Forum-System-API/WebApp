@@ -1,33 +1,22 @@
 import datetime
 
 from pydantic import BaseModel, constr
-from enum import Enum
-
 TUsername = constr(pattern='^\w{2,30}$')
 
 
-class RoleEnum(str, Enum):
-    admin = "admin"
-    basic_user = "basic_user"
-
-class Role(BaseModel):
-    role: RoleEnum
-
-    class Config:
-        use_enum_values = True
+class Role:
+    ADMIN = "admin"
+    ORDINARY_USER = "basic_user"
 
 class User(BaseModel):
     id: int | None = None
     username: str
     password:str
-    role: Role
-    # is_admin = False
+    role: str = Role.ORDINARY_USER
    
     
 
-    def promote_to_admin(self):
-        self.role = Role.ADMIN
-        # self.is_admin = True
+   
     
     @classmethod
     def from_query_result(cls, user_id, username, password, role ):
@@ -37,6 +26,10 @@ class User(BaseModel):
             password=password,
             role=role
         )
+        
+class LoginData(BaseModel):
+    username: TUsername
+    password: str
         
 class LoginData(BaseModel):
     username: TUsername
