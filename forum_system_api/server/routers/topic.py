@@ -20,9 +20,9 @@ def get_topics(
     else:
         return result
 
-# shows a single topic and a list of its replies
+# shows a single topic and a list of its replies 
 @topic_router.get('/{id}')
-def get_topic_by_id(id: int):
+def get_topic_by_id(id: int): # in header - add token 
     topic = topic_service.get_by_id(id)
 
     if topic is None:
@@ -52,10 +52,6 @@ def update_topic(id: int, topic: Topic):
     else:
         return topic_service.update(existing_topic, topic)
     
-# deletes a specific reply from a topic - to follow
-@topic_router.delete('/{id}')
-def delete_reply():
-    pass
 
 # deletes a specific topic and all of its replies
 @topic_router.delete('/{id}')

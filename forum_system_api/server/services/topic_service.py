@@ -33,7 +33,7 @@ def get_by_id(id: int):
 
     return next((Topic.from_query_result(*row) for row in data), None)
 
-def category_exists(category_id: int) -> bool:
+def category_exists(category_id: int) -> bool: # move in categories
     return any(
         read_query(
             'SELECT category_id, name from categories where category_id = ?',
@@ -65,7 +65,6 @@ def update(old: Topic, new: Topic):
         (merged.id, merged.title, merged.category_id, merged.user_id, merged.timestamp, merged.best_reply_id))
 
     return merged
-
 
 def remove_reply_from_topic():
     pass

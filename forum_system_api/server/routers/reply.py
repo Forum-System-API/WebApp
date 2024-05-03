@@ -29,7 +29,7 @@ def update_reply(id: int, reply: Reply):
         return reply_service.update(existing_reply, reply)
 
 
-# deletes a repply
+# deletes a repply - who deletes
 @reply_router.delete('/{id}')
 def delete_reply(id: int):
     reply_service.delete(id)
