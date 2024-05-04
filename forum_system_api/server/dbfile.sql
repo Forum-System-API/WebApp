@@ -29,8 +29,6 @@ CREATE TABLE IF NOT EXISTS `webapp`.`categories` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (1,'Sport',0,0);
-
 
 -- -----------------------------------------------------
 -- Table `webapp`.`users`
@@ -45,10 +43,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 7
 DEFAULT CHARACTER SET = latin1;
 
-INSERT INTO users (`username`,`password`,`role`) VALUES ('john_doe','securepassword123','basic_user');
-INSERT INTO users (`username`,`password`,`role`) VALUES ('john_doe','securepassword123','basic_user');
-INSERT INTO users (`username`,`password`,`role`) VALUES ('craig','securepassword1234','basic_user');
-INSERT INTO users (`username`,`password`,`role`) VALUES ('steven','securepassword1234','basic_user');
 
 -- -----------------------------------------------------
 -- Table `webapp`.`categories_has_users`
@@ -80,7 +74,7 @@ DEFAULT CHARACTER SET = latin1;
 CREATE TABLE IF NOT EXISTS `webapp`.`messages` (
   `message_id` INT(11) NOT NULL,
   `text` TEXT NOT NULL,
-  `timestamp` DATE NOT NULL,
+  `timestamp` DATETIME NOT NULL,
   `sender_id` INT(11) NOT NULL,
   `recipient_id` INT(11) NOT NULL,
   PRIMARY KEY (`message_id`),
@@ -110,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
   `user_id` INT(11) NOT NULL,
   `best_reply_id` INT(11) NULL DEFAULT NULL,
   `is_locked` TINYINT(4) NOT NULL DEFAULT 0,
-  `date_time` DATE NOT NULL,
+  `date_time` DATETIME NOT NULL,
   `is_private` TINYINT(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`topic_id`),
   UNIQUE INDEX `best_reply_id_UNIQUE` (`best_reply_id` ASC) VISIBLE,
@@ -130,10 +124,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = latin1;
 
-INSERT INTO topics (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (1,'F1 Miami GP ',1,3,NULL,0,'2024-05-02',0);
-INSERT INTO topics (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (2,'F1 Miami GP Sprint Quali',1,3,NULL,0,'2024-05-03',0);
-INSERT INTO topics (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (3,'F1 Miami GP Quali',1,3,NULL,0,'2024-05-03',0);
-
 
 -- -----------------------------------------------------
 -- Table `webapp`.`replies`
@@ -143,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
   `text` TEXT NOT NULL,
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
-  `date_time` DATE NOT NULL,
+  `date_time` DATETIME NOT NULL,
   PRIMARY KEY (`reply_id`),
   INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
   INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,
@@ -161,8 +151,6 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = latin1;
 
-INSERT INTO replies (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (1,'Max Pole - Sprint Quali.',2,3,'2024-05-03');
-INSERT INTO replies (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (2,'No point watching, Verstappen wins again.',2,5,'2024-05-03');
 
 -- -----------------------------------------------------
 -- Table `webapp`.`votes`
@@ -191,3 +179,21 @@ DEFAULT CHARACTER SET = latin1;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (1,'Arts',0,0);
+INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (2,'Sports',0,0);
+INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (3,'Science',0,0);
+INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (4,'News',0,0);
+INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (5,'Nature',0,0);
+INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (6,'Cooking',0,0);
+
+INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (1,'john_doe','securepassword123','basic_user');
+INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (2,'john_doe','securepassword123','basic_user');
+INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (3,'craig','securepassword1234','basic_user');
+INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (4,'steven','securepassword1234','basic_user');
+
+INSERT INTO topics (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (1,'F1 Miami GP FP1',2,1,NULL,0,'2024-05-02 10:00:00',0);
+INSERT INTO topics (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (2,'F1 Miami GP Sprint Quali',2,1,1,0,'2024-05-02 10:00:00',0);
+
+INSERT INTO replies (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (1,'Max Pole - Sprint Quali',2,1,'2024-05-04 00:20:00');
+INSERT INTO replies (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (2,'Farrari fans are crying again.',1,2,'2024-05-03 17:00:00');
