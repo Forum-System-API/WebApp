@@ -20,3 +20,6 @@ app.include_router(users_router)
 # Valkata
 app.include_router(category_router)
 app.include_router(message_router)
+
+# if __name__ == "main":
+#     uvicorn.run(app, host="127.0.0.1", port=8000)

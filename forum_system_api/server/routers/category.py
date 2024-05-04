@@ -9,9 +9,10 @@ category_router = APIRouter(prefix='/categories')
 @category_router.get('/')
 def show_categories():
     categories = category_service.all()
+    return categories
 
 
-@category_router.get('/{category_name}')
+@category_router.get('/name/{category_name}')
 def show_category_by_name(category_name: str):
     if not category_service.category_name_exists(category_name):
         return Response(status_code=400,
@@ -21,7 +22,7 @@ def show_category_by_name(category_name: str):
     return category
 
 
-@category_router.get("/{category_id}")
+@category_router.get('/id/{category_id}')
 def show_category_by_id(category_id: int):
     if not category_service.category_id_exists(category_id):
         return Response(status_code=400,
