@@ -30,7 +30,7 @@ def register(data: LoginData, response: Response):
 
 
 @users_router.post('/login')
-def login(data: LoginData, ):
+def login(data: LoginData):
     user = user_service.try_login(data.username, data.password)
 
     if user:

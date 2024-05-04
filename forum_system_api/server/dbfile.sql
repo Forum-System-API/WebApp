@@ -1,24 +1,16 @@
--- MySQL Workbench Forward Engineering
-
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema webapp
--- -----------------------------------------------------
+-- Drop the existing `webapp` schema if it exists
+DROP SCHEMA IF EXISTS `webapp`;
 
--- -----------------------------------------------------
--- Schema webapp
--- -----------------------------------------------------
+-- Create a new `webapp` schema
 CREATE SCHEMA IF NOT EXISTS `webapp` DEFAULT CHARACTER SET latin1 ;
 USE `webapp` ;
 
 -- -----------------------------------------------------
--- Table `webapp`.`categories`
+-- Table structure for `categories`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`categories` (
   `category_id` INT(11) NOT NULL,
@@ -31,12 +23,12 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `webapp`.`users`
+-- Table structure for `users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`users` (
   `user_id` INT(11) NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `password` TEXT NOT NULL,
   `role` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`user_id`))
 ENGINE = InnoDB
@@ -45,7 +37,7 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `webapp`.`categories_has_users`
+-- Table structure for `categories_has_users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`categories_has_users` (
   `category_id` INT(11) NOT NULL,
@@ -69,7 +61,7 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `webapp`.`messages`
+-- Table structure for `messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`messages` (
   `message_id` INT(11) NOT NULL,
@@ -95,7 +87,7 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `webapp`.`topics`
+-- Table structure for `topics`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
   `topic_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -126,7 +118,7 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `webapp`.`replies`
+-- Table structure for `replies`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
   `reply_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -153,7 +145,7 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `webapp`.`votes`
+-- Table structure for `votes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
   `user_id` INT(11) NOT NULL,
@@ -175,25 +167,25 @@ CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
+-- Insert sample data
+INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (1,'Arts',0,0);
+INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (2,'Sports',0,0);
+INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (3,'Science',0,0);
+INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (4,'News',0,0);
+INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (5,'Nature',0,0);
+INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (6,'Cooking',0,0);
 
+INSERT INTO `webapp`.`users` (`user_id`, `username`,`password`,`role`) VALUES 
+(1, 'admin','9cd34e3d1cdef8d5bab590f05b00dcbc9c7e20d7625b069d72aed16566a59ca7','admin'),
+(2, 'Joey_Ramone','dda69783f28fdf6f1c5a83e8400f2472e9300887d1dffffe12a07b92a3d0aa25','basic_user'),
+(3, 'MoSalah','8eff929c533e9a6ef1261ed11572b17dfac3947722808a3d3803a781cafdc186','basic_user'),
+(4, 'Sherlock','f90c0f69179ced9c447b111dd5235f5279b28674463a0a607ef8dda5909a8747','basic_user');
+
+INSERT INTO `webapp`.`topics` (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (1,'F1 Miami GP FP1',2,1,NULL,0,'2024-05-02 10:00:00',0);
+INSERT INTO `webapp`.`topics` (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (2,'F1 Miami GP Sprint Quali',2,1,1,0,'2024-05-02 10:00:00',0);
+
+INSERT INTO `webapp`.`replies` (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (1,'Max Pole - Sprint Quali',2,1,'2024-05-04 00:20:00');
+INSERT INTO `webapp`.`replies` (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (2,'Ferrari fans are crying again.',1,2,'2024-05-03 17:00:00');
+
+-- Set back SQL_MODE
 SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (1,'Arts',0,0);
-INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (2,'Sports',0,0);
-INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (3,'Science',0,0);
-INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (4,'News',0,0);
-INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (5,'Nature',0,0);
-INSERT INTO categories (`category_id`,`name`,`is_private`,`is_locked`) VALUES (6,'Cooking',0,0);
-
-INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (1,'john_doe','securepassword123','basic_user');
-INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (2,'john_doe','securepassword123','basic_user');
-INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (3,'craig','securepassword1234','basic_user');
-INSERT INTO users (`user_id`,`username`,`password`,`role`) VALUES (4,'steven','securepassword1234','basic_user');
-
-INSERT INTO topics (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (1,'F1 Miami GP FP1',2,1,NULL,0,'2024-05-02 10:00:00',0);
-INSERT INTO topics (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (2,'F1 Miami GP Sprint Quali',2,1,1,0,'2024-05-02 10:00:00',0);
-
-INSERT INTO replies (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (1,'Max Pole - Sprint Quali',2,1,'2024-05-04 00:20:00');
-INSERT INTO replies (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (2,'Farrari fans are crying again.',1,2,'2024-05-03 17:00:00');
