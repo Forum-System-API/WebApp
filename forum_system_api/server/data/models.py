@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, date
 
 from pydantic import BaseModel, constr
 
@@ -15,10 +15,6 @@ class User(BaseModel):
     password:str
     role: str = Role.ORDINARY_USER
    
-    
-
-   
-    
     @classmethod
     def from_query_result(cls, user_id, username, password, role ):
         return cls(
@@ -50,46 +46,47 @@ class Category(BaseModel): # - Valkata
 class Message(BaseModel): # - Valkata
     message_id: int | None = None
     message_text: str
-    message_timestamp: datetime.date
+    message_timestamp: date
     message_author: User
     message_recipient: User
 
 
-# class Topic(BaseModel): 
-#     id: int 
-#     title: str
-#     category_id: int
-#     user_id: int
-#     timestamp: datetime
-#     best_reply_id: int | None
-# #     is_locked: to follow
+class Topic(BaseModel): 
+    id: int 
+    title: str
+    category_id: int
+    user_id: int
+    date_time: datetime
+    best_reply_id: int | None
+    # status_locked: constr(pattern='^unlocked|locked$')
+    # status_private: constr(pattern='^public|private$')
+    # replies: list[Reply] = []
 
-#     @classmethod
-#     def from_query_result(cls, id, title, category_id, user_id, timestamp, best_reply_id):
-#         return cls(
-#             id=id,
-#             title=title,
-#             category_id=category_id,
-#             user_id=user_id,
-#             timestamp=timestamp,
-#             best_reply_id=best_reply_id)
+    @classmethod
+    def from_query_result(cls, id, title, category_id, user_id, date_time, best_reply_id): # add: 1. is_locked 2. is_private  3. replies = None - not sutre yet
+        return cls(
+            id=id,
+            title=title,
+            category_id=category_id,
+            user_id=user_id,
+            date_time=date_time,
+            best_reply_id=best_reply_id)
+        # status_locked='unlocked' if not is_locked else 'locked' - not sure yet
+        # status_private='public' if not is_private else 'private' - not sure yet
+        # replies=replies or []  - not sure yet
 
-# class Reply(BaseModel): 
-#     id: int 
-#     text: str
-#     upvotes: int
-#     downvotes: int
-#     topic_id: int
-#     user_id: int
-#     timestamp: datetime
+class Reply(BaseModel): 
+    id: int 
+    text: str
+    topic_id: int
+    user_id: int
+    date_time: datetime
 
-#     @classmethod
-#     def from_query_result(cls, id, text, upvotes, downvotes, topic_id, user_id, timestamp):
-#         return cls(
-#             id=id,
-#             text=text,
-#             upvotes=upvotes,
-#             downvotes=downvotes,
-#             topic_id=topic_id,
-#             user_id=user_id,
-#             timestamp=timestamp)
+    @classmethod
+    def from_query_result(cls, id, text, topic_id, user_id, date_time):
+        return cls(
+            id=id,
+            text=text,
+            topic_id=topic_id,
+            user_id=user_id,
+            date_time=date_time)
