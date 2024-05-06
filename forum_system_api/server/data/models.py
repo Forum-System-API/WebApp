@@ -1,6 +1,6 @@
 from datetime import datetime, date
-
 from pydantic import BaseModel, constr
+
 
 TUsername = constr(pattern='^\w{2,30}$')
 
@@ -50,42 +50,37 @@ class Message(BaseModel): # - Valkata
     message_author: User
     message_recipient: User
 
-
 class Topic(BaseModel): 
-    id: int 
+    topic_id: int 
     title: str
     category_id: int
     user_id: int
     date_time: datetime
-    best_reply_id: int | None
+    # best_reply_id: int 
     # status_locked: constr(pattern='^unlocked|locked$')
     # status_private: constr(pattern='^public|private$')
-    # replies: list[Reply] = []
-
+ 
     @classmethod
-    def from_query_result(cls, id, title, category_id, user_id, date_time, best_reply_id): # add: 1. is_locked 2. is_private  3. replies = None - not sutre yet
+    def from_query_result(cls, topic_id, title, category_id, user_id, date_time): # add: 1. is_locked 2. is_private  3. replies = None - not sutre yet
         return cls(
-            id=id,
+            topic_id=topic_id,
             title=title,
             category_id=category_id,
             user_id=user_id,
-            date_time=date_time,
-            best_reply_id=best_reply_id)
+            date_time=date_time)
         # status_locked='unlocked' if not is_locked else 'locked' - not sure yet
         # status_private='public' if not is_private else 'private' - not sure yet
-        # replies=replies or []  - not sure yet
-
 class Reply(BaseModel): 
-    id: int 
+    reply_id: int 
     text: str
     topic_id: int
     user_id: int
     date_time: datetime
 
     @classmethod
-    def from_query_result(cls, id, text, topic_id, user_id, date_time):
+    def from_query_result(cls, reply_id, text, topic_id, user_id, date_time):
         return cls(
-            id=id,
+            reply_id=reply_id,
             text=text,
             topic_id=topic_id,
             user_id=user_id,
