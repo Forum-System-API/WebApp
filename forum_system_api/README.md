@@ -1,17 +1,17 @@
-## Forum System API
+# Forum System API
 
 
-### 1. Project description
-1.1. Desinged and implemented a Forum System.
+## 1. Project description
+- Desinged and implemented a Forum System.
+- Provided a RESTful API that can be consumed by different clients.
+- High-level description:
+    - Users can read and create topics and message other users
+    - Administrators manage users, topics and categories
 
-1.2. Provided a RESTful API that can be consumed by different clients.
-
-1.3. High-level description:
-- Users can read and create topics and message other users
-- Administrators manage users, topics and categories
+## 2. Table of contents: describe what you will see during demonstration.
 
 
-### 2. Database - relationships between tables
+## 3. Database - relationships between tables
 ![database](./database.png)
 
 - User to Category – Many-to-Many: Multiple users can have read access to multiple categories, and each category can be accessed by multiple Users. And only admins can create a Category.
@@ -27,99 +27,108 @@
 - Topic to Reply – One-to-many: A Topic can have multiple replies, but a single reply can only belong to one Topic.
 
 
-### 3. Models
-3.1. `User`: **CHANGES TO FOLLOW** - Vladi 
+## 4. Models
+### 4.1. `User`model has the following attributes:
+- id &rarr; int
+- username &rarr; str
+- password &rarr; str
+- role &rarr; str
 
-3.2. `Message`: **CHANGES TO FOLLOW** - Valkata
+### 4.2. `Message` model has the following attributes:
+- message_id &rarr; int 
+- text &rarr; str
+- timestamp &rarr; datetime
+- sender_id &rarr; int
+- recipient_id &rarr; int
 
-3.3. `Category`: **CHANGES TO FOLLOW** - Valkata
+### 4.3. `Category` model has the following attributes:
+- category_id &rarr; int 
+- category_name &rarr; str
+- is_private &rarr;  to follow
+- is_locked &rarr; to follow
 
-3.4.`Topic` model has the following attributes:
-- id &rarr; int 
+### 4.4.`Topic` model has the following attributes:
+- topic_id &rarr; int 
 - title &rarr; str
 - category_id &rarr; int
 - user_id &rarr; int
-- timestamp: datetime
-- best_reply_id: int | None
-#     is_locked: NO IDEA
+- date_time &rarr; datetime
+- best_reply_id &rarr; to follow
+- is_locked &rarr; to follow
+- is_private &rarr; to follow
 
-3.5.`Reply` model has the following attributes:
-- id &rarr; int 
+### 4.5.`Reply` model has the following attributes:
+- reply_id &rarr; int 
 - text &rarr; str
-- upvotes &rarr; int 
-- downvotes &rarr; int 
 - topic_id &rarr; int
 - user_id &rarr; int
-- timestamp &rarr; datetime
+- date_time &rarr; datetime
 
-### 4. Endpoints
+## 5. Endpoints
 
-4.1. User - Vladi
-**CHANGES TO FOLLOW**
+### 5.1. User 
 
-4.2. Category - Valkata
-**CHANGES TO FOLLOW**
- 
-4.3. Message - Valkata
-**CHANGES TO FOLLOW**
+### 5.2. Category
 
-4.4. Topic
+### 5.3. Message 
 
-
-**CHANGES TO FOLLOW** 
-
-
+### 5.4. Topic
 - ✔ GET /topics:
-    - It must (View Topics): Responds with a list of Topic resources; Consider adding search, sort and pagination query params.
-    - REQUEST: `GET http://127.0.0.1:8000/topics` 
-    - RESPONSE:
-```json
-[
-    to follow: example code
-]
-```
-- ✔ GET /topics/{id}:
-    - It must (View Topic): Responds with a single Topic resource and a list of Reply resources.
-    - REQUEST: `GET http://127.0.0.1:8000/topics/1` 
-    - RESPONSE:
-```json
-[
-    to follow: example code
-]
-```
-- ✔ PUT /topics/{id}:
-    - It must (View Topic): Responds with a single Topic resource and a list of Reply resources.
-    - REQUEST: `GET http://127.0.0.1:8000/topics/1` 
-    - RESPONSE:
-```json
-[
-    to follow: example code
-]
-```
-- ✔ POST /topics:
-    - It must (Create Topic): Requires authentication token; Topic data must contain at least a title and a Category.
-    - REQUEST: `POST http://127.0.0.1:8000/topics` 
-    - RESPONSE:
-```json
-[
-    to follow: example code
-]
-```
-- ✔ DELETE /topics:
-    - Description: to follow
+    - DESCRIPTION: Responds with a list of Topic resources.
     - REQUEST: 
+
+        - `GET http://127.0.0.1:8000/topics`
+
+        - `GET http://127.0.0.1:8000/topics?search=sprint`
+
+        - `GET http://127.0.0.1:8000/topics?sort=asc&sort_by=title`
+
+        - `GET http://127.0.0.1:8000/topics?search=sprint&sort=asc&sort_by=title`
+
     - RESPONSE:
-```json
-[
-    to follow: example code
-]
-```
+        ```json
+            [
+                Go to Postman.
+            ]
+        ```
+- ✔ GET /topics/topic_{id}:
+    - DESCRIPTION: Responds with a single Topic resource and s list of Reply resources.
+    - REQUEST: `GET http://127.0.0.1:8000/topics/1` 
+    - RESPONSE:
+        ```json
+            [
+                to follow: example code
+            ]
+        ```
+- ✔ POST /topics:
+    - DESCRIPTION: Creates a new Topic.
+    - REQUEST: `POST http://127.0.0.1:8000/topics` 
+        ```json
+            [
+                "topic_id": 6,
+                "title": "F1 Miami GP Highlights",
+                "category_id": 2,
+                "user_id": 1,
+                "date_time": "2024-05-06T12:50:00"
+            ]
+        ```
+    - RESPONSE:
+        ```json
+        [
+            Go to Postman.
+        ]
+        ```
+- ✔ DELETE /topics:
+    - DESCRIPTION: Deletes a Topic resource and all of its Replies.
+    - REQUEST: `DELETE http://127.0.0.1:8000/topics/6` 
+    - RESPONSE:
+        ```json
+        [
+            Go to Postman.
+        ]
+        ```
 
-4.5. Reply 
-
-
-**CHANGES TO FOLLOW**
-
+### 5.5. Reply  
 - ✔ POST /replies:
     - It must (Create Reply ): Requires authentication token; Reply data should contain at least text and is associated with a specific Topic.
     - REQUEST: `POST http://127.0.0.1:8000/replies` 
@@ -149,7 +158,7 @@
 ```
 
 
-### 5. How to Install and Run the Project
+## 6. How to Install and Run the Project
 - Navigate to /server and open a terminal
 - Run `uvicorn main:app`
 - Open a browser and type `http://127.0.0.1:8000/docs`. There should be documentation of the available endpoints.
@@ -161,6 +170,3 @@
 - Table of Contents (Optional): **NOT SURE WHAT THIS SHOULD BE**
 - How to Install and Run the Project: ✔ 
 - How to Use the Project: **NOT SURE WHAT THIS SHOULD BE**
-- Include Credit: **NOT SURE WHAT THIS SHOULD BE**
-- Add a License: **NOT SURE WHAT THIS SHOULD BE**
-- Badges: **NOT SURE WHAT THIS SHOULD BE**
