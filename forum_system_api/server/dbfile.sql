@@ -1,29 +1,37 @@
+-- MySQL Workbench Forward Engineering
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
--- Drop the existing `webapp` schema if it exists
-DROP SCHEMA IF EXISTS `webapp`;
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema webapp
+-- -----------------------------------------------------
 
--- Create a new `webapp` schema
-CREATE SCHEMA IF NOT EXISTS `webapp` DEFAULT CHARACTER SET latin1 ;
+-- -----------------------------------------------------
+-- Schema webapp
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `webapp` ;
 USE `webapp` ;
 
 -- -----------------------------------------------------
--- Table structure for `categories`
+-- Table `webapp`.`categories`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`categories` (
-  `category_id` INT(11) NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
+  `category_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `category_name` VARCHAR(45) NOT NULL,
   `is_private` TINYINT(4) NOT NULL DEFAULT 0,
   `is_locked` TINYINT(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`category_id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+AUTO_INCREMENT = 7;
 
 
 -- -----------------------------------------------------
--- Table structure for `users`
+-- Table `webapp`.`users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`users` (
   `user_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -32,12 +40,11 @@ CREATE TABLE IF NOT EXISTS `webapp`.`users` (
   `role` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`user_id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 7
-DEFAULT CHARACTER SET = latin1;
+AUTO_INCREMENT = 5;
 
 
 -- -----------------------------------------------------
--- Table structure for `categories_has_users`
+-- Table `webapp`.`categories_has_users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`categories_has_users` (
   `category_id` INT(11) NOT NULL,
@@ -56,15 +63,14 @@ CREATE TABLE IF NOT EXISTS `webapp`.`categories_has_users` (
     REFERENCES `webapp`.`users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table structure for `messages`
+-- Table `webapp`.`messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`messages` (
-  `message_id` INT(11) NOT NULL,
+  `message_id` INT(11) NOT NULL AUTO_INCREMENT,
   `text` TEXT NOT NULL,
   `timestamp` DATETIME NOT NULL,
   `sender_id` INT(11) NOT NULL,
@@ -82,24 +88,19 @@ CREATE TABLE IF NOT EXISTS `webapp`.`messages` (
     REFERENCES `webapp`.`users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table structure for `topics`
+-- Table `webapp`.`topics`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
   `topic_id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
+  `date_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `category_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
-  `best_reply_id` INT(11) NULL DEFAULT NULL,
-  `is_locked` TINYINT(4) NOT NULL DEFAULT 0,
-  `date_time` DATETIME NOT NULL,
-  `is_private` TINYINT(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`topic_id`),
-  UNIQUE INDEX `best_reply_id_UNIQUE` (`best_reply_id` ASC) VISIBLE,
   INDEX `fk_topics_categories1_idx` (`category_id` ASC) VISIBLE,
   INDEX `fk_topics_users1_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `fk_topics_categories1`
@@ -113,19 +114,18 @@ CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
-DEFAULT CHARACTER SET = latin1;
+AUTO_INCREMENT = 7;
 
 
 -- -----------------------------------------------------
--- Table structure for `replies`
+-- Table `webapp`.`replies`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
   `reply_id` INT(11) NOT NULL AUTO_INCREMENT,
   `text` TEXT NOT NULL,
+  `date_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
-  `date_time` DATETIME NOT NULL,
   PRIMARY KEY (`reply_id`),
   INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
   INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,
@@ -140,12 +140,11 @@ CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
-DEFAULT CHARACTER SET = latin1;
+AUTO_INCREMENT = 5;
 
 
 -- -----------------------------------------------------
--- Table structure for `votes`
+-- Table `webapp`.`votes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
   `user_id` INT(11) NOT NULL,
@@ -164,28 +163,30 @@ CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
     REFERENCES `webapp`.`users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 -- Insert sample data
-INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (1,'Arts',0,0);
-INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (2,'Sports',0,0);
-INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (3,'Science',0,0);
-INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (4,'News',0,0);
-INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (5,'Nature',0,0);
-INSERT INTO `webapp`.`categories` (`category_id`,`name`,`is_private`,`is_locked`) VALUES (6,'Cooking',0,0);
+INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Arts',0,0);
+INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Sports',0,0);
+INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Science',0,0);
+INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('News',0,0);
+INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Nature',0,0);
+INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Cooking',0,0);
 
-INSERT INTO `webapp`.`users` (`user_id`, `username`,`password`,`role`) VALUES 
-(1, 'admin','9cd34e3d1cdef8d5bab590f05b00dcbc9c7e20d7625b069d72aed16566a59ca7','admin'),
-(2, 'Joey_Ramone','dda69783f28fdf6f1c5a83e8400f2472e9300887d1dffffe12a07b92a3d0aa25','basic_user'),
-(3, 'MoSalah','8eff929c533e9a6ef1261ed11572b17dfac3947722808a3d3803a781cafdc186','basic_user'),
-(4, 'Sherlock','f90c0f69179ced9c447b111dd5235f5279b28674463a0a607ef8dda5909a8747','basic_user');
+INSERT INTO `webapp`.`users` ( `username`,`password`,`role`) VALUES 
+('admin','9cd34e3d1cdef8d5bab590f05b00dcbc9c7e20d7625b069d72aed16566a59ca7','admin'),
+('Joey_Ramone','dda69783f28fdf6f1c5a83e8400f2472e9300887d1dffffe12a07b92a3d0aa25','basic_user'),
+('MoSalah','8eff929c533e9a6ef1261ed11572b17dfac3947722808a3d3803a781cafdc186','basic_user'),
+('Sherlock','f90c0f69179ced9c447b111dd5235f5279b28674463a0a607ef8dda5909a8747','basic_user');
 
-INSERT INTO `webapp`.`topics` (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (1,'F1 Miami GP FP1',2,1,NULL,0,'2024-05-02 10:00:00',0);
-INSERT INTO `webapp`.`topics` (`topic_id`,`title`,`category_id`,`user_id`,`best_reply_id`,`is_locked`,`date_time`,`is_private`) VALUES (2,'F1 Miami GP Sprint Quali',2,1,1,0,'2024-05-02 10:00:00',0);
+INSERT INTO `webapp`.`topics` (`title`,`category_id`,`user_id`) VALUES ('F1 Miami GP FP1',2,1);
+INSERT INTO `webapp`.`topics` (`title`,`category_id`,`user_id`) VALUES ('F1 Miami GP Sprint Quali',2,1);
 
-INSERT INTO `webapp`.`replies` (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (1,'Max Pole - Sprint Quali',2,1,'2024-05-04 00:20:00');
-INSERT INTO `webapp`.`replies` (`reply_id`,`text`,`topic_id`,`user_id`,`date_time`) VALUES (2,'Ferrari fans are crying again.',1,2,'2024-05-03 17:00:00');
-
--- Set back SQL_MODE
-SET SQL_MODE=@OLD_SQL_MODE;
+INSERT INTO `webapp`.`replies` (`text`,`topic_id`,`user_id`) VALUES ('Max Pole - Sprint Quali',2,1);
+INSERT INTO `webapp`.`replies` (`text`,`topic_id`,`user_id`) VALUES ('Ferrari fans are crying again.',1,2);
