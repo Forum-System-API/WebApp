@@ -1,6 +1,14 @@
-# from data.database import insert_query, read_query, update_query
-# from data.models import Reply
+from data.database import insert_query, read_query, update_query
+from data.models import Reply, Topic
 
+
+def get_by_topic(topic_id: int):
+    data = read_query(
+        '''SELECT topic_id, title, category_id, user_id, date_time
+            FROM topics
+            WHERE topic_id = ?''', (topic_id,))
+
+    return (Topic.from_query_result(*row) for row in data)
 
 # def get_by_id(id: int):
 #     data = read_query(
