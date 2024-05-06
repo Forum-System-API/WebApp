@@ -1,9 +1,9 @@
-# from fastapi import APIRouter, Response
-# from data.models import Reply
-# from services import reply_service
+from fastapi import APIRouter, Response
+from data.models import Reply
+from services import reply_service
 
 
-# replies_router = APIRouter(prefix='/replies')
+replies_router = APIRouter(prefix='/replies')
 
 # # creates a new reply to a certain topic
 # @replies_router.post('/', status_code=201)
