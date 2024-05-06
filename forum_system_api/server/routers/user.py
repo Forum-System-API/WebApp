@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, status, HTTPException, Header
 from data.models import User, LoginData, Role
 from services import user_service
 import jwt
-from services.config import secret_key
+from services.secret import secret_key
 from common.auth import get_user_or_raise_401
 
 users_router = APIRouter(prefix='/users')
