@@ -49,3 +49,24 @@ def exists(topic_id: int):
         read_query(
                 'SELECT topic_id, title, category_id, user_id, date_time FROM topics WHERE topic_id = ?',
                 (topic_id,)))
+
+def get_topic_replies(topic_id: int) -> set[int]:
+    data = read_query(
+        'SELECT topic_id from replies where topic_id = ?',
+        (topic_id,))
+
+    return set(i[0] for i in data)
+
+def insert_replies_to_topic(topic_id: int, replies_ids: list[int]):
+    relations = ','.join(
+        f'({topic_id},{reply_id})' for reply_id in replies_ids)
+
+    insert_query(
+        f'INSERT INTO replies(topic_id, product_id) VALUES {relations}')
+    
+def remove_replies_from_topic(topic_id: int, replies_ids: list[int]):
+    ids_to_delete = ','.join(str(r_id) for r_id in replies_ids)
+
+    insert_query(
+        f'DELETE FROM replies WHERE topic_id = ? and reply_id IN ({ids_to_delete})',
+        (topic_id,))
