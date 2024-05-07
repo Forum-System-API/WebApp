@@ -32,7 +32,7 @@ def get_by_id(topic_id: int):
 
 def create(topic: Topic):
     generated_id = insert_query(
-        'INSERT INTO topics(topic_id, title, category_id, user_id, date_time ) VALUES(?,?,?,?,?)',
+        'INSERT INTO topics(topic_id, title, category_id, user_id, date_time) VALUES(?,?,?,?,?)',
         (topic.topic_id, topic.title, topic.category_id, topic.user_id, topic.date_time))
 
     topic.topic_id = generated_id
@@ -40,9 +40,12 @@ def create(topic: Topic):
     return topic
 
 def delete(topic_id: int):
-    update_query('DELETE FROM topics WHERE topic_id = ?', (topic_id,))
+    update_query('DELETE FROM topics WHERE topic_id = ?', 
+                 (topic_id,))
 
 
-# def remove_reply_from_topic():
-#     pass
-
+def exists(topic_id: int):
+    return any(
+        read_query(
+                'SELECT topic_id, title, category_id, user_id, date_time FROM topics WHERE topic_id = ?',
+                (topic_id,)))
