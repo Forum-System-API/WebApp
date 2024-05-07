@@ -70,6 +70,7 @@ class Topic(BaseModel):
             date_time=date_time)
         # status_locked='unlocked' if not is_locked else 'locked' - not sure yet
         # status_private='public' if not is_private else 'private' - not sure yet
+        
 class Reply(BaseModel): 
     reply_id: int 
     text: str
