@@ -45,10 +45,10 @@ class Category(BaseModel): # - Valkata
 
 class Message(BaseModel): # - Valkata
     message_id: int | None = None
-    message_text: str
-    message_timestamp: date
-    message_author: User
-    message_recipient: User
+    text: str
+    timestamp: datetime
+    sender_id: int
+    recipient_id: int
 
 class Topic(BaseModel): 
     topic_id: int 
