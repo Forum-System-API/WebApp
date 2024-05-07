@@ -4,7 +4,10 @@ from mariadb import IntegrityError
 
 def all():
     data = read_query('SELECT category_id, category_name FROM categories')
-    return data
+    formatted_data = [
+        {"category_id": row[0], "category_name": row[1]} for row in data
+    ]
+    return formatted_data
 
 
 def find_by_name(category_name: str) -> Category | None:
@@ -35,6 +38,11 @@ def category_id_exists(category_id: int) -> bool:
         read_query(
             'SELECT category_id, category_name FROM categories WHERE category_id = ?',
             (category_id,)))
+
+
+def delete_category(name):  #Untested
+    update_query(f'DELETE FROM categories WHERE categories.name = {name}')
+
 
 
 def create(name: str):

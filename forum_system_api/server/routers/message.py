@@ -10,9 +10,9 @@ message_router = APIRouter(prefix='/messages')
 
 @message_router.get('/')
 def show_all_messages(
-        x_token=Header()):  # Accepts token which find who the logged user is in order to show the logged user's messages
+        x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
-    messages = message_service.all(logged_user)
+    messages = message_service.view_all(logged_user)
     return messages
 
 
@@ -25,3 +25,11 @@ def send_message(message: Message, username, x_token=Header()):
     message.timestamp = datetime.now()
     message_service.write_message(message)
     return "Message successfully sent!"
+
+
+#Messages should be deleted only for the logged user instead of all messages with the logged user's id
+@message_router.delete('/all')
+def delete_message_history(x_token=Header()):
+    logged_user = get_user_or_raise_401(x_token)
+    message_service.delete_all(logged_user.id)
+    return "Message history deleted"
