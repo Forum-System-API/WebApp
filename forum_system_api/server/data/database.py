@@ -11,7 +11,6 @@ def _get_connection() -> Connection:
         database='webapp'
     )
 
-
 def read_query(sql: str, sql_params=()):
     with _get_connection() as conn:
         cursor = conn.cursor()
