@@ -76,8 +76,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`messages` (
   `sender_id` INT(11) NOT NULL,
   `recipient_id` INT(11) NOT NULL,
   PRIMARY KEY (`message_id`),
-  INDEX `fk_messages_users1_idx` (`sender_id` ASC) VISIBLE,
-  INDEX `fk_messages_users2_idx` (`recipient_id` ASC) VISIBLE,
+  INDEX `fk_messages_users1_idx` (`sender_id` ASC) ,
+  INDEX `fk_messages_users2_idx` (`recipient_id` ASC) ,
   CONSTRAINT `fk_messages_users1`
     FOREIGN KEY (`sender_id`)
     REFERENCES `webapp`.`users` (`user_id`)
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
   `category_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`topic_id`),
-  INDEX `fk_topics_categories1_idx` (`category_id` ASC) VISIBLE,
-  INDEX `fk_topics_users1_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_topics_categories1_idx` (`category_id` ASC) ,
+  INDEX `fk_topics_users1_idx` (`user_id` ASC) ,
   CONSTRAINT `fk_topics_categories1`
     FOREIGN KEY (`category_id`)
     REFERENCES `webapp`.`categories` (`category_id`)
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`reply_id`),
-  INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
-  INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_replies_topics1_idx` (`topic_id` ASC) ,
+  INDEX `fk_replies_users1_idx` (`user_id` ASC) ,
   CONSTRAINT `fk_replies_topics1`
     FOREIGN KEY (`topic_id`)
     REFERENCES `webapp`.`topics` (`topic_id`)
@@ -151,8 +151,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
   `reply_id` INT(11) NOT NULL,
   `type_of_vote` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`, `reply_id`),
-  INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) VISIBLE,
-  INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) ,
+  INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) ,
   CONSTRAINT `fk_users_has_replies_replies1`
     FOREIGN KEY (`reply_id`)
     REFERENCES `webapp`.`replies` (`reply_id`)
@@ -172,12 +172,12 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
 -- Insert sample data
-INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Arts',0,0);
-INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Sports',0,0);
-INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Science',0,0);
-INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('News',0,0);
-INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Nature',0,0);
-INSERT INTO `webapp`.`categories` (`name`,`is_private`,`is_locked`) VALUES ('Cooking',0,0);
+INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Arts',0,0);
+INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Sports',0,0);
+INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Science',0,0);
+INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('News',0,0);
+INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Nature',0,0);
+INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Cooking',0,0);
 
 INSERT INTO `webapp`.`users` ( `username`,`password`,`role`) VALUES 
 ('admin', '9cd34e3d1cdef8d5bab590f05b00dcbc9c7e20d7625b069d72aed16566a59ca7', 'admin'),

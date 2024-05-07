@@ -13,7 +13,7 @@ def all(logged_user: User):
     return data
 
 
-def write_message(message_text, recipient_id: int, sender_id: int, message_timestamp) -> Message | None:
+def write_message(text, timestamp, sender_id: int, recipient_id: int) -> Message | None:
     insert_query('''INSERT INTO messages(text, timestamp, sender_id, recipient_id)
-    VALUES(?, ?, ?, ?, ?)''', (message_text, message_timestamp, sender_id, recipient_id))
+    VALUES(?, ?, ?, ?, ?)''', (text, timestamp, sender_id, recipient_id))
     pass
