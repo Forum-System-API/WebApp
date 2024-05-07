@@ -23,5 +23,5 @@ def send_message(message: Message, username, x_token=Header()):
     message.recipient_id = recipient.id
     message.sender_id = logged_user.id
     message.timestamp = datetime.now()
-    message_service.write_message(text=message.text, recipient_id=message.recipient_id,
-                                  sender_id=message.sender_id, timestamp=message.timestamp)
+    message_service.write_message(message)
+    return "Message successfully sent!"
