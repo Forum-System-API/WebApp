@@ -39,17 +39,48 @@ def create_topic(topic: Topic):
     return topic_service.create(topic)
 
 
-# changes the status ofa tipic - locked, private
+# changes the status of a tоpic - best reply
 # available for: admin, user
 
 
-# adds replies to a specific topic
+# changes the status of a tоpic - private
 # available for: admin, user
 
 
-# removes replies from a specific topic
+# changes the status of a tоpic - locked
 # available for: admin, user
 
+
+# available for: admin, user
+@topics_router.put('/{topic_id}/replies')
+def add_replies(topic_id: int, replies_ids: set[int]):
+    if not topic_service.exists(topic_id):
+        return Response(status_code=404)
+
+    current_ids = topic_service.get_topic_replies(topic_id)
+    replies_to_add = replies_ids.difference(current_ids)
+
+    if len(replies_to_add) == 0:
+        return {'added_replies_ids': []}
+
+    topic_service.insert_replies_to_topic(topic_id, replies_to_add)
+
+    return {'added_replies_ids': replies_to_add}
+
+# available for: admin, user
+@topics_router.delete('/{topic_id}/replies')
+def remove_repliess(topic_id: int, replies_ids: set[int]):
+    if not topic_service.exists(topic_id):
+        return Response(status_code=404)
+
+    current_ids = topic_service.get_topic_replies(topic_id)
+    replies_to_delete = replies_ids.intersection(current_ids)
+    if len(replies_to_delete) == 0:
+        return {'deleted_replies_ids': []}
+
+    topic_service.remove_replies_from_topic(topic_id, replies_to_delete)
+
+    return {'deleted_replies_ids': replies_to_delete}
 
 # available for: admin, user
 @topics_router.delete('/{topic_id}')
