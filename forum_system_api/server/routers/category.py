@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, status, HTTPException, Header
-from data.models import Category
+from data.models import Category, Role, User
 from services import category_service
 from common.auth import get_user_or_raise_401
 
@@ -55,7 +55,20 @@ def delete_category_by_name(name: str, x_token: str = Header()):
         #pass
     pass
 
-
+@category_router.post('/new')
+def create_category(category:Category, x_token: str = Header()):
+                                
+    user = get_user_or_raise_401(x_token)
+    
+    id, username = x_token.split(';')
+    
+    
+    if user.role != Role.ADMIN and username!='admin':
+        raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
+ 
+    category_service.create(category.category_name)
+    
+    return f'Category created successfully!'
 
 
 
