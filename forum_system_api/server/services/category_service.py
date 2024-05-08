@@ -21,7 +21,7 @@ def find_by_name(category_name: str) -> Category | None:
 
 def find_by_id(category_id: int) -> tuple[Category | None, list[Topic] | None]:
     category_data = read_query(
-        'SELECT category_id, category_name FROM categories WHERE category_id = ?',
+        'SELECT category_id, category_name, is_private, is_locked FROM categories WHERE category_id = ?',
         (category_id,))
     topic_data = read_query(
         'SELECT topic_id, title, category_id, user_id, date_time FROM topics WHERE category_id = ?',
