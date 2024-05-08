@@ -51,8 +51,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`categories_has_users` (
   `user_id` INT(11) NOT NULL,
   `access_type` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`category_id`, `user_id`),
-  INDEX `fk_categories_has_users_users1_idx` (`user_id` ASC) VISIBLE,
-  INDEX `fk_categories_has_users_categories_idx` (`category_id` ASC) VISIBLE,
+  INDEX `fk_categories_has_users_users1_idx` (`user_id` ASC) ,
+  INDEX `fk_categories_has_users_categories_idx` (`category_id` ASC) ,
   CONSTRAINT `fk_categories_has_users_categories`
     FOREIGN KEY (`category_id`)
     REFERENCES `webapp`.`categories` (`category_id`)
