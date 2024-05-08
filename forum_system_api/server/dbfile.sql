@@ -179,6 +179,7 @@ INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VAL
 INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Nature',0,0);
 INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Cooking',0,0);
 
+TRUNCATE TABLE webapp.users;
 INSERT INTO `webapp`.`users` ( `username`,`password`,`role`) VALUES 
 ('admin', '9cd34e3d1cdef8d5bab590f05b00dcbc9c7e20d7625b069d72aed16566a59ca7', 'admin'),
     ('Joey_Ramone', 'dda69783f28fdf6f1c5a83e8400f2472e9300887d1dffffe12a07b92a3d0aa25', 'basic_user'),
@@ -188,8 +189,10 @@ INSERT INTO `webapp`.`users` ( `username`,`password`,`role`) VALUES
     ('slave', '61e81a50ea9de3c9a48c95d6bb4aecc196de64d696fdd24f647afe18f9909d7c', 'basic_user'),
     ('skankhunt42', 'c4a1e6f3639a098e68060c2a31cfc3567bf68b3ec1bb4f843a34f7499caf2998', 'basic_user');
 
+TRUNCATE TABLE webapp.topics;
 INSERT INTO `webapp`.`topics` (`title`,`category_id`,`user_id`) VALUES ('F1 Miami GP FP1',2,1);
 INSERT INTO `webapp`.`topics` (`title`,`category_id`,`user_id`) VALUES ('F1 Miami GP Sprint Quali',2,1);
 
+TRUNCATE TABLE webapp.replies;
 INSERT INTO `webapp`.`replies` (`text`,`topic_id`,`user_id`) VALUES ('Max Pole - Sprint Quali',2,1);
 INSERT INTO `webapp`.`replies` (`text`,`topic_id`,`user_id`) VALUES ('Ferrari fans are crying again.',1,2);

@@ -33,6 +33,13 @@ def find_by_id(category_id: int) -> tuple[Category | None, list[Topic] | None]:
     return category, topics
 
 
+def grab_category_with_id(category_id: int) -> Category:
+    category_data = read_query(
+        'SELECT category_id, category_name FROM categories WHERE category_id = ?',
+        (category_id,))
+
+    return next((Category.from_query_result(*row) for row in category_data), None)
+
 
 def category_name_exists(category_name: str) -> bool:
     return any(
