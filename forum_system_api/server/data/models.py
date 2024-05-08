@@ -28,27 +28,29 @@ class LoginData(BaseModel):
     username: TUsername
     password: str
         
-class LoginData(BaseModel):
-    username: TUsername
-    password: str
+
 
 class Category(BaseModel): # - Valkata
     category_id: int | None = None
     category_name: str
+    is_private:int | None = None
+    is_locked:int | None = None
 
     @classmethod
-    def from_query_result(cls, category_id, category_name):
+    def from_query_result(cls, category_id, category_name, is_private, is_locked):
         return cls(
             category_id=category_id,
-            category_name=category_name
+            category_name=category_name,
+            is_private = is_private,
+            is_locked = is_locked
         )
 
 class Message(BaseModel): # - Valkata
     message_id: int | None = None
-    text: str
-    timestamp: datetime
-    sender_id: int
-    recipient_id: int
+    text: str | None = None
+    timestamp: datetime | None = None
+    sender_id: int | None = None
+    recipient_id: int | None = None
 
 class Topic(BaseModel): 
     topic_id: int | None = None

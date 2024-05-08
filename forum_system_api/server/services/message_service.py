@@ -7,13 +7,25 @@ from datetime import datetime, timedelta
 from services.secret import secret_key
 
 
-def all(logged_user: User):
-    data = read_query('''SELECT message_id, text, timestamp, sender_id, recipient_id FROM message
+def view_all(logged_user: User):
+    data = read_query('''SELECT message_id, text, timestamp, sender_id, recipient_id FROM messages
     WHERE recipient_id = ? OR sender_id = ?''', (logged_user.id, logged_user.id))
-    return data
+    formatted_data = [
+        {"message_id": row[0], "text": row[1], "timestamp": row[2], "sender_id": row[3], "recipient_id": row[4]}
+        for row in data
+    ]
+    return formatted_data
 
 
-def write_message(message_text, recipient_id: int, sender_id: int, message_timestamp) -> Message | None:
-    insert_query('''INSERT INTO messages(text, timestamp, sender_id, recipient_id)
-    VALUES(?, ?, ?, ?, ?)''', (message_text, message_timestamp, sender_id, recipient_id))
-    pass
+def write_message(message: Message) -> Message | None:
+    generated_id = insert_query('''INSERT INTO messages(message_id, text, timestamp, sender_id, recipient_id)
+    VALUES(?, ?, ?, ?, ?)''', (
+        message.message_id, message.text, message.timestamp, message.sender_id, message.recipient_id))
+
+    message.message_id = generated_id
+
+    return message
+
+
+def delete_all(user_id: int):
+    update_query(f'DELETE FROM messages WHERE messages.sender_id = {user_id}')

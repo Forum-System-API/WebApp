@@ -34,26 +34,34 @@ def show_category_by_id(category_id: int):
 
 @category_router.delete('/{category_id}')
 def delete_category_by_id(category_id: int, x_token: str = Header()):
-    #user = get_user_or_raise_401(x_token)
+    user = get_user_or_raise_401(x_token)
     if not category_service.category_id_exists(category_id):
         return Response(status_code=400,
                         content=f'Category with id #{category_id} does not exist')
 
-    #if not user.role != "admin":
-        #pass
-    pass
+    if not user.role != "admin":
+        return Response(status_code=403,
+                        content=f'You need administrative rights to delete categories!')
+
+    category = category_service.grab_category_with_id(category_id)
+    category_service.delete_category(category.category_name)
+
 
 
 @category_router.delete('/{name}')
 def delete_category_by_name(name: str, x_token: str = Header()):
-    #user = get_user_or_raise_401(x_token)
+    user = get_user_or_raise_401(x_token)
     if not category_service.category_name_exists(name):
         return Response(status_code=400,
                         content=f'Category with id #{name} does not exist')
 
-    #if not user.role != "admin":
-        #pass
+    if not user.role != "admin":
+        return Response(status_code=403,
+                        content=f'You need administrative rights to delete categories!')
+
+    category_service.delete_category(name)
     pass
+
 
 @category_router.post('/new')
 def create_category(category:Category, x_token: str = Header()):
@@ -71,10 +79,18 @@ def create_category(category:Category, x_token: str = Header()):
     return f'Category created successfully!'
 
 
-
-
-
-
-
+@category_router.post('/visibility')
+def set_privacy(category:Category, x_token:str = Header()):
+    user = get_user_or_raise_401(x_token) ## to finish the logic
+    
+    id, username = x_token.split(';')
+    
+    
+    if user.role != Role.ADMIN and username!='admin':
+        raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
+    
+    category_service.change_status(category.category_name, category.is_private)
+    
+    return {"message": "Category privacy updated successfully"}
 
 
