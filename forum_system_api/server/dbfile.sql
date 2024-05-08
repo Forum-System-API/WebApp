@@ -95,14 +95,17 @@ ENGINE = InnoDB;
 -- Table `webapp`.`topics`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
-  `topic_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `topic_id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
-  `date_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `category_id` INT(11) NOT NULL,
-  `user_id` INT(11) NOT NULL,
+  `date_time` DATETIME NOT NULL,
+  `category_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  `best_reply_id` INT NULL DEFAULT NULL,
+  `is_locked` TINYINT NOT NULL DEFAULT 0,
+  `is_private` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`topic_id`),
-  INDEX `fk_topics_categories1_idx` (`category_id` ASC) ,
-  INDEX `fk_topics_users1_idx` (`user_id` ASC) ,
+  INDEX `fk_topics_categories1_idx` (`category_id` ASC) VISIBLE,
+  INDEX `fk_topics_users1_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `fk_topics_categories1`
     FOREIGN KEY (`category_id`)
     REFERENCES `webapp`.`categories` (`category_id`)
@@ -113,22 +116,21 @@ CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
     REFERENCES `webapp`.`users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-AUTO_INCREMENT = 7;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `webapp`.`replies`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
-  `reply_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `reply_id` INT NOT NULL AUTO_INCREMENT,
   `text` TEXT NOT NULL,
-  `date_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `topic_id` INT(11) NOT NULL,
-  `user_id` INT(11) NOT NULL,
+  `date_time` DATETIME NOT NULL,
+  `topic_id` INT NOT NULL,
+  `user_id` INT NOT NULL,
   PRIMARY KEY (`reply_id`),
-  INDEX `fk_replies_topics1_idx` (`topic_id` ASC) ,
-  INDEX `fk_replies_users1_idx` (`user_id` ASC) ,
+  INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
+  INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `fk_replies_topics1`
     FOREIGN KEY (`topic_id`)
     REFERENCES `webapp`.`topics` (`topic_id`)
@@ -139,28 +141,27 @@ CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
     REFERENCES `webapp`.`users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-AUTO_INCREMENT = 5;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `webapp`.`votes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
-  `user_id` INT(11) NOT NULL,
-  `reply_id` INT(11) NOT NULL,
-  `type_of_vote` INT(11) NULL DEFAULT NULL,
+  `user_id` INT NOT NULL,
+  `reply_id` INT NOT NULL,
+  `type_of_vote` INT NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`, `reply_id`),
-  INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) ,
-  INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) ,
-  CONSTRAINT `fk_users_has_replies_replies1`
-    FOREIGN KEY (`reply_id`)
-    REFERENCES `webapp`.`replies` (`reply_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) VISIBLE,
+  INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `fk_users_has_replies_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `webapp`.`users` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_users_has_replies_replies1`
+    FOREIGN KEY (`reply_id`)
+    REFERENCES `webapp`.`replies` (`reply_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -190,9 +191,15 @@ INSERT INTO `webapp`.`users` ( `username`,`password`,`role`) VALUES
     ('skankhunt42', 'c4a1e6f3639a098e68060c2a31cfc3567bf68b3ec1bb4f843a34f7499caf2998', 'basic_user');
 
 TRUNCATE TABLE webapp.topics;
-INSERT INTO `webapp`.`topics` (`title`,`category_id`,`user_id`) VALUES ('F1 Miami GP FP1',2,1);
-INSERT INTO `webapp`.`topics` (`title`,`category_id`,`user_id`) VALUES ('F1 Miami GP Sprint Quali',2,1);
+INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP FP1','2024-05-03 10:00:00',2,5);
+INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP Sprint Quali','2024-05-03 12:00:00',2,5);
+INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP Sprint','2024-05-04 10:00:00',2,5);
+INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP Quali','2024-05-04 12:00:00',2,5);
+INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP ','2024-05-05 12:00:00',2,5);
 
 TRUNCATE TABLE webapp.replies;
-INSERT INTO `webapp`.`replies` (`text`,`topic_id`,`user_id`) VALUES ('Max Pole - Sprint Quali',2,1);
-INSERT INTO `webapp`.`replies` (`text`,`topic_id`,`user_id`) VALUES ('Ferrari fans are crying again.',1,2);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (1,'Ferrari fans are crying again.','2024-05-03 12:00:00',1,5);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (2,'Max Pole - Sprint Quali','2024-05-03 17:00:00',2,4);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (3,'Max Vestappen wins the sprint race.','2024-05-04 11:00:00',3,4);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (4,'Daniel Ricciardo P4 and points for the RB pilot.','2024-05-04 11:10:00',3,5);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (5,'Lando Norris first victory in F1 with the McLaren team.','2024-05-05 17:00:00',5,4);
