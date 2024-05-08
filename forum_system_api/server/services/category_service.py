@@ -1,6 +1,7 @@
 from data.database import read_query, update_query, insert_query
-from data.models import Category
+from data.models import Category, Topic
 from mariadb import IntegrityError
+
 
 def all():
     data = read_query('SELECT category_id, category_name FROM categories')
@@ -18,12 +19,19 @@ def find_by_name(category_name: str) -> Category | None:
     return next((Category.from_query_result(*row) for row in data), None)
 
 
-def find_by_id(category_id: int) -> Category | None:
-    data = read_query(
+def find_by_id(category_id: int) -> tuple[Category | None, list[Topic] | None]:
+    category_data = read_query(
         'SELECT category_id, category_name FROM categories WHERE category_id = ?',
         (category_id,))
+    topic_data = read_query(
+        'SELECT topic_id, title, category_id, user_id, date_time FROM topics WHERE category_id = ?',
+        (category_id,))
 
-    return next((Category.from_query_result(*row) for row in data), None)
+    category = next((Category.from_query_result(*row) for row in category_data), None)
+    topics = [Topic.from_query_result(*row) for row in topic_data]
+
+    return category, topics
+
 
 
 def category_name_exists(category_name: str) -> bool:
@@ -44,9 +52,7 @@ def delete_category(name):  #Untested
     update_query(f'DELETE FROM categories WHERE categories.name = {name}')
 
 
-
 def create(name: str):
-
     existing_category = read_query(
         'SELECT name FROM categories WHERE name = ?', (name,)
     )

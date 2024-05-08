@@ -170,7 +170,7 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-
+TRUNCATE TABLE webapp.categories;
 -- Insert sample data
 INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Arts',0,0);
 INSERT INTO `webapp`.`categories` (`category_name`,`is_private`,`is_locked`) VALUES ('Sports',0,0);
