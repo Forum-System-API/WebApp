@@ -61,3 +61,19 @@ def create(name: str):
         return Category(category_id=generated_id, category_name=name)
     except IntegrityError:
         return None
+
+def change_status(category_name: str, is_private: int):
+    if is_private == 0:
+        is_private_int = 1
+    elif is_private == 1:
+        is_private_int = 0
+    category = read_query(
+        '''SELECT name, is_private from categories where name = ? and is_private = ?''', (category_name, is_private_int))
+
+    if category:
+        data = category[0]
+        name, is_priv = data
+
+    if is_priv != is_private:
+        update_query('''UPDATE categories SET is_private=%s WHERE name = %s''',
+                     (is_private, category_name))

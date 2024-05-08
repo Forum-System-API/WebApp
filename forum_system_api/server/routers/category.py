@@ -75,7 +75,19 @@ def create_category(category:Category, x_token: str = Header()):
     return f'Category created successfully!'
 
 
-
+@category_router.post('/visibility')
+def set_privacy(category:Category, x_token:str = Header()):
+    user = get_user_or_raise_401(x_token) ## to finish the logic
+    
+    id, username = x_token.split(';')
+    
+    
+    if user.role != Role.ADMIN and username!='admin':
+        raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
+    
+    categories_services.change_status(category.category_name, category.is_private)
+    
+    return {"message": "Category privacy updated successfully"}
 
 
 
