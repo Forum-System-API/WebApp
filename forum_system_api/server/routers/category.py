@@ -85,7 +85,7 @@ def set_privacy(category:Category, x_token:str = Header()):
     if user.role != Role.ADMIN and username!='admin':
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
     
-    categories_services.change_status(category.category_name, category.is_private)
+    category_service.change_status(category.category_name, category.is_private)
     
     return {"message": "Category privacy updated successfully"}
 
