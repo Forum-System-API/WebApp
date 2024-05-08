@@ -28,9 +28,7 @@ class LoginData(BaseModel):
     username: TUsername
     password: str
         
-class LoginData(BaseModel):
-    username: TUsername
-    password: str
+
 
 class Category(BaseModel): # - Valkata
     category_id: int | None = None
