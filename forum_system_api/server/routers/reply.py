@@ -4,7 +4,7 @@ from services import reply_service, topic_service
 
 replies_router = APIRouter(prefix='/replies')
 
-# available for: admin, user
+# available for: admin, user - requires authentication token
 @replies_router.post('/', status_code=201)
 def create_reply(reply: Reply):
    if not topic_service.exists(reply.topic_id):
@@ -12,7 +12,7 @@ def create_reply(reply: Reply):
 
    return reply_service.create(reply)
 
-# available for: user
+# available for: user - requires authentication token
 @replies_router.put('/{reply_id}')
 def update_reply(reply_id: int, reply: Reply):
    if not topic_service.exists(reply.topic_id):
@@ -24,7 +24,7 @@ def update_reply(reply_id: int, reply: Reply):
    else:
       return reply_service.update(existing_reply, reply)
 
-# available for: user
+# available for: user - requires authentication token
 @replies_router.delete('/{reply_id}')
 def delete_reply(reply_id: int):
    reply_service.delete(reply_id)

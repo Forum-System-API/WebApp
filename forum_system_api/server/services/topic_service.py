@@ -10,8 +10,20 @@ def all(search: str = None):
         data = read_query(
             'SELECT topic_id, title, category_id, user_id, date_time FROM topics WHERE title LIKE ?',
             (f'%{search}%',))
+        
+    # topics = [Topic.from_query_result(*row) for row in data]
+    # for topic in topics:
+    #     print(topic)
 
-    return (Topic.from_query_result(*row) for row in data)
+    # return (Topic.from_query_result(*row) for row in data)
+
+    formatted_data = []
+    for row in data:
+        topic = Topic.from_query_result(*row)
+        topic.date_time = topic.date_time.strftime("%Y/%m/%d %H:%M")
+        formatted_data.append(topic)
+
+    return formatted_data
 
 def sort(topics: list[Topic], *, attribute='date_time', reverse=False):
     if attribute == 'date_time':

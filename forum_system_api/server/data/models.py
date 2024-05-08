@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime
 from pydantic import BaseModel, constr
 
 
@@ -51,17 +51,27 @@ class Message(BaseModel): # - Valkata
     recipient_id: int
 
 class Topic(BaseModel): 
-    topic_id: int 
+    topic_id: int | None = None
     title: str
     category_id: int
     user_id: int
-    date_time: datetime
+    date_time: datetime | None = None
     # best_reply_id: int 
     # status_locked: constr(pattern='^unlocked|locked$')
     # status_private: constr(pattern='^public|private$')
- 
+
+    # def __str__(self):
+    #     return (
+    #     f'topic_id={self.topic_id}\n'
+    #     f'title={self.title}\n'
+    #     f'category_id={self.category_id}\n'
+    #     f'user_id={self.user_id}\n'
+    #     f'date_time={self.date_time.strftime("%Y/%m/%d %H:%M")}'
+    #     )
+
     @classmethod
-    def from_query_result(cls, topic_id, title, category_id, user_id, date_time): # add: 1. is_locked 2. is_private  3. replies = None - not sutre yet
+    def from_query_result(cls, topic_id, title, category_id, user_id, date_time):
+        # add: 1. is_locked 2. is_private  3. replies = None - not sutre yet
         return cls(
             topic_id=topic_id,
             title=title,
@@ -72,11 +82,11 @@ class Topic(BaseModel):
         # status_private='public' if not is_private else 'private' - not sure yet
         
 class Reply(BaseModel): 
-    reply_id: int 
+    reply_id: int | None = None
     text: str
     topic_id: int
     user_id: int
-    date_time: datetime
+    date_time: datetime | None = None
 
     @classmethod
     def from_query_result(cls, reply_id, text, topic_id, user_id, date_time):
