@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from data.models import Topic, Reply
 from services import topic_service, reply_service, category_service
 
+
 class TopicResponseModel(BaseModel):
     topic: Topic
     replies: list[Reply]
@@ -11,7 +12,8 @@ class TopicResponseModel(BaseModel):
 topics_router = APIRouter(prefix='/topics')
 
 # available for: admin, user, guest
-@topics_router.get('/')  # TO DO: pagination query parameter
+# TO DO: pagination query parameter
+@topics_router.get('/') 
 def get_topics(sort: str | None = None, sort_by: str | None = None, search: str | None = None):
     result = topic_service.all(search)
 
@@ -30,7 +32,7 @@ def get_topic_by_id(topic_id: int):
     else:
         return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic.topic_id))
 
-# available for: admin, user
+# available for: admin, user - requires authentication token
 @topics_router.post('/', status_code=201)
 def create_topic(topic: Topic):
     if not category_service.category_id_exists(topic.category_id):
@@ -40,18 +42,18 @@ def create_topic(topic: Topic):
 
 
 # changes the status of a tоpic - best reply
-# available for: admin, user
+# available for: admin, user - requires authentication token
 
 
 # changes the status of a tоpic - private
-# available for: admin, user
+# available for: admin, user - requires authentication token
 
 
 # changes the status of a tоpic - locked
-# available for: admin, user
+# available for: admin, user - requires authentication token
 
 
-# available for: admin, user
+# available for: admin, user - requires authentication token
 @topics_router.put('/{topic_id}/replies')
 def add_replies(topic_id: int, replies_ids: set[int]):
     if not topic_service.exists(topic_id):
@@ -67,7 +69,7 @@ def add_replies(topic_id: int, replies_ids: set[int]):
 
     return {'added_replies_ids': replies_to_add}
 
-# available for: admin, user
+# available for: admin, user - requires authentication token
 @topics_router.delete('/{topic_id}/replies')
 def remove_repliess(topic_id: int, replies_ids: set[int]):
     if not topic_service.exists(topic_id):
@@ -82,7 +84,7 @@ def remove_repliess(topic_id: int, replies_ids: set[int]):
 
     return {'deleted_replies_ids': replies_to_delete}
 
-# available for: admin, user
+# available for: admin, user - requires authentication token
 @topics_router.delete('/{topic_id}')
 def delete_topic(topic_id: int):
     topic_service.delete(topic_id)
