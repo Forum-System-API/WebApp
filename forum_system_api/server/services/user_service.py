@@ -86,7 +86,7 @@ def verify_password(password: str, hashed_password: str) -> bool:
 
 
 def change_role(username:str, role:str):
-    if role not in (Role.ADMIN, Role.ORDINARY_USER, Role.GUEST):
+    if role not in (Role.ADMIN, Role.ORDINARY_USER, Role.CUSTOM_USER, Role.SUPREME_USER):
         raise ValueError('Invalid role')
     
     user = update_query('''UPDATE users SET role = ? where username = ?''',(role, username))
