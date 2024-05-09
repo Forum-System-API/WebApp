@@ -32,19 +32,32 @@ def show_category_by_id(category_id: int):
     return category
 
 
-@category_router.put('/lock/{category_id}') # TO DO
+@category_router.put('/lock/{category_id}')
 def show_category_by_id(category_id: int, x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
     if logged_user.role != "admin":
         return Response(status_code=400,
-                        content=f'You need administrative rights for this action!')
+                        content=f'You need administrative rights to lock categories!')
     if not category_service.category_id_exists(category_id):
         return Response(status_code=400,
                         content=f'Category with id #{category_id} does not exist')
 
-    category = category_service.find_by_id(category_id)
-    category.is_locked = 1
+    category = category_service.lock_category(category_id)
     return f"Category {category.category_name} with id #{category.category_id} is now locked!"
+
+
+@category_router.put('/unlock/{category_id}')
+def show_category_by_id(category_id: int, x_token=Header()):
+    logged_user = get_user_or_raise_401(x_token)
+    if logged_user.role != "admin":
+        return Response(status_code=400,
+                        content=f'You need administrative rights to unlock categories!')
+    if not category_service.category_id_exists(category_id):
+        return Response(status_code=400,
+                        content=f'Category with id #{category_id} does not exist')
+
+    category = category_service.unlock_category(category_id)
+    return f"Category {category.category_name} with id #{category.category_id} is now unlocked!"
 
 
 @category_router.delete('/{category_id}')

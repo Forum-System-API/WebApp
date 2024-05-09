@@ -4,9 +4,9 @@ from mariadb import IntegrityError
 
 
 def show_all():
-    data = read_query('SELECT category_id, category_name FROM categories')
+    data = read_query('SELECT category_id, category_name, is_private, is_locked FROM categories')
     formatted_data = [
-        {"category_id": row[0], "category_name": row[1]} for row in data
+        {"category_id": row[0], "category_name": row[1], "is_private": row[2], "is_locked": row[3]} for row in data
     ]
     return formatted_data
 
@@ -39,6 +39,30 @@ def find_by_id(category_id: int) -> tuple[Category | None, list[Topic] | None]:
     topics = [Topic.from_query_result(*row) for row in topic_data]
 
     return category, topics
+
+
+def lock_category(category_id: int) -> Category:
+    category_data = read_query(
+        'SELECT category_id, category_name, is_private, is_locked FROM categories WHERE category_id = ?',
+        (category_id,))
+
+    category = next((Category.from_query_result(*row) for row in category_data), None)
+    update_query('''UPDATE categories SET is_locked=%s WHERE category_name = %s''',
+                 (1, category.category_name))
+
+    return category
+
+
+def unlock_category(category_id: int) -> Category:
+    category_data = read_query(
+        'SELECT category_id, category_name, is_private, is_locked FROM categories WHERE category_id = ?',
+        (category_id,))
+
+    category = next((Category.from_query_result(*row) for row in category_data), None)
+    update_query('''UPDATE categories SET is_locked=%s WHERE category_name = %s''',
+                 (0, category.category_name))
+
+    return category
 
 
 def grab_category_with_id(category_id: int) -> Category:
