@@ -32,6 +32,21 @@ def show_category_by_id(category_id: int):
     return category
 
 
+@category_router.put('/lock/{category_id}') # TO DO
+def show_category_by_id(category_id: int, x_token=Header()):
+    logged_user = get_user_or_raise_401(x_token)
+    if logged_user.role != "admin":
+        return Response(status_code=400,
+                        content=f'You need administrative rights for this action!')
+    if not category_service.category_id_exists(category_id):
+        return Response(status_code=400,
+                        content=f'Category with id #{category_id} does not exist')
+
+    category = category_service.find_by_id(category_id)
+    category.is_locked = 1
+    return f"Category {category.category_name} with id #{category.category_id} is now locked!"
+
+
 @category_router.delete('/{category_id}')
 def delete_category_by_id(category_id: int, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
@@ -47,7 +62,6 @@ def delete_category_by_id(category_id: int, x_token: str = Header()):
     category_service.delete_category(category.category_name)
 
 
-
 @category_router.delete('/{name}')
 def delete_category_by_name(name: str, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
@@ -60,37 +74,32 @@ def delete_category_by_name(name: str, x_token: str = Header()):
                         content=f'You need administrative rights to delete categories!')
 
     category_service.delete_category(name)
-    pass
+
 
 
 @category_router.post('/new')
-def create_category(category:Category, x_token: str = Header()):
-                                
+def create_category(category: Category, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
-    
+
     id, username = x_token.split(';')
-    
-    
-    if user.role != Role.ADMIN and username!='admin':
+
+    if user.role != Role.ADMIN and username != 'admin':
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
- 
+
     category_service.create(category.category_name)
-    
+
     return f'Category created successfully!'
 
 
 @category_router.post('/visibility')
-def set_privacy(category:Category, x_token:str = Header()):
-    user = get_user_or_raise_401(x_token) ## to finish the logic
-    
+def set_privacy(category: Category, x_token: str = Header()):
+    user = get_user_or_raise_401(x_token)  ## to finish the logic
+
     id, username = x_token.split(';')
-    
-    
-    if user.role != Role.ADMIN and username!='admin':
+
+    if user.role != Role.ADMIN and username != 'admin':
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
-    
+
     category_service.change_status(category.category_name, category.is_private)
-    
+
     return {"message": "Category privacy updated successfully"}
-
-

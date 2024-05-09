@@ -19,7 +19,7 @@ def view_conversations(x_token=Header()):
 def view_conversations(username, x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
     recipient = find_by_username(username)
-    messages = message_service.conversation(recipient, logged_user)
+    messages = message_service.view_conversation(recipient, logged_user)
     return messages
 
 
