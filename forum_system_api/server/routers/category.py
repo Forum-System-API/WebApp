@@ -8,7 +8,7 @@ category_router = APIRouter(prefix='/categories')
 
 @category_router.get('/')
 def show_categories():
-    categories = category_service.all()
+    categories = category_service.show_all()
     return categories
 
 

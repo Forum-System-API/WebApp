@@ -43,6 +43,15 @@ def find_by_username(username: str) -> User | None:
     return next((User.from_query_result(*row) for row in data), None)
 
 
+###########
+def find_by_id(user_id: int) -> User | None:
+    data = read_query(
+        'SELECT user_id, username, password, role FROM users WHERE user_id = ?',
+        (user_id,))
+
+    return next((User.from_query_result(*row) for row in data), None)
+
+
 def try_login(username: str, password: str) -> User | None:
     user = find_by_username(username)
 
@@ -85,9 +94,9 @@ def verify_password(password: str, hashed_password: str) -> bool:
     return hashed_password == _hash_password(password)
 
 
-def change_role(username:str, role:str):
+def change_role(username: str, role: str):
     if role not in (Role.ADMIN, Role.ORDINARY_USER, Role.GUEST):
         raise ValueError('Invalid role')
-    
-    user = update_query('''UPDATE users SET role = ? where username = ?''',(role, username))
+
+    user = update_query('''UPDATE users SET role = ? where username = ?''', (role, username))
     return user
