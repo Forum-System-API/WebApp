@@ -63,7 +63,7 @@ def change_role(data: User, x_token: str = Header()):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    if data.role not in (Role.ADMIN, Role.ORDINARY_USER, Role.GUEST):
+    if data.role not in (Role.ADMIN, Role.ORDINARY_USER, Role.CUSTOM_USER, Role.SUPREME_USER):
         raise HTTPException(status_code=400, detail="Invalid role")
 
     
