@@ -81,12 +81,12 @@ def change_status(category_name: str, is_private: int):
     elif is_private == 1:
         is_private_int = 0
     category = read_query(
-        '''SELECT name, is_private from categories where name = ? and is_private = ?''', (category_name, is_private_int))
+        '''SELECT category_name, is_private from categories where category_name = ? and is_private = ?''', (category_name, is_private_int))
 
     if category:
         data = category[0]
         name, is_priv = data
 
     if is_priv != is_private:
-        update_query('''UPDATE categories SET is_private=%s WHERE name = %s''',
+        update_query('''UPDATE categories SET is_private=%s WHERE category_name = %s''',
                      (is_private, category_name))
