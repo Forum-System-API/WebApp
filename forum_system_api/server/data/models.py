@@ -106,3 +106,20 @@ class Reply(BaseModel):
     
 class ReplyUpdate(BaseModel):
     text: str
+
+
+class Vote(BaseModel):
+    reply_id: int 
+    user_id: int | None = None
+    type_of_vote: constr(pattern='^upvote|downvote$') 
+
+    @classmethod
+    def from_query_result(cls, reply_id, user_id, type_of_vote):
+        if type_of_vote is None:
+            type_of_vote = 'no votes yet.'
+       
+        return cls(
+            reply_id=reply_id,
+            user_id=user_id,
+            type_of_vote='upvote' if type_of_vote else 'nonprivate'
+            )
