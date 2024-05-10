@@ -55,46 +55,48 @@ class Message(BaseModel): # - Valkata
 class Topic(BaseModel): 
     topic_id: int | None = None
     title: str
-    category_id: int
-    user_id: int
     date_time: datetime | None = None
-    # best_reply_id: int 
-    # status_locked: constr(pattern='^unlocked|locked$')
-    # status_private: constr(pattern='^public|private$')
-
-    # def __str__(self):
-    #     return (
-    #     f'topic_id={self.topic_id}\n'
-    #     f'title={self.title}\n'
-    #     f'category_id={self.category_id}\n'
-    #     f'user_id={self.user_id}\n'
-    #     f'date_time={self.date_time.strftime("%Y/%m/%d %H:%M")}'
-    #     )
+    category_id: int
+    user_id: int | None = None
+    best_reply: str | None = None
+    is_locked: constr(pattern='^locked|unlocked$') 
+    is_private: constr(pattern='^private|nonprivate$')
 
     @classmethod
-    def from_query_result(cls, topic_id, title, category_id, user_id, date_time):
-        # add: 1. is_locked 2. is_private  3. replies = None - not sutre yet
+    def from_query_result(cls, topic_id, title, date_time, category_id, user_id, best_reply, is_locked, is_private):
+        if best_reply is None:
+            best_reply = 'no best reply yet.'
+       
         return cls(
             topic_id=topic_id,
             title=title,
+            date_time=date_time,
             category_id=category_id,
             user_id=user_id,
-            date_time=date_time)
-        # status_locked='unlocked' if not is_locked else 'locked' - not sure yet
-        # status_private='public' if not is_private else 'private' - not sure yet
+            best_reply=best_reply,
+            is_locked='locked' if is_locked else 'unlocked',
+            is_private='private' if is_private else 'nonprivate'
+            )
+
+class TopicUpdate(BaseModel):
+    best_reply: str | None =  None
         
 class Reply(BaseModel): 
     reply_id: int | None = None
     text: str
-    topic_id: int
-    user_id: int
     date_time: datetime | None = None
+    topic_id: int
+    user_id: int | None = None
 
     @classmethod
-    def from_query_result(cls, reply_id, text, topic_id, user_id, date_time):
+    def from_query_result(cls, reply_id, text, date_time, topic_id, user_id):
         return cls(
             reply_id=reply_id,
             text=text,
+            date_time=date_time,
             topic_id=topic_id,
             user_id=user_id,
-            date_time=date_time)
+            )
+    
+class ReplyUpdate(BaseModel):
+    text: str

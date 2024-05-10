@@ -4,7 +4,7 @@ from routers.topic import topics_router
 from routers.reply import replies_router
 from routers.category import category_router
 from routers.message import message_router
-import uvicorn
+# import uvicorn
 
 
 app = FastAPI()
