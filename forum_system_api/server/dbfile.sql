@@ -145,7 +145,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
   `user_id` INT NOT NULL,
   `reply_id` INT NOT NULL,
-  `type_of_vote` INT NULL DEFAULT 'no votes yet.',
+  `type_of_vote` VARCHAR(45) NULL DEFAULT 'no votes yet.',
   PRIMARY KEY (`user_id`, `reply_id`),
   INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) ,
   INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) ,
