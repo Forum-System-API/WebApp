@@ -19,11 +19,18 @@ def reply_id_exists(reply_id: int):
 
 
 def get_by_id(reply_id: int):
-    data = read_query(
-        'SELECT reply_id, text, date_time, topic_id, user_id FROM replies WHERE reply_id = ?''',
+    reply_data = read_query(
+        'SELECT reply_id, text, date_time, topic_id, user_id FROM replies WHERE reply_id = ?',
         (reply_id,))
+    
+    votes_data = read_query(
+        'SELECT reply_id, user_id, type_of_vote FROM votes WHERE reply_id = ?',
+        (reply_id,))
+    
+    reply_result = next((Reply.from_query_result(*row) for row in reply_data), None)
+    vote_result = next((Vote.from_query_result(*row) for row in votes_data), None)
 
-    return next((Reply.from_query_result(*row) for row in data), None)
+    return reply_result, vote_result
 
 
 def update(reply_update: ReplyUpdate, reply: Reply):
