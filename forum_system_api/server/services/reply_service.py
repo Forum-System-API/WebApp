@@ -1,5 +1,6 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Reply, User, ReplyUpdate
+from data.models import Reply, User, ReplyUpdate, Vote
+
 
 def create(reply: Reply, user: User):
     generated_id = insert_query(
@@ -35,6 +36,7 @@ def update(reply_update: ReplyUpdate, reply: Reply):
     else:
         return None
 
+
 def get_by_topic(topic_id: int):
     data = read_query(
         'SELECT reply_id, text, date_time, topic_id, user_id FROM replies WHERE topic_id = ?',
@@ -42,6 +44,13 @@ def get_by_topic(topic_id: int):
 
     return (Reply.from_query_result(*row) for row in data)
 
+
 def delete(reply: Reply):
     update_query('DELETE FROM replies WHERE reply_id = ?', 
                  (reply.reply_id,))
+    
+    
+def vote(vote: Vote, status: str):
+    return update_query(
+        'UPDATE votes SET type_of_vote = ? WHERE reply_id = ?',
+        (0 if status == 'upvote' else 0, vote.reply_id))
