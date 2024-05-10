@@ -147,7 +147,7 @@ def change_status(category_name: str, is_private: int):
 
 def read_access(Categories_Access):
     data = insert_query(
-        f'INSERT INTO webapp.categories_access (user_id, category_id, can_read, can_write)'
+        f'INSERT INTO categories_access (user_id, category_id, can_read, can_write)'
         f' VALUES ({Categories_Access.user_id}, {Categories_Access.category_id}, '
         f'{Categories_Access.can_read}, {Categories_Access.can_write})')
     return data
