@@ -7,10 +7,21 @@ category_router = APIRouter(prefix='/categories')
 
 
 @category_router.get('/')
-def show_categories():
-    categories = category_service.show_all()
-    return categories
-
+def show_categories(x_token: str = Header()):
+    user = get_user_or_raise_401(x_token)
+    
+    if user.role == Role.ADMIN:
+        categories = category_service.detail_view()
+        return categories
+    
+    if category_service.check_privacy(user.id):
+        if user.role == Role.ORDINARY_USER:
+            categories = category_service.detail_view()
+        return categories
+    else:
+        user.role == Role.ORDINARY_USER
+        categories = category_service.all_basic_user()
+        return categories
 
 @category_router.get('/name/{name}')
 def show_category_by_name(name: str):

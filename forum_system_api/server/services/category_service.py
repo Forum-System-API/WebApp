@@ -131,3 +131,10 @@ def read_access(Categories_Access):
         f' VALUES ({Categories_Access.user_id}, {Categories_Access.category_id}, '
         f'{Categories_Access.can_read}, {Categories_Access.can_write})')
     return data
+
+def check_privacy(user_id:int):
+    data = read_query('''SELECT ca.category_id from categories_access ca
+                      JOIN categories c ON ca.category_id = c.category_id
+                      WHERE ca.user_id = ? AND c.is_private=1''',(user_id,))
+    
+    return len(data) > 0
