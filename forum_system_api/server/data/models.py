@@ -106,3 +106,10 @@ class Reply(BaseModel):
     
 class ReplyUpdate(BaseModel):
     text: str
+    
+    
+class Categories_Access(BaseModel):
+    user_id: int
+    category_id: int
+    can_read: int = 1
+    can_write: int = 1
