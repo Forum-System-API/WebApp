@@ -45,19 +45,22 @@
 ### 4.4.`Topic` model has the following attributes:
 - topic_id &rarr; int 
 - title &rarr; str
+- date_time &rarr; datetime
 - category_id &rarr; int
 - user_id &rarr; int
-- date_time &rarr; datetime
-- best_reply_id &rarr; to follow
-- is_locked &rarr; to follow
-- is_private &rarr; to follow
+- best_reply_id &rarr; int
+- is_locked &rarr; str
+    - in the schema, related column is is_locked where 1 = locked, 0 = unlocked
+- is_private &rarr; str
+    - in the schema, related column is is_private where 1 = private, 0 = nonprivate
 
 ### 4.5.`Reply` model has the following attributes:
 - reply_id &rarr; int 
 - text &rarr; str
+- date_time &rarr; datetime
 - topic_id &rarr; int
 - user_id &rarr; int
-- date_time &rarr; datetime
+
 
 ## 5. Endpoints
 ### 5.1. User 
@@ -67,51 +70,49 @@
 ### 5.3. Message 
 
 ### 5.4. Topic
-- ✔ GET /topics:
+- ✔ GET /topics: WORKS
     - DESCRIPTION: Responds with a list of Topic resources.
     - REQUEST: 
-
         - `GET http://127.0.0.1:8000/topics`
-
         - `GET http://127.0.0.1:8000/topics?search=sprint`
-
         - `GET http://127.0.0.1:8000/topics?sort=asc&sort_by=title`
-
         - `GET http://127.0.0.1:8000/topics?search=sprint&sort=asc&sort_by=title`
+        - `GET http://127.0.0.1:8000/topics?page=1&topics_per_page=3`
+    - RESPONSE: 
 
-    - RESPONSE:
-        ```json
-        [
-            Go to Postman.
-        ]
-        ```
-- ✔ GET /topics/topic_{id}:
+- ✔ GET /{topic_id}: WORKS
     - DESCRIPTION: Responds with a single Topic resource and s list of Reply resources.
-    - REQUEST: `GET http://127.0.0.1:8000/topics/1` 
+    - REQUEST: `GET http://127.0.0.1:8000/topics/3` 
     - RESPONSE:
-        ```json
-        [
-            to follow: example code
-        ]
-        ```
-- ✔ POST /topics:
+    
+- ✔ POST /topics: WORKS
     - DESCRIPTION: Creates a new Topic.
     - REQUEST: `POST http://127.0.0.1:8000/topics` 
         ```json
         [
-            "topic_id": 6,
-            "title": "F1 Miami GP Highlights",
-            "category_id": 2,
-            "user_id": 1,
-            "date_time": "2024-05-06T12:50:00"
+                "title": "F1 Miami GP Highlights",
+                "category_id": 2,
+                "is_locked": "unlocked",
+                "is_private": "nonprivate"
+        ]
+        [
+                "title": "F1 Miami GP Breaking News",
+                "category_id": 2,
+                "is_locked": "unlocked",
+                "is_private": "nonprivate"
+        ] 
+        ```
+    - RESPONSE:
+- ✔ PUT /{topic_id}: WORKS
+    - DESCRIPTION: Updates a Topic resourece with a best Reply resource.
+    - REQUEST: `PUT http://127.0.0.1:8000/topics/3` - this is for x-token: 5;Eric
+        ```json
+        [
+            "best_reply": "Daniel Ricciardo P4 and points for the RB pilot."
         ]
         ```
     - RESPONSE:
-        ```json
-        [
-            Go to Postman.
-        ]
-        ```
+
 - ✔ PUT /{topic_id}/replies:
     - DESCRIPTION: Adds Replies to a specific Topic.
     - REQUEST: `PUT http://127.0.0.1:8000/5/replies` 
@@ -151,41 +152,30 @@
         ```
 
 ### 5.5. Reply  
-- ✔ POST /replies:
+- ✔ POST /replies: WORKS
     - DESCRIPTION: Creates a Reply data which is associated with a specific Topic.
     - REQUEST: `POST http://127.0.0.1:8000/replies` 
-    - RESPONSE:
         ```json
         [
-            "reply_id": 5,
             "text": "Lando Norris won by a dominant 7.6-second margin.",
-            "date_time": "2024-05-06T12:50:00",
-            "topic_id": 5,
-            "user_id": 1
+            "topic_id": 5
         ]
         ```
-- ✔ PUT /replies/{id}:
+    - RESPONSE:
+- ✔ PUT /replies/{id}: WORKS
     - DESCRIPTION: Updates a Reply's text.
-    - REQUEST: `POST http://127.0.0.1:8000/replies/5` 
-    - RESPONSE:
-        ```json
+    - REQUEST: `PUT http://127.0.0.1:8000/replies/7` 
+    ```json
         [
-            "reply_id": 5,
             "text": "Lando Norris won by a dominant 7.6-second margin over Max Verstappen's Redbull.",
-            "date_time": "2024-05-06T12:52:00",
-            "topic_id": 5,
-            "user_id": 1
+            "topic_id": 5
         ]
         ```
-- ✔ DELETE /replies/{id}:
-    - Description: to follow
-    - REQUEST: 
     - RESPONSE:
-        ```json
-        [
-            Go to Postman.
-        ]
-        ```
+- ✔ DELETE /replies/{id}:
+    - Description: Deletesa Reply.
+    - REQUEST: `DELETE http://127.0.0.1:8000/replies/7`
+    - RESPONSE:
 
 ## 6. How to Install and Run the Project
 - Navigate to /server and open a terminal
