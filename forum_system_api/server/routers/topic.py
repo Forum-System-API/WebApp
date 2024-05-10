@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query, Header
-from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized
+from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized, NoContent
 from common.auth import get_user_or_raise_401
 from data.models import Topic, Reply, TopicUpdate
 from services import topic_service, reply_service, category_service, user_service
@@ -107,18 +107,17 @@ def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Hea
 #     return {'deleted_replies_ids': replies_to_delete}
 
 
-# available for: admin, user - requires authentication token
-# @topics_router.delete('/{topic_id}')
-# def delete_topic(topic_id: int, x_token: str = Header()):
-#     user = get_user_or_raise_401(x_token)
-#     topic = topic_service.get_by_id(topic_id)
+@topics_router.delete('/{topic_id}')  # available for: admin, user - token
+def delete_topic(topic_id: int, x_token: str = Header()):
+    user = get_user_or_raise_401(x_token)
+    topic = topic_service.get_by_id(topic_id)
 
-#     if topic is None:
-#         return NotFound() # status_code=404
+    if topic is None:
+        return NotFound() # status_code=404
 
-#     # if not user_service.owns_topic(user, topic):
-#     #     return Unauthorized('Can`t delete others` topics.') # status_code=401
+    if not user_service.owns_topic(user, topic):
+        return Unauthorized('Can`t delete others` topics.') # status_code=401
     
-#     topic_service.delete(topic_id)
+    topic_service.delete(topic)
 
-#     return NoContent() # status_code=204
+    return NoContent() # status_code=204
