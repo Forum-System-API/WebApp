@@ -9,10 +9,17 @@ message_router = APIRouter(prefix='/messages')
 
 
 @message_router.get('/')
-def show_all_messages(
-        x_token=Header()):
+def view_conversations(x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
     messages = message_service.view_all(logged_user)
+    return messages
+
+
+@message_router.get('/{username}')
+def view_conversations(username, x_token=Header()):
+    logged_user = get_user_or_raise_401(x_token)
+    recipient = find_by_username(username)
+    messages = message_service.view_conversation(recipient, logged_user)
     return messages
 
 

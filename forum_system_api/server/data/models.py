@@ -1,23 +1,25 @@
 from datetime import datetime
 from pydantic import BaseModel, constr
 
-
 TUsername = constr(pattern='^\w{2,30}$')
 
 
 class Role:
     ADMIN = 'admin'
     ORDINARY_USER = 'basic_user'
+    CUSTOM_USER = "custom_user"
+    SUPREME_USER = "supreme_user"
+
 
 
 class User(BaseModel):
     id: int | None = None
     username: str
-    password:str
+    password: str
     role: str = Role.ORDINARY_USER
-   
+
     @classmethod
-    def from_query_result(cls, user_id, username, password, role ):
+    def from_query_result(cls, user_id, username, password, role):
         return cls(
             id=user_id,
             username=username,
@@ -25,27 +27,26 @@ class User(BaseModel):
             role=role
         )
         
-
 class LoginData(BaseModel):
     username: TUsername
     password: str
         
 
+
 class Category(BaseModel): # - Valkata
     category_id: int | None = None
     category_name: str
-    is_private:int | None = None
-    is_locked:int | None = None
+    is_private: int | None = None
+    is_locked: int | None = None
 
     @classmethod
     def from_query_result(cls, category_id, category_name, is_private, is_locked):
         return cls(
             category_id=category_id,
             category_name=category_name,
-            is_private = is_private,
-            is_locked = is_locked
+            is_private=is_private,
+            is_locked=is_locked
         )
-
 
 class Message(BaseModel): # - Valkata
     message_id: int | None = None
@@ -54,16 +55,22 @@ class Message(BaseModel): # - Valkata
     sender_id: int | None = None
     recipient_id: int | None = None
 
-
 class Topic(BaseModel): 
     topic_id: int | None = None
     title: str
     date_time: datetime | None = None
-    category_id: int
-    user_id: int | None = None
-    best_reply: str | None = None
-    is_locked: constr(pattern='^locked|unlocked$') 
-    is_private: constr(pattern='^private|nonprivate$')
+    # best_reply_id: int 
+    # status_locked: constr(pattern='^unlocked|locked$')
+    # status_private: constr(pattern='^public|private$')
+
+    # def __str__(self):
+    #     return (
+    #     f'topic_id={self.topic_id}\n'
+    #     f'title={self.title}\n'
+    #     f'category_id={self.category_id}\n'
+    #     f'user_id={self.user_id}\n'
+    #     f'date_time={self.date_time.strftime("%Y/%m/%d %H:%M")}'
+    #     )
 
     @classmethod
     def from_query_result(cls, topic_id, title, date_time, category_id, user_id, best_reply, is_locked, is_private):
@@ -76,16 +83,10 @@ class Topic(BaseModel):
             date_time=date_time,
             category_id=category_id,
             user_id=user_id,
-            best_reply=best_reply,
-            is_locked='locked' if is_locked else 'unlocked',
-            is_private='private' if is_private else 'nonprivate'
-            )
-
-
-class TopicUpdate(BaseModel):
-    best_reply: str | None =  None
-
-
+            date_time=date_time)
+        # status_locked='unlocked' if not is_locked else 'locked' - not sure yet
+        # status_private='public' if not is_private else 'private' - not sure yet
+        
 class Reply(BaseModel): 
     reply_id: int | None = None
     text: str
@@ -101,8 +102,4 @@ class Reply(BaseModel):
             date_time=date_time,
             topic_id=topic_id,
             user_id=user_id,
-            )
-    
-    
-class ReplyUpdate(BaseModel):
-    text: str
+            date_time=date_time)
