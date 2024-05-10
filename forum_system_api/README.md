@@ -173,7 +173,7 @@
         ]
         ```
     - RESPONSE:
-- ✔ DELETE /replies/{id}:
+- ✔ DELETE /replies/{id}: WORKS
     - Description: Deletesa Reply.
     - REQUEST: `DELETE http://127.0.0.1:8000/replies/7`
     - RESPONSE:
