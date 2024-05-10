@@ -3,11 +3,31 @@ from data.models import Category, Topic
 from mariadb import IntegrityError
 
 
-def show_all():
-    data = read_query('SELECT category_id, category_name, is_private, is_locked FROM categories')
-    formatted_data = [
-        {"category_id": row[0], "category_name": row[1], "is_private": row[2], "is_locked": row[3]} for row in data
-    ]
+def detail_view():
+    data = read_query(
+        'SELECT c.category_id, c.category_name, t.topic_id, t.title FROM categories c LEFT JOIN topics t ON c.category_id = t.category_id')
+
+    categories = {}
+    for row in data:
+        category_id, category_name, topic_id, topic_title = row
+        if category_id not in categories:
+            categories[category_id] = {
+                "category_id": category_id, "category_name": category_name, "topics": []}
+        if topic_id:
+            categories[category_id]["topics"].append(
+                {"topic_id": topic_id, "title": topic_title})
+
+    return list(categories.values())
+
+
+def all_basic_user():
+    data = read_query(
+        'SELECT category_id, category_name, is_private FROM categories where is_private!=1')
+    # is_private_data = read_query('SELECT is_private FROM categories')
+    # if is_private_data == 1:
+    formatted_data = [{"category_id": row[0],
+                       "category_name": row[1], "is_private": row[2]} for row in data]
+
     return formatted_data
 
 
