@@ -1,92 +1,124 @@
-from fastapi import APIRouter, Response
-# from fastapi_pagination import Page, paginate
+from fastapi import APIRouter, Query, Header
+from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized
+from common.auth import get_user_or_raise_401
+from data.models import Topic, Reply, TopicUpdate
+from services import topic_service, reply_service, category_service, user_service
 from pydantic import BaseModel
-from data.models import Topic, Reply
-from services import topic_service, reply_service, category_service
-
+from datetime import datetime
 
 class TopicResponseModel(BaseModel):
     topic: Topic
     replies: list[Reply]
 
+
 topics_router = APIRouter(prefix='/topics')
 
-# available for: admin, user, guest
-# TO DO: pagination query parameter
-@topics_router.get('/') 
-def get_topics(sort: str | None = None, sort_by: str | None = None, search: str | None = None):
-    result = topic_service.all(search)
+
+@topics_router.get('/')  # available for: all - no token 
+def get_topics(sort: str | None = None,
+            sort_by: str | None = None, 
+            search: str | None = None, 
+            page: int = Query(1, gt=0),
+            topics_per_page: int = Query(10, gt=0)):
+    topic_lst = topic_service.all(search)
+
+    start = (page - 1) * topics_per_page
+    end = start + topics_per_page
+    topic_lst = topic_lst[start:end]
 
     if sort and (sort == 'asc' or sort == 'desc'):
-        return topic_service.sort(result, reverse=sort == 'desc', attribute=sort_by)
+        return topic_service.sort(topic_lst, reverse=sort == 'desc', attribute=sort_by)
     else:
-        return result
+        return topic_lst
 
-# available for: admin, user, guest
-@topics_router.get('/{topic_id}')
+
+@topics_router.get('/{topic_id}')  # available for: all - no token 
 def get_topic_by_id(topic_id: int):
     topic = topic_service.get_by_id(topic_id)
 
     if topic is None:
-        return Response(status_code=404)
+        return NotFound() # status_code=404
     else:
         return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic.topic_id))
 
-# available for: admin, user - requires authentication token
-@topics_router.post('/', status_code=201)
-def create_topic(topic: Topic):
+
+@topics_router.post('/')  # available for: admin, user - token
+def create_topic(topic: Topic, x_token: str = Header()):
+    user = get_user_or_raise_401(x_token)
+
+    topic.date_time = datetime.now()
+    topic.date_time = topic.date_time.strftime("%Y/%m/%d %H:%M")
+    
     if not category_service.category_id_exists(topic.category_id):
-        return Response(status_code=400, content=f'Category {topic.category_id} does not exist')
+        return BadRequest(content=f'Category {topic.category_id} does not exist.') # status_code=400
 
-    return topic_service.create(topic)
-
-
-# changes the status of a tоpic - best reply
-# available for: admin, user - requires authentication token
+    return topic_service.create(topic, user)
 
 
-# changes the status of a tоpic - private
-# available for: admin, user - requires authentication token
+@topics_router.put('/{topic_id}')  # available for: admin, user - token
+def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Header()):
+    user = get_user_or_raise_401(x_token)
+    
+    topic = topic_service.get_by_id(topic_id)
+    if topic is None:
+        return NotFound()  # status_code=404
 
+    if not user_service.owns_topic(user, topic):
+        return Unauthorized('Can`t edit others` topics.')  # status_code=401
 
-# changes the status of a tоpic - locked
-# available for: admin, user - requires authentication token
+    topic = topic_service.update(data, topic)
 
+    if topic:
+        return topic
+    else:
+        InternalServerError()  # status_code=500
 
-# available for: admin, user - requires authentication token
-@topics_router.put('/{topic_id}/replies')
-def add_replies(topic_id: int, replies_ids: set[int]):
-    if not topic_service.exists(topic_id):
-        return Response(status_code=404)
-
-    current_ids = topic_service.get_topic_replies(topic_id)
-    replies_to_add = replies_ids.difference(current_ids)
-
-    if len(replies_to_add) == 0:
-        return {'added_replies_ids': []}
-
-    topic_service.insert_replies_to_topic(topic_id, replies_to_add)
-
-    return {'added_replies_ids': replies_to_add}
 
 # available for: admin, user - requires authentication token
-@topics_router.delete('/{topic_id}/replies')
-def remove_repliess(topic_id: int, replies_ids: set[int]):
-    if not topic_service.exists(topic_id):
-        return Response(status_code=404)
+# @topics_router.put('/{topic_id}/replies')
+# def add_replies(topic_id: int, replies_ids: set[int]):
+#     if not topic_service.exists(topic_id):
+#         return Response(status_code=404)
 
-    current_ids = topic_service.get_topic_replies(topic_id)
-    replies_to_delete = replies_ids.intersection(current_ids)
-    if len(replies_to_delete) == 0:
-        return {'deleted_replies_ids': []}
+#     current_ids = topic_service.get_topic_replies(topic_id)
+#     replies_to_add = replies_ids.difference(current_ids)
 
-    topic_service.remove_replies_from_topic(topic_id, replies_to_delete)
+#     if len(replies_to_add) == 0:
+#         return {'added_replies_ids': []}
 
-    return {'deleted_replies_ids': replies_to_delete}
+#     topic_service.insert_replies_to_topic(topic_id, replies_to_add)
+
+#     return {'added_replies_ids': replies_to_add}
+
 
 # available for: admin, user - requires authentication token
-@topics_router.delete('/{topic_id}')
-def delete_topic(topic_id: int):
-    topic_service.delete(topic_id)
+# @topics_router.delete('/{topic_id}/replies')
+# def remove_repliess(topic_id: int, replies_ids: set[int]):
+#     if not topic_service.exists(topic_id):
+#         return Response(status_code=404)
 
-    return Response(status_code=204)
+#     current_ids = topic_service.get_topic_replies(topic_id)
+#     replies_to_delete = replies_ids.intersection(current_ids)
+#     if len(replies_to_delete) == 0:
+#         return {'deleted_replies_ids': []}
+
+#     topic_service.remove_replies_from_topic(topic_id, replies_to_delete)
+
+#     return {'deleted_replies_ids': replies_to_delete}
+
+
+# available for: admin, user - requires authentication token
+# @topics_router.delete('/{topic_id}')
+# def delete_topic(topic_id: int, x_token: str = Header()):
+#     user = get_user_or_raise_401(x_token)
+#     topic = topic_service.get_by_id(topic_id)
+
+#     if topic is None:
+#         return NotFound() # status_code=404
+
+#     # if not user_service.owns_topic(user, topic):
+#     #     return Unauthorized('Can`t delete others` topics.') # status_code=401
+    
+#     topic_service.delete(topic_id)
+
+#     return NoContent() # status_code=204

@@ -1,5 +1,5 @@
 from data.database import read_query, update_query, insert_query
-from data.models import User, Role
+from data.models import User, Role, Topic, Reply
 from mariadb import IntegrityError
 import jwt
 from datetime import datetime, timedelta
@@ -91,3 +91,11 @@ def change_role(username:str, role:str):
     
     user = update_query('''UPDATE users SET role = ? where username = ?''',(role, username))
     return user
+
+
+def owns_topic(user: User, topic: Topic) -> bool:
+    return topic.user_id == user.id
+
+
+def owns_reply(user: User, reply: Reply) -> bool:
+    return reply.user_id == user.id

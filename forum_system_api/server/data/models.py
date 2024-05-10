@@ -9,6 +9,7 @@ class Role:
     ADMIN = 'admin'
     ORDINARY_USER = 'basic_user'
 
+
 class User(BaseModel):
     id: int | None = None
     username: str
@@ -24,11 +25,11 @@ class User(BaseModel):
             role=role
         )
         
+
 class LoginData(BaseModel):
     username: TUsername
     password: str
         
-
 
 class Category(BaseModel): # - Valkata
     category_id: int | None = None
@@ -45,12 +46,14 @@ class Category(BaseModel): # - Valkata
             is_locked = is_locked
         )
 
+
 class Message(BaseModel): # - Valkata
     message_id: int | None = None
     text: str | None = None
     timestamp: datetime | None = None
     sender_id: int | None = None
     recipient_id: int | None = None
+
 
 class Topic(BaseModel): 
     topic_id: int | None = None
@@ -78,9 +81,11 @@ class Topic(BaseModel):
             is_private='private' if is_private else 'nonprivate'
             )
 
+
 class TopicUpdate(BaseModel):
     best_reply: str | None =  None
-        
+
+
 class Reply(BaseModel): 
     reply_id: int | None = None
     text: str
@@ -97,6 +102,7 @@ class Reply(BaseModel):
             topic_id=topic_id,
             user_id=user_id,
             )
+    
     
 class ReplyUpdate(BaseModel):
     text: str

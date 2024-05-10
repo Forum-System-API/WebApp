@@ -97,10 +97,10 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
   `topic_id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(200) NOT NULL,
-  `date_time` DATETIME NOT NULL,
+  `date_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `category_id` INT NOT NULL,
   `user_id` INT NOT NULL,
-  `best_reply_id` INT NULL DEFAULT NULL,
+  `best_reply_id` TEXT NULL DEFAULT 'no best reply yet.',
   `is_locked` TINYINT NOT NULL DEFAULT 0,
   `is_private` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`topic_id`),
@@ -125,7 +125,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
   `reply_id` INT NOT NULL AUTO_INCREMENT,
   `text` TEXT NOT NULL,
-  `date_time` DATETIME NOT NULL,
+  `date_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `topic_id` INT NOT NULL,
   `user_id` INT NOT NULL,
   PRIMARY KEY (`reply_id`),
@@ -198,8 +198,8 @@ INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALU
 INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP ','2024-05-05 12:00:00',2,5);
 
 TRUNCATE TABLE webapp.replies;
-INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (1,'Ferrari fans are crying again.','2024-05-03 12:00:00',1,5);
-INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (2,'Max Pole - Sprint Quali','2024-05-03 17:00:00',2,4);
-INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (3,'Max Vestappen wins the sprint race.','2024-05-04 11:00:00',3,4);
-INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (4,'Daniel Ricciardo P4 and points for the RB pilot.','2024-05-04 11:10:00',3,5);
-INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES (5,'Lando Norris first victory in F1 with the McLaren team.','2024-05-05 17:00:00',5,4);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Ferrari fans are crying again.','2024-05-03 12:00:00',1,5);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Max Pole - Sprint Quali','2024-05-03 17:00:00',2,4);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Max Vestappen wins the sprint race.','2024-05-04 11:00:00',3,4);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Daniel Ricciardo P4 and points for the RB pilot.','2024-05-04 11:10:00',3,5);
+INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Lando Norris first victory in F1 with the McLaren team.','2024-05-05 17:00:00',5,4);
