@@ -16,5 +16,5 @@ app.include_router(replies_router)
 app.include_router(category_router)
 app.include_router(message_router)
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="127.0.0.1", port=8000)

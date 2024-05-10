@@ -3,11 +3,31 @@ from data.models import Category, Topic
 from mariadb import IntegrityError
 
 
-def show_all():
-    data = read_query('SELECT category_id, category_name, is_private, is_locked FROM categories')
-    formatted_data = [
-        {"category_id": row[0], "category_name": row[1], "is_private": row[2], "is_locked": row[3]} for row in data
-    ]
+def detail_view():
+    data = read_query(
+        'SELECT c.category_id, c.category_name, t.topic_id, t.title FROM categories c LEFT JOIN topics t ON c.category_id = t.category_id')
+
+    categories = {}
+    for row in data:
+        category_id, category_name, topic_id, topic_title = row
+        if category_id not in categories:
+            categories[category_id] = {
+                "category_id": category_id, "category_name": category_name, "topics": []}
+        if topic_id:
+            categories[category_id]["topics"].append(
+                {"topic_id": topic_id, "title": topic_title})
+
+    return list(categories.values())
+
+
+def all_basic_user():
+    data = read_query(
+        'SELECT category_id, category_name, is_private FROM categories where is_private!=1')
+    # is_private_data = read_query('SELECT is_private FROM categories')
+    # if is_private_data == 1:
+    formatted_data = [{"category_id": row[0],
+                       "category_name": row[1], "is_private": row[2]} for row in data]
+
     return formatted_data
 
 
@@ -124,3 +144,17 @@ def change_status(category_name: str, is_private: int):
     if is_priv != is_private:
         update_query('''UPDATE categories SET is_private=%s WHERE name = %s''',
                      (is_private, category_name))
+
+def read_access(Categories_Access):
+    data = insert_query(
+        f'INSERT INTO webapp.categories_access (user_id, category_id, can_read, can_write)'
+        f' VALUES ({Categories_Access.user_id}, {Categories_Access.category_id}, '
+        f'{Categories_Access.can_read}, {Categories_Access.can_write})')
+    return data
+
+def check_privacy(user_id:int):
+    data = read_query('''SELECT ca.category_id from categories_access ca
+                      JOIN categories c ON ca.category_id = c.category_id
+                      WHERE ca.user_id = ? AND c.is_private=1''',(user_id,))
+    
+    return len(data) > 0

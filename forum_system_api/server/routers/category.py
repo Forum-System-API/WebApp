@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, status, HTTPException, Header
-from data.models import Category, Role, User
+from data.models import Category, Role, User, Categories_Access
 from services import category_service
 from common.auth import get_user_or_raise_401
 
@@ -7,10 +7,21 @@ category_router = APIRouter(prefix='/categories')
 
 
 @category_router.get('/')
-def show_categories():
-    categories = category_service.show_all()
-    return categories
-
+def show_categories(x_token: str = Header()):
+    user = get_user_or_raise_401(x_token)
+    
+    if user.role == Role.ADMIN:
+        categories = category_service.detail_view()
+        return categories
+    
+    if category_service.check_privacy(user.id):
+        if user.role == Role.ORDINARY_USER:
+            categories = category_service.detail_view()
+        return categories
+    else:
+        user.role == Role.ORDINARY_USER
+        categories = category_service.all_basic_user()
+        return categories
 
 @category_router.get('/name/{name}')
 def show_category_by_name(name: str):
@@ -116,3 +127,12 @@ def set_privacy(category: Category, x_token: str = Header()):
     category_service.change_status(category.category_name, category.is_private)
 
     return {"message": "Category privacy updated successfully"}
+
+@category_router.put('/isreadable')
+def read_access(data: Categories_Access, x_token:str = Header()):
+    user = get_user_or_raise_401(x_token)
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
+
+    if category_service.read_access(data):
+        return "User added to the the Private category"

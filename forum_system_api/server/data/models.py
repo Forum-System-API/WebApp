@@ -123,3 +123,10 @@ class Vote(BaseModel):
             user_id=user_id,
             type_of_vote='upvote' if type_of_vote else 'nonprivate'
             )
+    
+    
+class Categories_Access(BaseModel):
+    user_id: int
+    category_id: int
+    can_read: int = 1
+    can_write: int = 1
