@@ -59,7 +59,7 @@ def delete_reply(reply_id: int, x_token: str = Header()):
 
    return NoContent()  # status_code=204
 
-@replies_router.put('/{reply_id}/vote')
+@replies_router.put('/{reply_id}/vote') # available for: admin, user - token
 def reply_votes(vote: Vote, status: str = Body(embed=True, regex='^upvote|downvote$'), x_token: str = Header()):
    user = get_user_or_raise_401(x_token)
 
@@ -72,4 +72,18 @@ def reply_votes(vote: Vote, status: str = Body(embed=True, regex='^upvote|downvo
    reply_service.vote(vote, status)
 
    return {'Voted': f'{status}.'}
+
+@replies_router.get('/{reply_id}') # available for: admin, user - token
+def get_reply_by_id(reply_id: int,  x_token: str = Header()):
+   user = get_user_or_raise_401(x_token)
+
+   if not user:
+      return Unauthorized()  # status_code=401
+   
+   reply = reply_service.get_by_id(reply_id)
+
+   if reply is None:
+      return NotFound()
+   else:
+      return reply
 
