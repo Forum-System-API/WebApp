@@ -124,3 +124,10 @@ def change_status(category_name: str, is_private: int):
     if is_priv != is_private:
         update_query('''UPDATE categories SET is_private=%s WHERE name = %s''',
                      (is_private, category_name))
+
+def read_access(Categories_Access):
+    data = insert_query(
+        f'INSERT INTO webapp.categories_access (user_id, category_id, can_read, can_write)'
+        f' VALUES ({Categories_Access.user_id}, {Categories_Access.category_id}, '
+        f'{Categories_Access.can_read}, {Categories_Access.can_write})')
+    return data
