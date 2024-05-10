@@ -90,6 +90,6 @@ def update(topic_update: TopicUpdate, topic: Topic):
 #         f'DELETE FROM replies WHERE topic_id = ? and reply_id IN ({ids_to_delete})',
 #         (topic_id,))
 
-# def delete(topic_id: int):
-#     update_query('DELETE FROM topics WHERE topic_id = ?', 
-#                  (topic_id,))
+def delete(topic: Topic):
+    update_query('DELETE FROM topics WHERE topic_id = ?', 
+                 (topic.topic_id,))
