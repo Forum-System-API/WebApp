@@ -68,11 +68,21 @@
 - ✔ GET /users: 
 - DESCRIPTION: Responds with a list of user resources
     -`GET http://127.0.0.1:8000/users`
+    responds with a list of all registered users
     -`GET http://127.0.0.1:8000/users/info`
+    recieves the username and the role of the user
 - ✔ POST / users
     - `POST http://127.0.0.1:8000/users/register`
+    {
+    "username": "Mike",
+    "password": "1234"
+    }
     - `POST http://127.0.0.1:8000/users/login`
-    - `POST http://127.0.0.1:8000/users/new_role`
+    {
+    "username": "Mike",
+    "password": "1234"
+    }
+    -
 
 ### 5.2. Category
 

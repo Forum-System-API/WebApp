@@ -52,21 +52,3 @@ def user_info(x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     return {'username': user.username, 'role': user.role}
 
-@users_router.post('/new_role')
-def change_role(data: User, x_token: str = Header()):
-    
-    if x_token.split(';')[1] != Role.ADMIN:
-        raise HTTPException(status_code=403, detail = 'Admin credentials required')
-    
-    user = user_service.find_by_username(data.username)
-    
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    if data.role not in (Role.ADMIN, Role.ORDINARY_USER, Role.CUSTOM_USER, Role.SUPREME_USER):
-        raise HTTPException(status_code=400, detail="Invalid role")
-
-    
-    user_service.change_role(data.username, data.role)
-
-    return f'User role update to {data.role}'
