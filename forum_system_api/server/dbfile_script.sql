@@ -129,7 +129,7 @@ DEFAULT CHARACTER SET = latin1;
 CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
   `user_id` INT(11) NOT NULL,
   `reply_id` INT(11) NOT NULL,
-  `type_of_vote` INT(11) NOT NULL DEFAULT 0,
+  `type_of_vote` INT(11) NOT NULL,
   PRIMARY KEY (`user_id`, `reply_id`),
   INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) VISIBLE,
   INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) VISIBLE,
