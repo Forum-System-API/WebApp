@@ -1,5 +1,6 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Reply, User, ReplyUpdate, Vote, VoteTypes, VoteUpdate
+from data.models import Reply, User, ReplyUpdate, Vote, VoteTypes
+from common.responses import BadRequest
 
 
 def create(reply: Reply, user: User):
@@ -62,32 +63,33 @@ def delete(reply: Reply):
                  (reply.reply_id,))
     
     
-def get_vote(vote: Vote, data: VoteUpdate):
+def get_vote(vote: Vote):
+    vote.type_of_vote = VoteTypes.STR_TO_INT[vote.type_of_vote]
     result = read_query(
-        'SELECT reply_id, user_id, type_of_vote FROM votes WHERE reply_id = ?',
+        'SELECT type_of_vote FROM votes WHERE reply_id = ?',
         (vote.reply_id,))
     
-    if result:
-        vote.type_of_vote = data.type_of_vote
-        return vote
-    else:
-        return None
+    return result
 
 
-def update_reply_vote(reply_id: int, vote: Vote):
-    existing_vote = read_query(
-        'SELECT reply_id, user_id, type_of_vote FROM votes WHERE reply_id = ?',
+def update_reply_vote(existing_vote: int, reply_id: int, vote: Vote):
+    existing_vote_str = VoteTypes.INT_TO_STR[existing_vote]
+    existing_vote_result = read_query(
+        'SELECT type_of_vote FROM votes WHERE reply_id = ?',
         (reply_id,))
-
-    if not existing_vote:
-        existing_vote.type_of_vote = VoteTypes.STR_TO_INT[vote.type_of_vote]
-        existing_vote = insert_query(
-        'INSERT INTO votes(reply_id, user_id, type_of_vote) VALUES(?,?,?)',
-        (vote.reply_id, vote.user_id, vote.type_of_vote))
+    
+    if existing_vote_result:
+        existing_vote_str_fordb = VoteTypes.INT_TO_STR[existing_vote_result[0][0]]
+        if existing_vote_str_fordb == existing_vote_str:
+            return BadRequest(content='You have already voted.') 
+        update_query(
+            'UPDATE votes SET type_of_vote = ? WHERE reply_id = ?',
+            (vote.type_of_vote, vote.reply_id))
+        
+        return vote.type_of_vote
     else:
-        existing_vote.type_of_vote = VoteTypes.STR_TO_INT[vote.type_of_vote]
-        existing_vote = insert_query(
-        'UPDATE votes SET user_id = ?, type_of_vote = ? WHERE reply_id = ?)',
-        (vote.user_id, vote.type_of_vote))
-
-        return existing_vote
+        insert_query(
+            'INSERT INTO votes (reply_id, type_of_vote, user_id) VALUES (?,?,?)',
+            (vote.reply_id, vote.type_of_vote, vote.user_id))
+        
+        return vote.type_of_vote
