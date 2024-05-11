@@ -115,7 +115,7 @@ def create_category(category: Category, x_token: str = Header()):
     return f'Category created successfully!'
 
 
-@category_router.post('/visibility')
+@category_router.post('/privacy')
 def set_privacy(category: Category, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)  ## to finish the logic
 

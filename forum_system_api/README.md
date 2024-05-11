@@ -64,8 +64,34 @@
 
 ## 5. Endpoints
 ### 5.1. User 
+- ✔ GET /users: 
+- DESCRIPTION: Responds with a list of user resources
+    -`GET http://127.0.0.1:8000/users`
+    responds with a list of all registered users
+    -`GET http://127.0.0.1:8000/users/info`
+    recieves the username and the role of the user
+- ✔ POST / users
+    - `POST http://127.0.0.1:8000/users/register`
+    {
+    "username": "Mike",
+    "password": "1234"
+    }
+    - `POST http://127.0.0.1:8000/users/login`
+    {
+    "username": "Mike",
+    "password": "1234"
+    }
+    -
 
 ### 5.2. Category
+- ✔ GET /categories: 
+    -`GET http://127.0.0.1:8000/categories`
+    responds with a list of categories depending on the role and the privacy status
+    -`GET http://127.0.0.1:8000/categories/name/Arts`
+    responds the details of the category
+- ✔ POST /topics:
+    - `POST http://127.0.0.1:8000/categories/privace`
+    changes the status of the privacy
 
 ### 5.3. Message 
 
