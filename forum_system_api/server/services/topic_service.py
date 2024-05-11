@@ -5,10 +5,10 @@ from data.database import read_query, insert_query, update_query
 def all(search: str = None):
     if search is None:
         data = read_query(
-            'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked, is_private FROM topics')
+            'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics')
     else:
         data = read_query(
-            'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked, is_private FROM topics WHERE title LIKE ?',
+            'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE title LIKE ?',
             (f'%{search}%',))
 
     topics_data = []
@@ -33,7 +33,7 @@ def sort(topics: list[Topic], *, attribute='date_time', reverse=False):
 
 def get_by_id(topic_id: int):
     data = read_query(
-        'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked, is_private FROM topics WHERE topic_id = ?', 
+        'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?', 
         (topic_id,))
 
     return next((Topic.from_query_result(*row) for row in data), None)
@@ -41,7 +41,7 @@ def get_by_id(topic_id: int):
 
 def create(topic: Topic, user: User):
     generated_id = insert_query(
-        'INSERT INTO topics(topic_id, title, date_time, category_id, user_id, best_reply, is_locked, is_private) VALUES(?,?,?,?,?,?,?,?)',
+        'INSERT INTO topics(topic_id, title, date_time, category_id, user_id, best_reply, is_locked) VALUES(?,?,?,?,?,?,?,?)',
         (topic.topic_id, topic.title, topic.date_time, topic.category_id, user.id, topic.best_reply,
                     0 if topic.is_locked == "unlocked" else 1, 
                     0 if topic.is_private == "nonprivate" else 1))
@@ -54,7 +54,7 @@ def create(topic: Topic, user: User):
 def topic_id_exists(topic_id: int):
     return any(
         read_query(
-                'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked, is_private FROM topics WHERE topic_id = ?',
+                'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?',
                 (topic_id,)))
 
 
