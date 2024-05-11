@@ -65,7 +65,11 @@
 
 ## 5. Endpoints
 ### 5.1. User 
-
+- ✔ GET /users: 
+- DESCRIPTION: Responds with a list of user resources
+    -`GET http://127.0.0.1:8000/users`
+    -`GET http://127.0.0.1:8000/users/info`
+    
 ### 5.2. Category
 
 ### 5.3. Message 
