@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized, NoContent
 from common.auth import get_user_or_raise_401
-from data.models import Reply, ReplyUpdate, Vote
+from data.models import Reply, ReplyUpdate, Vote, VoteUpdate
 from services import reply_service, topic_service, user_service
 from datetime import datetime
 
@@ -57,8 +57,8 @@ def delete_reply(reply_id: int, x_token: str = Header()):
    return NoContent()  # status_code=204
 
 
-@replies_router.put('/{reply_id}/vote')
-def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()): 
+@replies_router.put('/{reply_id}/users')
+def vote_reply(vote: Vote, data: VoteUpdate, x_token: str = Header()): 
    user = get_user_or_raise_401(x_token)
 
    if not user:
@@ -67,11 +67,11 @@ def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()):
    if vote.type_of_vote not in ['upvote', 'downvote']:
       return BadRequest(content=f'{vote.type_of_vote} invalid vote type.') # status_code=400
 
-   existing_vote = reply_service.get_vote(reply_id=reply_id)
+   existing_vote = reply_service.get_vote(vote=vote, data=data)
    if existing_vote:
       return BadRequest(content=f'You have already voted.') # status_code=400
 
-   updated_reply = reply_service.update_reply_vote(reply_id=reply_id, vote=vote)
+   updated_reply = reply_service.update_reply_vote(reply_id=vote.reply_id, vote=vote)
    return updated_reply
 
 
