@@ -136,3 +136,11 @@ def read_access(data: Categories_Access, x_token:str = Header()):
 
     if category_service.read_access(data):
         return "User added to the the Private category"
+    
+@category_router.get('/privileged/{category_id}')
+def privileged_users(category_id:int, x_token:str = Header()):
+    user = get_user_or_raise_401(x_token)
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
+    
+    return category_service.get_privileged(category_id)

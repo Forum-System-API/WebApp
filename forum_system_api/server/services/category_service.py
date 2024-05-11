@@ -162,3 +162,13 @@ def check_privacy(user_id: int):
                       WHERE ca.user_id = ? AND c.is_private=1''', (user_id,))
 
     return len(data) > 0
+
+def get_privileged(category_id: int):
+    data = read_query('SELECT user_id, can_read, can_write FROM categories_access WHERE category_id = ?',(category_id,))
+    users = []
+    for row in data:
+        id, can_read, can_write = row
+        user = read_query('SELECT u.user_id, u.username, u.role FROM users AS u JOIN categories_access ca on u.user_id = ca.user_id WHERE u.user_id = ?',(id,))
+        if user:
+            users.append(user)
+    return users
