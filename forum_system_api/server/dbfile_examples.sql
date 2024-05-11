@@ -34,3 +34,5 @@ INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES 
 INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Max Vestappen wins the sprint race.','2024-05-04 11:00:00',3,4);
 INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Daniel Ricciardo P4 and points for the RB pilot.','2024-05-04 11:10:00',3,5);
 INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Lando Norris first victory in F1 with the McLaren team.','2024-05-05 17:00:00',5,4);
+
+INSERT INTO `webapp`.`categories_access`(`category_id`, `user_id`, `can_read`, `can_write`) VALUES(1,1,1,1);

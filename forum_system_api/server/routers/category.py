@@ -18,9 +18,9 @@ def show_categories(x_token: str = Header()):
     #     categories = category_service.detail_view()
     #     return categories
     # else:###############
-        user.role == Role.ORDINARY_USER
-        categories = category_service.all_basic_user(user)
-        return categories
+    user.role == Role.ORDINARY_USER
+    categories = category_service.all_basic_user(user)
+    return categories
 
 
 @category_router.get('/name/{name}')
