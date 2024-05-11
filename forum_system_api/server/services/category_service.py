@@ -21,17 +21,18 @@ def detail_view():
     return list(categories.values())
 
 
-def all_basic_user(category:Category, user:User, category_access:Categories_Access):
+def all_basic_user(user:User):
     data = read_query(f'''SELECT c.category_id, c.category_name FROM categories_access ca 
-                      JOIN categories c JOIN users u WHERE (c.is_private = {category.is_private} AND u.user_id = {user.id}) OR 
-                      (c.is_private = {category.is_private} AND ca.can_write = {category_access.can_write} AND u.user_id = {user.id}) OR
-                      (c.is_private = {category.is_private} AND ca.can_read = {category_access.can_read} AND u.user_id = {user.id})''')
+                      JOIN categories c JOIN users u WHERE (c.is_private = 0 AND u.user_id = {user.id}) OR 
+                      (c.is_private = 1 AND ca.can_write = 1 AND u.user_id = {user.id}) OR
+                      (c.is_private = 1 AND ca.can_read = 1 AND u.user_id = {user.id})''')
     
     
     formatted_data = [{"category_id": row[0],
                        "category_name": row[1]} for row in data]
 
     return formatted_data
+
 
 def find_by_name(category_name: str):
     category_data = read_query(

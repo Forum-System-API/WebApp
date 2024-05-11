@@ -14,12 +14,12 @@ def show_categories(x_token: str = Header()):
         categories = category_service.detail_view()
         return categories
 ########################
-    if category_service.check_privacy(user.id):
-        categories = category_service.detail_view()
-        return categories
-    else:###############
+    # if category_service.check_privacy(user.id):
+    #     categories = category_service.detail_view()
+    #     return categories
+    # else:###############
         user.role == Role.ORDINARY_USER
-        categories = category_service.all_basic_user()
+        categories = category_service.all_basic_user(user)
         return categories
 
 
