@@ -128,7 +128,7 @@ def set_privacy(category: Category, x_token: str = Header()):
 
     return {"message": "Category privacy updated successfully"}
 
-@category_router.put('/isreadable')
+@category_router.put('/membership')
 def read_access(data: Categories_Access, x_token:str = Header()):
     user = get_user_or_raise_401(x_token)
     if user.role != "admin":
