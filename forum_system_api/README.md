@@ -69,7 +69,11 @@
 - DESCRIPTION: Responds with a list of user resources
     -`GET http://127.0.0.1:8000/users`
     -`GET http://127.0.0.1:8000/users/info`
-    
+- ✔ POST / users
+    - `POST http://127.0.0.1:8000/users/register`
+    - `POST http://127.0.0.1:8000/users/login`
+    - `POST http://127.0.0.1:8000/users/new_role`
+
 ### 5.2. Category
 
 ### 5.3. Message 
