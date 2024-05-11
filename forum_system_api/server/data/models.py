@@ -31,8 +31,8 @@ class LoginData(BaseModel):
 class Category(BaseModel): 
     category_id: int | None = None
     category_name: str
-    is_private:int | None = None
-    is_locked:int | None = None
+    is_private: int = 0
+    is_locked: int = 0
 
     @classmethod
     def from_query_result(cls, category_id, category_name, is_private, is_locked):

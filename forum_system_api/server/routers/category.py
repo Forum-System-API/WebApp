@@ -137,7 +137,8 @@ def create_category(category: Category, x_token: str = Header()):
 def set_privacy(category: Category, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)  ## to finish the logic
     id, username = x_token.split(';')
-    current_status = category_service.grab_category_with_name(category.category_name).is_private
+    get_category = category_service.grab_category_with_name(category.category_name)
+    current_status = get_category.is_private
 
     if user.role != Role.ADMIN and username != 'admin':
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
@@ -150,11 +151,6 @@ def set_privacy(category: Category, x_token: str = Header()):
         return f"The status of category {category.category_name} is already {category_status}!"
 
     category_service.change_status(category.category_name, category.is_private)
-
-    if category.is_private == 1:
-        category_status = "private"
-    else:
-        category_status = "public"
 
     return f"The status of category {category.category_name} updated to {category_status} successfully"
 
