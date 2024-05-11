@@ -14,7 +14,7 @@ class TopicResponseModel(BaseModel):
 topics_router = APIRouter(prefix='/topics')
 
 
-@topics_router.get('/')  # available for: all - no token 
+@topics_router.get('/') 
 def get_topics(sort: str | None = None,
             sort_by: str | None = None, 
             search: str | None = None, 
@@ -32,7 +32,7 @@ def get_topics(sort: str | None = None,
         return topic_lst
 
 
-@topics_router.get('/{topic_id}')  # available for: all - no token 
+@topics_router.get('/{topic_id}')  
 def get_topic_by_id(topic_id: int):
     topic = topic_service.get_by_id(topic_id)
 
@@ -42,7 +42,7 @@ def get_topic_by_id(topic_id: int):
         return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic.topic_id))
 
 
-@topics_router.post('/')  # available for: admin, user - token
+@topics_router.post('/')  
 def create_topic(topic: Topic, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
 
@@ -55,7 +55,7 @@ def create_topic(topic: Topic, x_token: str = Header()):
     return topic_service.create(topic, user)
 
 
-@topics_router.put('/{topic_id}')  # available for: admin, user - token
+@topics_router.put('/{topic_id}')  
 def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     
@@ -73,6 +73,34 @@ def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Hea
     else:
         InternalServerError()  # status_code=500
 
+
+@topics_router.delete('/{topic_id}')  
+def delete_topic(topic_id: int, x_token: str = Header()):
+    user = get_user_or_raise_401(x_token)
+    topic = topic_service.get_by_id(topic_id)
+
+    if topic is None:
+        return NotFound() # status_code=404
+
+    if not user_service.owns_topic(user, topic):
+        return Unauthorized('Can`t delete others` topics.') # status_code=401
+    
+    topic_service.delete(topic)
+
+    return NoContent() # status_code=204
+
+
+@topics_router.put('/lock/{topic_id}')
+def show_topic_by_id(topic_id: int, x_token=Header()):
+    user = get_user_or_raise_401(x_token)
+    if user.role != "admin":
+        return BadRequest(content=f'You need administrative rights to lock topics!') # status_code=400
+    
+    if not topic_service.topic_id_exists(topic_id):
+        return BadRequest(content=f'Topic {topic_id} does not exist.')
+
+    topic = topic_service.lock_topic(topic_id)
+    return f"Topic {topic.title} is now locked!"
 
 # available for: admin, user - requires authentication token
 # @topics_router.put('/{topic_id}/replies')
@@ -105,19 +133,3 @@ def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Hea
 #     topic_service.remove_replies_from_topic(topic_id, replies_to_delete)
 
 #     return {'deleted_replies_ids': replies_to_delete}
-
-
-@topics_router.delete('/{topic_id}')  # available for: admin, user - token
-def delete_topic(topic_id: int, x_token: str = Header()):
-    user = get_user_or_raise_401(x_token)
-    topic = topic_service.get_by_id(topic_id)
-
-    if topic is None:
-        return NotFound() # status_code=404
-
-    if not user_service.owns_topic(user, topic):
-        return Unauthorized('Can`t delete others` topics.') # status_code=401
-    
-    topic_service.delete(topic)
-
-    return NoContent() # status_code=204

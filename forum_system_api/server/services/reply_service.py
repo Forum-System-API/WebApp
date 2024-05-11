@@ -1,5 +1,5 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Reply, User, ReplyUpdate, Vote
+from data.models import Reply, User, ReplyUpdate, Vote, VoteTypes
 
 
 def create(reply: Reply, user: User):
@@ -57,7 +57,28 @@ def delete(reply: Reply):
                  (reply.reply_id,))
     
     
-def vote(vote: Vote, status: str):
-    return update_query(
-        'UPDATE votes SET type_of_vote = ? WHERE reply_id = ?',
-        (0 if status == 'upvote' else 0, vote.reply_id))
+def get_vote(reply_id: int):
+    data = read_query(
+        'SELECT reply_id, user_id, type_of_vote FROM votes WHERE reply_id = ?',
+        (reply_id,))
+
+    return (Vote.from_query_result(*row) for row in data)
+
+
+def update_reply_vote(reply_id: int, vote: Vote):
+    existing_vote = read_query(
+        'SELECT reply_id, user_id, type_of_vote FROM votes WHERE reply_id = ?',
+        (reply_id,))
+
+    if not existing_vote:
+        existing_vote.type_of_vote = VoteTypes.STR_TO_INT[vote.type_of_vote]
+        existing_vote = insert_query(
+        'INSERT INTO votes(reply_id, user_id, type_of_vote) VALUES(?,?,?)',
+        (vote.reply_id, vote.user_id, vote.type_of_vote))
+    else:
+        existing_vote.type_of_vote = VoteTypes.STR_TO_INT[vote.type_of_vote]
+        existing_vote = insert_query(
+        'UPDATE votes SET user_id = ?, type_of_vote = ? WHERE reply_id = ?)',
+        (vote.user_id, vote.type_of_vote))
+
+        return existing_vote

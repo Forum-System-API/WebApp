@@ -100,20 +100,21 @@ class Reply(BaseModel):
 class ReplyUpdate(BaseModel):
     text: str | None =  None
 
+class VoteTypes:
+    INT_TO_STR = {1: 'upvote', -1: 'downvote'}
+    STR_TO_INT = {'upvote': 1, 'downvote': -1}
+
 class Vote(BaseModel):
     reply_id: int 
     user_id: int | None = None
-    type_of_vote: int | None = None
+    type_of_vote: constr(pattern='^upvotes|downvote$')
 
     @classmethod
     def from_query_result(cls, reply_id, user_id, type_of_vote):
-        if type_of_vote is None:
-            type_of_vote = 'No votes yet.'
-       
         return cls(
             reply_id=reply_id,
             user_id=user_id,
-            type_of_vote=type_of_vote
+            type_of_vote=VoteTypes.INT_TO_STR[type_of_vote]
             )
     
 class Categories_Access(BaseModel):

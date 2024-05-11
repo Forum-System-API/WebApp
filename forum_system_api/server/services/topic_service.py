@@ -43,8 +43,7 @@ def create(topic: Topic, user: User):
     generated_id = insert_query(
         'INSERT INTO topics(topic_id, title, date_time, category_id, user_id, best_reply, is_locked) VALUES(?,?,?,?,?,?,?,?)',
         (topic.topic_id, topic.title, topic.date_time, topic.category_id, user.id, topic.best_reply,
-                    0 if topic.is_locked == "unlocked" else 1, 
-                    0 if topic.is_private == "nonprivate" else 1))
+                    0 if topic.is_locked == "unlocked" else 1))
 
     topic.topic_id = generated_id
 
@@ -68,7 +67,36 @@ def update(topic_update: TopicUpdate, topic: Topic):
     else:
         return None
        
+       
+def delete(topic: Topic):
+    update_query('DELETE FROM topics WHERE topic_id = ?', 
+                 (topic.topic_id,))
+    
 
+def lock_topic(topic_id: int) -> Topic:
+    data = read_query(
+                'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?',
+                (topic_id,))
+
+    topic = next((Topic.from_query_result(*row) for row in data), None)
+    update_query('UPDATE topics SET is_locked=%s WHERE title = %s',
+                 (1, topic.title))
+
+    return topic
+
+
+def unlock_topic(topic_id: int) -> Topic:
+    data = read_query(
+                'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?',
+                (topic_id,))
+
+    topic = next((Topic.from_query_result(*row) for row in data), None)
+    update_query('UPDATE categories SET is_locked=%s WHERE category_name = %s',
+                 (0, topic.title))
+
+    return topic
+    
+    
 # def get_topic_replies(topic_id: int) -> set[int]:
 #     data = read_query(
 #         'SELECT topic_id from replies where topic_id = ?',
@@ -89,7 +117,3 @@ def update(topic_update: TopicUpdate, topic: Topic):
 #     insert_query(
 #         f'DELETE FROM replies WHERE topic_id = ? and reply_id IN ({ids_to_delete})',
 #         (topic_id,))
-
-def delete(topic: Topic):
-    update_query('DELETE FROM topics WHERE topic_id = ?', 
-                 (topic.topic_id,))

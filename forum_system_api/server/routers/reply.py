@@ -1,18 +1,15 @@
-from fastapi import APIRouter, Header, Body
+from fastapi import APIRouter, Header
 from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized, NoContent
 from common.auth import get_user_or_raise_401
 from data.models import Reply, ReplyUpdate, Vote
 from services import reply_service, topic_service, user_service
 from datetime import datetime
 
-# i may need these shortly
-# reply.date_time = datetime.now()
-# reply.date_time = reply.date_time.strftime("%Y/%m/%d %H:%M")
 
 replies_router = APIRouter(prefix='/replies')
 
 
-@replies_router.post('/')  # available for: admin, user - token
+@replies_router.post('/')  
 def create_reply(reply: Reply, x_token: str = Header()):
    user = get_user_or_raise_401(x_token)
 
@@ -25,7 +22,7 @@ def create_reply(reply: Reply, x_token: str = Header()):
    return reply_service.create(reply, user)
 
 
-@replies_router.put('/{reply_id}')  # available for: admin, user - token
+@replies_router.put('/{reply_id}')  
 def update_reply(reply_id: int, data: ReplyUpdate, x_token: str = Header()):
    user = get_user_or_raise_401(x_token)
 
@@ -44,7 +41,7 @@ def update_reply(reply_id: int, data: ReplyUpdate, x_token: str = Header()):
       InternalServerError()  # status_code=500
 
 
-@replies_router.delete('/{reply_id}')  # available for: admin, user - token
+@replies_router.delete('/{reply_id}')  
 def delete_reply(reply_id: int, x_token: str = Header()):
    user = get_user_or_raise_401(x_token)
 
@@ -59,21 +56,26 @@ def delete_reply(reply_id: int, x_token: str = Header()):
 
    return NoContent()  # status_code=204
 
-@replies_router.put('/{reply_id}/vote') # available for: admin, user - token
-def reply_votes(vote: Vote, status: str = Body(embed=True, regex='^upvote|downvote$'), x_token: str = Header()):
+
+@replies_router.put('/{reply_id}/vote')
+def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()): 
    user = get_user_or_raise_401(x_token)
 
    if not user:
       return Unauthorized()  # status_code=401
-
-   if not reply_service.reply_id_exists(vote.reply_id):
-      return BadRequest(content=f'Reply {vote.reply_id} does not exist.') # status_code=400
    
-   reply_service.vote(vote, status)
+   if vote.type_of_vote not in ['upvote', 'downvote']:
+      return BadRequest(content=f'{vote.type_of_vote} invalid vote type.') # status_code=400
 
-   return {'Voted': f'{status}.'}
+   existing_vote = reply_service.get_vote(reply_id=reply_id)
+   if existing_vote:
+      return BadRequest(content=f'You have already voted.') # status_code=400
 
-@replies_router.get('/{reply_id}') # available for: admin, user - token
+   updated_reply = reply_service.update_reply_vote(reply_id=reply_id, vote=vote)
+   return updated_reply
+
+
+@replies_router.get('/{reply_id}') 
 def get_reply_by_id(reply_id: int,  x_token: str = Header()):
    user = get_user_or_raise_401(x_token)
 

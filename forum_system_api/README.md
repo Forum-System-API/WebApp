@@ -62,7 +62,6 @@
 - user_id &rarr; int
 
 
-
 ## 5. Endpoints
 ### 5.1. User 
 
