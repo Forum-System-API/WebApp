@@ -121,7 +121,7 @@ class Vote(BaseModel):
         return cls(
             reply_id=reply_id,
             user_id=user_id,
-            type_of_vote='upvote' if type_of_vote else 'nonprivate'
+            type_of_vote='upvote' if type_of_vote else 'downvote'
             )
     
     
