@@ -50,7 +50,7 @@ class Message(BaseModel): # - Valkata
     sender_id: int | None = None
     recipient_id: int | None = None
 
-class Topic(BaseModel):  # changes
+class Topic(BaseModel):  
     topic_id: int | None = None
     title: str
     date_time: datetime | None = None
