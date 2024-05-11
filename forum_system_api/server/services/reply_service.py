@@ -1,5 +1,5 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Reply, User, ReplyUpdate, Vote, VoteTypes
+from data.models import Reply, User, ReplyUpdate, Vote, VoteTypes, VoteUpdate
 
 
 def create(reply: Reply, user: User):
@@ -30,7 +30,12 @@ def get_by_id(reply_id: int):
     reply_result = next((Reply.from_query_result(*row) for row in reply_data), None)
     vote_result = next((Vote.from_query_result(*row) for row in votes_data), None)
 
-    return reply_result, vote_result
+    if vote_result is None:
+        return (f'{reply_result}\n',
+            f'Nobody has voted yet.')
+    else:
+        return (f'{reply_result}\n',
+            f'{vote_result}')
 
 
 def update(reply_update: ReplyUpdate, reply: Reply):
@@ -57,12 +62,16 @@ def delete(reply: Reply):
                  (reply.reply_id,))
     
     
-def get_vote(reply_id: int):
-    data = read_query(
+def get_vote(vote: Vote, data: VoteUpdate):
+    result = read_query(
         'SELECT reply_id, user_id, type_of_vote FROM votes WHERE reply_id = ?',
-        (reply_id,))
-
-    return (Vote.from_query_result(*row) for row in data)
+        (vote.reply_id,))
+    
+    if result:
+        vote.type_of_vote = data.type_of_vote
+        return vote
+    else:
+        return None
 
 
 def update_reply_vote(reply_id: int, vote: Vote):
