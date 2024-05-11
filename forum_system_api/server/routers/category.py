@@ -13,12 +13,7 @@ def show_categories(x_token: str = Header()):
     if user.role == Role.ADMIN:
         categories = category_service.detail_view()
         return categories
-########################
-    # if category_service.check_privacy(user.id):
-    #     categories = category_service.detail_view()
-    #     return categories
-    # else:###############
-    user.role == Role.ORDINARY_USER
+
     categories = category_service.all_basic_user(user)
     return categories
 
@@ -165,16 +160,20 @@ def set_privacy(category: Category, x_token: str = Header()):
 
 
 @category_router.post('/membership')
-def read_access(data: Categories_Access, x_token: str = Header()):
+def read_access(access: Categories_Access, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
 
-#Giving write access gives automatically read access
-#Giving read access only gives read access
+    category_service.read_access(access)
 
-    if category_service.read_access(data):
-        return "User added to the the Private category"
+    if access.can_write == 1:
+        return f"User #{access.user_id} has write and read access granted"
+    if access.can_write == 0 and access.can_read == 1:
+        return f"User #{access.user_id} has only read access"
+
+    return f"User #{access.user_id} has no read or write access rights"
+
     
 @category_router.get('/privileged/{category_id}')
 def privileged_users(category_id:int, x_token:str = Header()):

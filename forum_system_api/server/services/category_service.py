@@ -21,13 +21,12 @@ def detail_view():
     return list(categories.values())
 
 
-def all_basic_user(user:User):
+def all_basic_user(user: User):
     data = read_query(f'''SELECT c.category_id, c.category_name FROM categories_access ca 
                       JOIN categories c JOIN users u WHERE (c.is_private = 0 AND u.user_id = {user.id}) OR 
                       (c.is_private = 1 AND ca.can_write = 1 AND u.user_id = {user.id}) OR
                       (c.is_private = 1 AND ca.can_read = 1 AND u.user_id = {user.id})''')
-    
-    
+
     formatted_data = [{"category_id": row[0],
                        "category_name": row[1]} for row in data]
 
@@ -189,12 +188,16 @@ def check_privacy(user_id: int):
 
     return len(data) > 0
 
+
 def get_privileged(category_id: int):
-    data = read_query('SELECT user_id, can_read, can_write FROM categories_access WHERE category_id = ?',(category_id,))
-    users = []
-    for row in data:
-        id, can_read, can_write = row
-        user = read_query('SELECT u.user_id, u.username, u.role FROM users AS u JOIN categories_access ca on u.user_id = ca.user_id WHERE u.user_id = ?',(id,))
-        if user:
-            users.append(user)
-    return users
+    data = read_query('''SELECT u.username, ca.user_id, ca.can_read, ca.can_write 
+    FROM users u
+    JOIN categories_access ca ON u.user_id = ca.user_id
+    JOIN categories c ON ca.category_id = c.category_id
+    WHERE c.category_id = 1''', (category_id,))
+    # privileged_data = []
+    # for row in data:
+    #
+    #     pass
+
+    return data[0]
