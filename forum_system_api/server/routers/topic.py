@@ -93,14 +93,15 @@ def delete_topic(topic_id: int, x_token: str = Header()):
 @topics_router.put('/lock/{topic_id}')
 def show_topic_by_id(topic_id: int, x_token=Header()):
     user = get_user_or_raise_401(x_token)
-    if user.role != "admin":
+
+    if user.role != 'admin':
         return BadRequest(content=f'You need administrative rights to lock topics!') # status_code=400
     
     if not topic_service.topic_id_exists(topic_id):
         return BadRequest(content=f'Topic {topic_id} does not exist.')
 
     topic = topic_service.lock_topic(topic_id)
-    return f"Topic {topic.title} is now locked!"
+    return f'Topic {topic.title} is now locked!'
 
 # available for: admin, user - requires authentication token
 # @topics_router.put('/{topic_id}/replies')
