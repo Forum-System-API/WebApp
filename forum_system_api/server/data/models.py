@@ -28,7 +28,7 @@ class LoginData(BaseModel):
     username: TUsername
     password: str
         
-class Category(BaseModel): # - Valkata
+class Category(BaseModel): 
     category_id: int | None = None
     category_name: str
     is_private:int | None = None
@@ -43,7 +43,7 @@ class Category(BaseModel): # - Valkata
             is_locked = is_locked
         )
 
-class Message(BaseModel): # - Valkata
+class Message(BaseModel): 
     message_id: int | None = None
     text: str | None = None
     timestamp: datetime | None = None
