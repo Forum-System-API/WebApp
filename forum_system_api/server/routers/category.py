@@ -86,18 +86,18 @@ def delete_category_by_id(category_id: int, x_token: str = Header()):
     category_service.delete_category(category.category_name)
 
 
-@category_router.delete('/{name}')
-def delete_category_by_name(name: str, x_token: str = Header()):
+@category_router.delete('/')
+def delete_category_by_name(category:Category, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
-    if not category_service.category_name_exists(name):
+    if not category_service.category_name_exists(category.category_name):
         return Response(status_code=400,
-                        content=f'Category with id #{name} does not exist')
+                        content=f'Category with id #{category.category_name} does not exist')
 
-    if not user.role != "admin":
+    if user.role != "admin":
         return Response(status_code=403,
                         content=f'You need administrative rights to delete categories!')
 
-    category_service.delete_category(name)
+    category_service.delete_category(category.category_name, category.is_private, category.is_locked)
 
 
 
