@@ -116,10 +116,6 @@ class Vote(BaseModel):
             user_id=user_id,
             type_of_vote=VoteTypes.INT_TO_STR[type_of_vote]
             )
-    
-class VoteUpdate(BaseModel):
-    type_of_vote: constr(pattern='^upvote|downvote$')
-
 
 class Categories_Access(BaseModel):
     user_id: int
