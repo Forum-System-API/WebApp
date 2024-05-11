@@ -39,7 +39,7 @@ def find_by_name(category_name: str):
     category = next((Category.from_query_result(*row) for row in category_data), None)
 
     topic_data = read_query(
-        'SELECT topic_id, title, category_id, user_id, date_time FROM topics WHERE category_id = ?',
+        'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE category_id = ?',
         (category.category_id,))
 
     topics = [Topic.from_query_result(*row) for row in topic_data]
@@ -47,15 +47,17 @@ def find_by_name(category_name: str):
     return category, topics
 
 
-def find_by_id(category_id: int) -> tuple[Category | None, list[Topic] | None]:
+def find_by_id(category_id: int):
     category_data = read_query(
         'SELECT category_id, category_name, is_private, is_locked FROM categories WHERE category_id = ?',
         (category_id,))
-    topic_data = read_query(
-        'SELECT topic_id, title, category_id, user_id, date_time FROM topics WHERE category_id = ?',
-        (category_id,))
 
     category = next((Category.from_query_result(*row) for row in category_data), None)
+
+    topic_data = read_query(
+        'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE category_id = ?',
+        (category_id,))
+
     topics = [Topic.from_query_result(*row) for row in topic_data]
 
     return category, topics
@@ -134,7 +136,7 @@ def change_status(category_name: str, is_private: int):
     elif is_private == 1:
         is_private_int = 0
     category = read_query(
-        '''SELECT name, is_private from categories where name = ? and is_private = ?''',
+        '''SELECT category_name, is_private FROM categories WHERE category_name = ? and is_private = ?''',
         (category_name, is_private_int))
 
     if category:
@@ -142,8 +144,9 @@ def change_status(category_name: str, is_private: int):
         name, is_priv = data
 
     if is_priv != is_private:
-        update_query('''UPDATE categories SET is_private=%s WHERE name = %s''',
+        update_query('''UPDATE categories SET is_private=%s WHERE category_name = %s''',
                      (is_private, category_name))
+
 
 def read_access(Categories_Access):
     data = insert_query(
@@ -152,9 +155,10 @@ def read_access(Categories_Access):
         f'{Categories_Access.can_read}, {Categories_Access.can_write})')
     return data
 
-def check_privacy(user_id:int):
+
+def check_privacy(user_id: int):
     data = read_query('''SELECT ca.category_id from categories_access ca
                       JOIN categories c ON ca.category_id = c.category_id
-                      WHERE ca.user_id = ? AND c.is_private=1''',(user_id,))
-    
+                      WHERE ca.user_id = ? AND c.is_private=1''', (user_id,))
+
     return len(data) > 0

@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`messages` (
   `sender_id` INT(11) NOT NULL,
   `recipient_id` INT(11) NOT NULL,
   PRIMARY KEY (`message_id`),
-  INDEX `fk_messages_users1_idx` (`sender_id` ASC) VISIBLE,
-  INDEX `fk_messages_users2_idx` (`recipient_id` ASC) VISIBLE,
+  INDEX `fk_messages_users1_idx` (`sender_id` ASC) ,
+  INDEX `fk_messages_users2_idx` (`recipient_id` ASC) ,
   CONSTRAINT `fk_messages_users1`
     FOREIGN KEY (`sender_id`)
     REFERENCES `webapp`.`users` (`user_id`)
@@ -81,8 +81,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`topics` (
   `best_reply` TEXT NULL DEFAULT NULL,
   `is_locked` TINYINT(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`topic_id`),
-  INDEX `fk_topics_categories1_idx` (`category_id` ASC) VISIBLE,
-  INDEX `fk_topics_users1_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_topics_categories1_idx` (`category_id` ASC) ,
+  INDEX `fk_topics_users1_idx` (`user_id` ASC) ,
   CONSTRAINT `fk_topics_categories1`
     FOREIGN KEY (`category_id`)
     REFERENCES `webapp`.`categories` (`category_id`)
@@ -107,8 +107,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`replies` (
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`reply_id`),
-  INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
-  INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_replies_topics1_idx` (`topic_id` ASC) ,
+  INDEX `fk_replies_users1_idx` (`user_id` ASC) ,
   CONSTRAINT `fk_replies_topics1`
     FOREIGN KEY (`topic_id`)
     REFERENCES `webapp`.`topics` (`topic_id`)
@@ -131,8 +131,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`votes` (
   `reply_id` INT(11) NOT NULL,
   `type_of_vote` INT(11) NOT NULL,
   PRIMARY KEY (`user_id`, `reply_id`),
-  INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) VISIBLE,
-  INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_users_has_replies_replies1_idx` (`reply_id` ASC) ,
+  INDEX `fk_users_has_replies_users1_idx` (`user_id` ASC) ,
   CONSTRAINT `fk_users_has_replies_replies1`
     FOREIGN KEY (`reply_id`)
     REFERENCES `webapp`.`replies` (`reply_id`)
@@ -156,8 +156,8 @@ CREATE TABLE IF NOT EXISTS `webapp`.`categories_access` (
   `can_read` TINYINT(4) NOT NULL DEFAULT 1,
   `can_write` TINYINT(4) NOT NULL DEFAULT 1,
   PRIMARY KEY (`category_id`, `user_id`),
-  INDEX `fk_categories_has_users_users1_idx` (`user_id` ASC) VISIBLE,
-  INDEX `fk_categories_has_users_categories1_idx` (`category_id` ASC) VISIBLE,
+  INDEX `fk_categories_has_users_users1_idx` (`user_id` ASC) ,
+  INDEX `fk_categories_has_users_categories1_idx` (`category_id` ASC) ,
   CONSTRAINT `fk_categories_has_users_categories1`
     FOREIGN KEY (`category_id`)
     REFERENCES `webapp`.`categories` (`category_id`)

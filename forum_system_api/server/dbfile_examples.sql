@@ -18,9 +18,15 @@ INSERT INTO `webapp`.`users` ( `username`,`password`,`role`) VALUES
 
 INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP FP1','2024-05-03 10:00:00',2,5);
 INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP Sprint Quali','2024-05-03 12:00:00',2,5);
+INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('Cooking with Heisenberg','2024-05-03 12:00:00',3,5);
 INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP Sprint','2024-05-04 10:00:00',2,5);
 INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP Quali','2024-05-04 12:00:00',2,5);
 INSERT INTO `webapp`.`topics` (`title`,`date_time`,`category_id`,`user_id`) VALUES ('F1 Miami GP ','2024-05-05 12:00:00',2,5);
+
+
+INSERT INTO `webapp`.`messages` (`text`,`timestamp`,`sender_id`,`recipient_id`) VALUES ('Example message','2024-05-03 10:00:00', 2,7);
+INSERT INTO `webapp`.`messages` (`text`,`timestamp`,`sender_id`,`recipient_id`) VALUES ('Another message','2024-05-03 10:00:00', 2,7);
+INSERT INTO `webapp`.`messages` (`text`,`timestamp`,`sender_id`,`recipient_id`) VALUES ('Last example','2024-05-03 10:00:00', 3,2);
 
 
 INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Ferrari fans are crying again.','2024-05-03 12:00:00',1,5);
