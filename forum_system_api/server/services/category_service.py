@@ -1,5 +1,5 @@
 from data.database import read_query, update_query, insert_query
-from data.models import Category, Topic
+from data.models import Category, Topic, User, Categories_Access
 from mariadb import IntegrityError
 
 
@@ -21,16 +21,17 @@ def detail_view():
     return list(categories.values())
 
 
-def all_basic_user(logged_user, all_categories):##########################
-    #   SELECT category_id, user_id, can_read, can_write FROM categories_access
-    #   WHERE
-    data = read_query(
-        'SELECT category_id, category_name, is_private FROM categories WHERE is_private!=1')
+def all_basic_user(category:Category, user:User, category_access:Categories_Access):
+    data = read_query(f'''SELECT c.category_id, c.category_name FROM categories_access ca 
+                      JOIN categories c JOIN users u WHERE (c.is_private = {category.is_private} AND u.user_id = {user.id}) OR 
+                      (c.is_private = {category.is_private} AND ca.can_write = {category_access.can_write} AND u.user_id = {user.id}) OR
+                      (c.is_private = {category.is_private} AND ca.can_read = {category_access.can_read} AND u.user_id = {user.id})''')
+    
+    
     formatted_data = [{"category_id": row[0],
                        "category_name": row[1]} for row in data]
 
     return formatted_data
-
 
 def find_by_name(category_name: str):
     category_data = read_query(
