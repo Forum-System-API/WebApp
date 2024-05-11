@@ -101,13 +101,13 @@ class ReplyUpdate(BaseModel):
     text: str | None =  None
 
 class VoteTypes:
-    INT_TO_STR = {1: 'upvote', -1: 'downvote'}
-    STR_TO_INT = {'upvote': 1, 'downvote': -1}
+    INT_TO_STR = {0:'upvote', 1:'downvote'}
+    STR_TO_INT = {'upvote':0, 'downvote':1}
 
 class Vote(BaseModel):
     reply_id: int 
     user_id: int | None = None
-    type_of_vote: constr(pattern='^upvotes|downvote$')
+    type_of_vote: constr(pattern='^upvote|downvote$')
 
     @classmethod
     def from_query_result(cls, reply_id, user_id, type_of_vote):
@@ -117,6 +117,10 @@ class Vote(BaseModel):
             type_of_vote=VoteTypes.INT_TO_STR[type_of_vote]
             )
     
+class VoteUpdate(BaseModel):
+    type_of_vote: constr(pattern='^upvote|downvote$')
+
+
 class Categories_Access(BaseModel):
     user_id: int
     category_id: int
