@@ -166,9 +166,10 @@ def change_status(category_name: str, is_private: int):
                      (is_private, category_name))
 
 
-def read_access(categories_access):
+def read_access(categories_access:Categories_Access):
     test_data = read_query('SELECT user_id, category_id FROM categories_access')
-    if not test_data:
+    data = test_data[0]
+    if data[0]!=categories_access.user_id:
         data_insert = insert_query(
             f'INSERT INTO categories_access (user_id, category_id, can_read, can_write)'
             f' VALUES ({categories_access.user_id}, {categories_access.category_id}, '
