@@ -3,26 +3,6 @@ from data.database import read_query, insert_query, update_query
 from datetime import datetime
 
 
-# def all(search: str = None):
-#     if search is None:
-#         data = read_query(
-#             '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked
-#                    FROM topics''')
-#     else:
-#         data = read_query(
-#             '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics 
-#                    WHERE title LIKE ?''',
-#         (f'%{search}%',))
-
-#     topics_data = []
-#     for row in data:
-#         topic = Topic.from_query_result(*row)
-#         topic.date_time = topic.date_time.strftime('%Y/%m/%d %H:%M')
-#         topics_data.append(topic)
-
-#     return topics_data
-
-
 def all(user: User | None, search: str = None):
 
     public_topics = '''SELECT DISTINCT t.topic_id, t.title, t.date_time, t.category_id, t.user_id, t.best_reply, t.is_locked
@@ -66,11 +46,27 @@ def sort(topics: list[Topic], *, attribute='date_time', reverse=False):
     return sorted(topics, key=sort_fn, reverse=reverse)
 
 
-def get_by_id(topic_id: int):
-    data = read_query(
-        '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
-               FROM topics WHERE topic_id = ?''', 
-        (topic_id,))
+def get_by_id(user: User | None, topic_id: int):
+
+    public_topics = f'''SELECT DISTINCT t.topic_id, t.title, t.date_time, t.category_id, t.user_id, t.best_reply, t.is_locked
+                        FROM topics t
+                        JOIN categories c ON c.category_id = t.category_id
+                        WHERE c.is_private = 0 AND t.topic_id = {topic_id}
+                    '''
+    
+    if user:
+        private_topics = f'''UNION ALL
+                            SELECT DISTINCT t.topic_id, t.title, t.date_time, t.category_id, t.user_id, t.best_reply, t.is_locked
+                            FROM topics t
+                            JOIN categories c ON c.category_id = t.category_id
+                            JOIN categories_access ca ON ca.category_id = t.category_id
+                            JOIN users u ON u.user_id = ca.user_id
+                            WHERE u.user_id = {user.id} AND c.is_private = 1 AND (ca.can_read = 1 OR ca.can_write = 1) AND t.topic_id = {topic_id}'''
+    
+    if user == None: 
+        data = read_query(public_topics)
+    else:
+        data = read_query(public_topics+private_topics)
     
     topic = next((Topic.from_query_result(*row) for row in data), None)
     
