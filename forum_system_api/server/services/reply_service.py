@@ -144,9 +144,21 @@ def update_reply_vote(existing_vote: int, reply_id: int, vote: Vote):
         
         return vote.type_of_vote
 
+
 def is_locked(topic_id: int):
     data = read_query(f'''SELECT topic_id, title
                             FROM topics
                             WHERE is_locked = 1 AND topic_id = {topic_id}''')
+    
+    return len(data) > 0
+
+
+def has_access(topic_id: int, user: User):
+    data = read_query(f'''SELECT DISTINCT c.category_id
+                            FROM categories c
+                            JOIN topics t ON c.category_id = t.category_id
+                            JOIN categories_access ca ON ca.category_id = t.category_id
+                            JOIN users u ON u.user_id = ca.user_id
+                            WHERE (c.is_private = 1 or c.is_locked = 1) AND t.topic_id = {topic_id} AND u.user_id = {user.id}''')
     
     return len(data) > 0
