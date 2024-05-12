@@ -191,10 +191,11 @@ def read_access(categories_access:Categories_Access):
         return data_update
 
 
-def check_privacy(user_id: int):
-    data = read_query('''SELECT ca.category_id FROM categories_access ca
-                      JOIN categories c ON ca.category_id = c.category_id
-                      WHERE ca.user_id = ? AND c.is_private=1''', (user_id,))
+def check_privacy(user_id: int, category_id):
+    data = read_query('''SELECT ca.category_id 
+                            FROM categories_access ca
+                            JOIN categories c ON ca.category_id = ?
+                            WHERE ca.user_id = ? AND (ca.can_read OR ca.can_write)''', (user_id, category_id))
 
     return len(data) > 0
 

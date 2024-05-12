@@ -39,15 +39,16 @@ def show_category_by_name(category_name: str, x_token=Header()):
 @category_router.get('/id/{category_id}')
 def show_category_by_id(category_id: int, x_token=Header()):
     user = get_user_or_raise_401(x_token)
-    category = category_service.grab_category_with_id(category_id)
-    category_access = category_service.check_privacy(user.id)
 
     if not category_service.category_id_exists(category_id):
         return Response(status_code=400,
                         content=f'Category with id #{category_id} does not exist')
 
-    if category.is_private == 1:
-        if user.role != Role.ADMIN and not category_access:
+    category = category_service.grab_category_with_id(category_id)
+    category_access = category_service.check_privacy(user.id, category_id)
+
+    if category.is_private == 1 and user.role != Role.ADMIN:
+        if not category_access:
             return Response(status_code=403,
                             content='You do not have category access rights')
 
@@ -77,17 +78,6 @@ def show_category_by_id(category: Category, x_token=Header()):
 
     category_service.lock_unlock_category(current_category.category_name, category.is_locked)
     return f"Category {current_category.category_name} with id #{current_category.category_id} is now {category_status}!"
-
-
-@category_router.put('/unlock/{category_id}')
-def show_category_by_id(category_id: int, x_token=Header()):
-    logged_user = get_user_or_raise_401(x_token)
-    if logged_user.role != "admin":
-        return Response(status_code=400,
-                        content=f'You need administrative rights to unlock categories!')
-    if not category_service.category_id_exists(category_id):
-        return Response(status_code=400,
-                        content=f'Category with id #{category_id} does not exist')
 
 
 @category_router.delete('/{category_id}')
