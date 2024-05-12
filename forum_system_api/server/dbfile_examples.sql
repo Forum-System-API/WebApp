@@ -36,3 +36,7 @@ INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES 
 INSERT INTO `webapp`.`replies` (`text`,`date_time`,`topic_id`,`user_id`) VALUES ('Lando Norris first victory in F1 with the McLaren team.','2024-05-05 17:00:00',5,4);
 
 INSERT INTO `webapp`.`categories_access`(`category_id`, `user_id`, `can_read`, `can_write`) VALUES(1,1,1,1);
+
+INSERT INTO `` (`user_id`,`reply_id`,`type_of_vote`) VALUES (3,3,0);
+INSERT INTO `` (`user_id`,`reply_id`,`type_of_vote`) VALUES (4,3,0);
+INSERT INTO `` (`user_id`,`reply_id`,`type_of_vote`) VALUES (5,3,1);
