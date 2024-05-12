@@ -100,7 +100,10 @@
 ### 5.4. Topic
 - ✔ GET /topics: 
     - DESCRIPTION: Responds with a list of Topic resources.
-    - REQUEST: 
+    - REQUEST:
+        - example: no token added
+        - example: token => 7;skankhunt42
+        - example: token => 5;Eric
         - `GET http://127.0.0.1:8000/topics`
         - `GET http://127.0.0.1:8000/topics?search=sprint`
         - `GET http://127.0.0.1:8000/topics?sort=asc&sort_by=title`
