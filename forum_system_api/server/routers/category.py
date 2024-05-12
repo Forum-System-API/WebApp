@@ -110,13 +110,14 @@ def delete_category_by_name(category: Category, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     if not category_service.category_name_exists(category.category_name):
         return Response(status_code=400,
-                        content=f'Category with id #{category.category_name} does not exist')
+                        content=f'Category with name {category.category_name} does not exist')
 
     if user.role != "admin":
         return Response(status_code=403,
                         content=f'You need administrative rights to delete categories!')
 
     category_service.delete_category(category.category_name, category.is_private, category.is_locked)
+    return "Category deleted!"
 
 
 @category_router.post('/new')
@@ -128,7 +129,7 @@ def create_category(category: Category, x_token: str = Header()):
     if user.role != Role.ADMIN and username != 'admin':
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
 
-    category_service.create(category.category_name)
+    category_service.create(category.category_name, category.is_private, category.is_locked)
 
     return f'Category created successfully!'
 
