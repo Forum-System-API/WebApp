@@ -110,7 +110,7 @@
     - RESPONSE: See Postman.
 
 - ✔ GET /{topic_id}: 
-    - DESCRIPTION: Responds with a single Topic resource and s list of Reply resources if there are any.
+    - DESCRIPTION: Responds with a single Topic resource and a list of Reply resources if there are any.
     - REQUEST:
         - `GET http://127.0.0.1:8000/topics/3` 
         - `GET http://127.0.0.1:8000/topics/4` 
@@ -171,13 +171,13 @@
     - RESPONSE: See Postman.
 
 - ✔ PUT /replies/{id}: 
-    - DESCRIPTION: Updates a Reply's text.
+    - DESCRIPTION: Updates a Reply's text if you are the owner of the Reply.
     - REQUEST: `PUT http://127.0.0.1:8000/replies/7` 
     ```json
     example: x-token => 3;MoSalah
         {
             "text": "Lando Norris won by a dominant 7.6-second margin over Max Verstappen's Redbull.",
-            "topic_id": 5
+            "topic_id": 6
         }
         ```
     - RESPONSE: See Postman.
@@ -185,6 +185,37 @@
 - ✔ DELETE /replies/{id}: 
     - Description: Deletesa Reply.
     - REQUEST: `DELETE http://127.0.0.1:8000/replies/7` x-token => 3;MoSalah
+    - RESPONSE: See Postman.
+
+- ✔ POST /replies/{reply_id}/votes: 
+    - DESCRIPTION: Updates a Reply's text if you are the owner of the Reply.
+    - REQUEST: `POST http://127.0.0.1:8000/replies/2/votes` 
+    ```json
+    example: x-token => 3;MoSalah
+        {
+            "reply_id": 2,
+            "type_of_vote": "downvote"
+        }
+        ```
+    - RESPONSE: See Postman.
+
+- ✔ PUT /replies/{reply_id}/votes: 
+    - DESCRIPTION: Updates a Reply's text if you are the owner of the Reply.
+    - REQUEST: `PUT http://127.0.0.1:8000/replies/3/votes` 
+    ```json
+    example: x-token => 3;MoSalah
+        {
+            "reply_id": 3,
+            "type_of_vote": "downvote"
+        }
+        ```
+    - RESPONSE: See Postman.
+
+- ✔ GET /{reply_id}: 
+    - DESCRIPTION: Responds with a single Reply resource.
+    - REQUEST:
+        - `GET http://127.0.0.1:8000/replies/3`
+        - `GET http://127.0.0.1:8000/replies/1` 
     - RESPONSE: See Postman.
 
 ## 6. How to Install and Run the Project
