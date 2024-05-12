@@ -153,12 +153,15 @@ def is_locked(topic_id: int):
     return len(data) > 0
 
 
-def has_access(topic_id: int, user: User):
+def has_access(category_id: int, user: User):
     data = read_query(f'''SELECT DISTINCT c.category_id
-                            FROM categories c
-                            JOIN topics t ON c.category_id = t.category_id
-                            JOIN categories_access ca ON ca.category_id = t.category_id
-                            JOIN users u ON u.user_id = ca.user_id
-                            WHERE (c.is_private = 1 or c.is_locked = 1) AND t.topic_id = {topic_id} AND u.user_id = {user.id}''')
+                    FROM categories c
+                    JOIN categories_access ca ON  c.category_id = ca.category_id
+                    JOIN users u ON u.user_id = ca.user_id
+                    WHERE c.is_private = 1 AND ca.can_write = 1 AND u.user_id = {user.id} AND c.category_id = {category_id}
+                    UNION ALL 
+                    SELECT DISTINCT c.category_id
+                    FROM categories c
+                    WHERE c.is_private = 0 AND c.is_locked = 0 AND c.category_id = {category_id}''')
     
     return len(data) > 0

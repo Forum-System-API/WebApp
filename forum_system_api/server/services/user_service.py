@@ -3,7 +3,6 @@ from data.models import User, Role, Topic, Reply
 from mariadb import IntegrityError
 import jwt
 from datetime import datetime, timedelta
-from services.secret import secret_key
 from hashlib import sha256
 
 _SEPARATOR = ';'

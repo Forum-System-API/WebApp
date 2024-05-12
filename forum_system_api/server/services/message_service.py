@@ -4,7 +4,6 @@ from data.database import read_query, update_query, insert_query
 from data.models import Message
 from routers.user import User
 from datetime import datetime, timedelta
-from services.secret import secret_key
 
 
 def view_all(logged_user: User):
