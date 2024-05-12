@@ -62,11 +62,8 @@ class Topic(BaseModel):
     @classmethod
     def from_query_result(cls, topic_id, title, date_time, category_id, user_id, best_reply, is_locked):
         if best_reply is None:
-            best_reply = 'No best reply yet.'
+            best_reply = 'no best reply yet'
 
-        if is_locked is None:
-            is_locked = 'Unlocked.'
-       
         return cls(
             topic_id=topic_id,
             title=title,
