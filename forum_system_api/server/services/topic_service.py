@@ -1,14 +1,49 @@
-from data.models import Topic, User, TopicUpdate, Reply
+from data.models import Topic, User, TopicUpdate, Reply , User
 from data.database import read_query, insert_query, update_query
 from datetime import datetime
 
 
-def all(search: str = None):
-    if search is None:
-        data = read_query(
-            '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked
-                   FROM topics''')
-    else:
+# def all(search: str = None):
+#     if search is None:
+#         data = read_query(
+#             '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked
+#                    FROM topics''')
+#     else:
+#         data = read_query(
+#             '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics 
+#                    WHERE title LIKE ?''',
+#         (f'%{search}%',))
+
+#     topics_data = []
+#     for row in data:
+#         topic = Topic.from_query_result(*row)
+#         topic.date_time = topic.date_time.strftime('%Y/%m/%d %H:%M')
+#         topics_data.append(topic)
+
+#     return topics_data
+
+
+def all(user: User | None, search: str = None):
+
+    public_topics = '''SELECT DISTINCT t.topic_id, t.title, t.date_time, t.category_id, t.user_id, t.best_reply, t.is_locked
+                    FROM topics t
+                    JOIN categories c ON c.category_id = t.category_id
+                    WHERE c.is_private = 0
+                    '''
+    if user:
+        private_topics = f'''UNION ALL
+                            SELECT DISTINCT t.topic_id, t.title, t.date_time, t.category_id, t.user_id, t.best_reply, t.is_locked
+                            FROM topics t
+                            JOIN categories c ON c.category_id = t.category_id
+                            JOIN categories_access ca ON ca.category_id = t.category_id
+                            JOIN users u ON u.user_id = ca.user_id
+                            WHERE u.user_id = {user.id} AND c.is_private = 1 AND (ca.can_read = 1 OR ca.can_write = 1)'''
+
+    if search is None and user == None: 
+        data = read_query(public_topics)
+    elif search is None:
+        data = read_query(public_topics+private_topics)
+    elif user == None: 
         data = read_query(
             '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics 
                    WHERE title LIKE ?''',
@@ -21,7 +56,6 @@ def all(search: str = None):
         topics_data.append(topic)
 
     return topics_data
-
 
 def sort(topics: list[Topic], *, attribute='date_time', reverse=False):
     if attribute == 'date_time':
