@@ -76,6 +76,7 @@ class Topic(BaseModel):
 
 class TopicUpdate(BaseModel):
     best_reply: str | None =  None
+    reply_id: int | None = None
 
 class Reply(BaseModel): 
     reply_id: int | None = None
