@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Query, Header
+from fastapi import APIRouter, Query, Header, HTTPException
 from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized, NoContent
 from common.auth import get_user_or_raise_401
 from data.models import Topic, Reply, TopicUpdate
 from services import topic_service, reply_service, category_service, user_service
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class TopicResponseModel(BaseModel):
     topic: Topic
@@ -14,14 +15,20 @@ class TopicResponseModel(BaseModel):
 topics_router = APIRouter(prefix='/topics')
 
 
-@topics_router.get('/') 
+@topics_router.get('/')  
 def get_topics(sort: str | None = None,
             sort_by: str | None = None, 
             search: str | None = None, 
             page: int = Query(1, gt=0),
-            topics_per_page: int = Query(100, gt=0)):
+            topics_per_page: int = Query(100, gt=0),
+            x_token: Optional[str] = Header(None)):
     
-    topic_lst = topic_service.all(search)
+    if x_token:
+        user = get_user_or_raise_401(x_token)
+    else:
+        user = None 
+    
+    topic_lst = topic_service.all(user,search)
 
     start = (page - 1) * topics_per_page
     end = start + topics_per_page
@@ -49,7 +56,7 @@ def get_topic_by_id(topic_id: int):
     
 
 @topics_router.post('/')  
-def create_topic(topic: Topic, x_token: str = Header()):
+def create_topic(topic: Topic, x_token: str = Header()):  
     user = get_user_or_raise_401(x_token)
 
     topic.date_time = datetime.now()
@@ -96,7 +103,7 @@ def delete_topic(topic_id: int, x_token: str = Header()):
     return NoContent() # status_code=204
 
 
-@topics_router.put('/lock/{topic_id}')
+@topics_router.put('/{topic_id}/lock')
 def show_topic_by_id(topic_id: int, x_token=Header()):
     user = get_user_or_raise_401(x_token)
 
