@@ -132,7 +132,7 @@ def delete_category(name: str, is_private: int, is_locked: int):
 
 def create(name: str):
     existing_category = read_query(
-        'SELECT category_name FROM categories WHERE name = ?', (name,)
+        'SELECT category_name FROM categories WHERE category_name = ?', (name,)
     )
 
     if existing_category:
