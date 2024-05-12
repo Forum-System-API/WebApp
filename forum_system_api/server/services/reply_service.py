@@ -143,3 +143,10 @@ def update_reply_vote(existing_vote: int, reply_id: int, vote: Vote):
             (vote.reply_id, vote.type_of_vote, vote.user_id))
         
         return vote.type_of_vote
+
+def is_locked(topic_id: int):
+    data = read_query(f'''SELECT topic_id, title
+                            FROM topics
+                            WHERE is_locked = 1 AND topic_id = {topic_id}''')
+    
+    return len(data) > 0
