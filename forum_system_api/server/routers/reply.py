@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized, NoContent
 from common.auth import get_user_or_raise_401
-from data.models import Reply, ReplyUpdate, Vote, VoteTypes
+from data.models import Reply, ReplyUpdate, Vote
 from services import reply_service, topic_service, user_service
 from datetime import datetime
 
