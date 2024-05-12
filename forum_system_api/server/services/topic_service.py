@@ -87,7 +87,8 @@ def delete(topic: Topic):
 
 def lock_topic(topic_id: int) -> Topic:
     data = read_query(
-                'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?',
+                '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
+                     FROM topics WHERE topic_id = ?''',
                 (topic_id,))
 
     topic = next((Topic.from_query_result(*row) for row in data), None)
@@ -99,7 +100,8 @@ def lock_topic(topic_id: int) -> Topic:
 
 def unlock_topic(topic_id: int) -> Topic:
     data = read_query(
-                'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?',
+                '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
+                     FROM topics WHERE topic_id = ?''',
                 (topic_id,))
 
     topic = next((Topic.from_query_result(*row) for row in data), None)
@@ -115,6 +117,21 @@ def topic_id_exists(topic_id: int):
                 '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
                        FROM topics WHERE topic_id = ?''',
                 (topic_id,)))
+
+
+def get_topics_by_category(category_id: int):
+    data = read_query(
+                '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
+                       FROM topics WHERE topic_id = ?''',
+                (category_id,))
+
+    topics_data = []
+    for row in data:
+        topic = Topic.from_query_result(*row)
+        topic.date_time = topic.date_time.strftime('%Y/%m/%d %H:%M')
+        topics_data.append(topic)
+
+    return topics_data
     
 # def get_topic_replies(topic_id: int) -> set[int]:
 #     data = read_query(
