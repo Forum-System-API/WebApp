@@ -41,8 +41,14 @@ def get_topics(sort: str | None = None,
 
 
 @topics_router.get('/{topic_id}')  
-def get_topic_by_id(topic_id: int):
-    topic = topic_service.get_by_id(topic_id)
+def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(None)):
+
+    if x_token:
+        user = get_user_or_raise_401(x_token)
+    else:
+        user = None 
+
+    topic = topic_service.get_by_id(user, topic_id)
 
     if topic is None:
         return NotFound() # status_code=404
@@ -51,8 +57,19 @@ def get_topic_by_id(topic_id: int):
         if replies:
             return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic.topic_id))
         else:
-            return (f'{topic}\n'
-                    f'There are no replies under this topic.')
+            topic_info = f'{topic}\n'
+            no_replies_message = 'There are no replies under this topic.'
+            return {
+                    "topic": {
+                    "topic_id": topic.topic_id,
+                    "title": topic.title,
+                    "date_time": topic.date_time,
+                    "category_id": topic.category_id,
+                    "user_id": topic.user_id,
+                    "best_reply": topic.best_reply,
+                    "is_locked": topic.is_locked},
+                    "message": no_replies_message
+                    }
     
 
 @topics_router.post('/')  
