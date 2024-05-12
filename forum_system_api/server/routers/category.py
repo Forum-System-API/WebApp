@@ -110,7 +110,7 @@ def delete_category_by_name(category: Category, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     if not category_service.category_name_exists(category.category_name):
         return Response(status_code=400,
-                        content=f'Category with id #{category.category_name} does not exist')
+                        content=f'Category with name {category.category_name} does not exist')
 
     if user.role != "admin":
         return Response(status_code=403,
