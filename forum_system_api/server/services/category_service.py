@@ -22,10 +22,18 @@ def detail_view():
 
 
 def all_basic_user(user: User):
-    data = read_query(f'''SELECT c.category_id, c.category_name FROM categories_access ca 
-                      JOIN categories c JOIN users u WHERE (c.is_private = 0 AND u.user_id = {user.id}) OR 
-                      (c.is_private = 1 AND ca.can_write = 1 AND ca.user_id = {user.id}) OR
-                      (c.is_private = 1 AND ca.can_read = 1 AND ca.user_id = {user.id})''')
+    data = read_query(f'''SELECT DISTINCT c.category_id, c.category_name
+                        FROM categories c 
+                        JOIN categories_access ca on c.category_id = ca.category_id
+                        JOIN users u ON ca.user_id = u.user_id
+                        WHERE (c.is_private = 1 AND ca.can_write = 1 AND ca.user_id = {user.id}) OR
+                        (c.is_private = 1 AND ca.can_read = 1 AND ca.user_id = {user.id})
+                        UNION ALL
+                        SELECT DISTINCT c.category_id, c.category_name
+                        FROM categories c 
+                        JOIN categories_access ca
+                        JOIN users u
+                        WHERE c.is_private = 0 AND u.user_id = {user.id}''')
 
     formatted_data = [{"category_id": row[0],
                        "category_name": row[1]} for row in data]
@@ -167,9 +175,9 @@ def change_status(category_name: str, is_private: int):
 
 
 def read_access(categories_access:Categories_Access):
-    test_data = read_query('SELECT user_id, category_id FROM categories_access')
-    data = test_data[0]
-    if data[0]!=categories_access.user_id:
+    test_data = read_query('SELECT user_id, category_id FROM categories_access WHERE user_id = ? AND category_id = ?',
+                           (categories_access.user_id, categories_access.category_id))
+    if not test_data:
         data_insert = insert_query(
             f'INSERT INTO categories_access (user_id, category_id, can_read, can_write)'
             f' VALUES ({categories_access.user_id}, {categories_access.category_id}, '
