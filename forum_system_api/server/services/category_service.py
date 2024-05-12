@@ -130,7 +130,7 @@ def delete_category(name: str, is_private: int, is_locked: int):
     update_query('DELETE FROM categories WHERE category_name = ?', (name,))
 
 
-def create(name: str):
+def create(name: str, is_private:int, is_locked:int):
     existing_category = read_query(
         'SELECT category_name FROM categories WHERE category_name = ?', (name,)
     )
@@ -139,10 +139,10 @@ def create(name: str):
         return None
 
     try:
-        generated_id = insert_query(
-            'INSERT INTO categories(category_name) VALUES(?)', (name,))
+        insert_query(
+            'INSERT INTO categories(category_name, is_private, is_locked) VALUES(?,?,?)', (name, is_private, is_locked))
 
-        return Category(category_id=generated_id, category_name=name)
+        return Category(category_name=name, is_private=is_private, is_locked=is_locked)
     except IntegrityError:
         return None
 
