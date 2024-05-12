@@ -128,7 +128,7 @@ def create_category(category: Category, x_token: str = Header()):
     if user.role != Role.ADMIN and username != 'admin':
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
 
-    category_service.create(category.category_name)
+    category_service.create(category.category_name, category.is_private, category.is_locked)
 
     return f'Category created successfully!'
 
