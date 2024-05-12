@@ -51,8 +51,6 @@
 - best_reply_id &rarr; int
 - is_locked &rarr; str
     - in the schema, related column is is_locked where 1 = locked, 0 = unlocked
-- is_private &rarr; str
-    - in the schema, related column is is_private where 1 = private, 0 = nonprivate
 
 ### 4.5.`Reply` model has the following attributes:
 - reply_id &rarr; int 
