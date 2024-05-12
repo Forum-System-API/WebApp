@@ -40,8 +40,13 @@ def get_topic_by_id(topic_id: int):
     if topic is None:
         return NotFound() # status_code=404
     else:
-        return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic.topic_id))
-
+        replies=reply_service.get_by_topic(topic.topic_id)
+        if replies:
+            return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic.topic_id))
+        else:
+            return (f'{topic}\n'
+                    f'There are no replies under this topic.')
+    
 
 @topics_router.post('/')  
 def create_topic(topic: Topic, x_token: str = Header()):
