@@ -19,7 +19,8 @@ def get_topics(sort: str | None = None,
             sort_by: str | None = None, 
             search: str | None = None, 
             page: int = Query(1, gt=0),
-            topics_per_page: int = Query(10, gt=0)):
+            topics_per_page: int = Query(100, gt=0)):
+    
     topic_lst = topic_service.all(search)
 
     start = (page - 1) * topics_per_page
