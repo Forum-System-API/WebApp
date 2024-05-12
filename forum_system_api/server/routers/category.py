@@ -117,6 +117,7 @@ def delete_category_by_name(category: Category, x_token: str = Header()):
                         content=f'You need administrative rights to delete categories!')
 
     category_service.delete_category(category.category_name, category.is_private, category.is_locked)
+    return "Category deleted!"
 
 
 @category_router.post('/new')
