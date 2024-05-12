@@ -138,6 +138,18 @@
             "category_id": 2,
             "is_locked": "unlocked"
         }
+        example 3: x-token => 7;skankhunt42
+        {
+            "title": "Hellooooo, art.",
+            "category_id": 1,
+            "is_locked": "unlocked"
+        }
+        example 4: x-token => 3;MoSalah
+        {
+            "title": "Hellooooo, art.",
+            "category_id": 1,
+            "is_locked": "unlocked"
+        }
         ```
     - RESPONSE: See Postman.
 
