@@ -151,37 +151,41 @@
         }
         ```
     - RESPONSE: See Postman.
-    
+
 - ✔ DELETE /topics: 
     - DESCRIPTION: Deletes a Topic resource and all of its Replies.
     - REQUEST: `DELETE http://127.0.0.1:8000/topics/6` x-token => 3;MoSalah
     - RESPONSE: See Postman.
 
 ### 5.5. Reply  
-- ✔ POST /replies: WORKS
+- ✔ POST /replies: 
     - DESCRIPTION: Creates a Reply data which is associated with a specific Topic.
     - REQUEST: `POST http://127.0.0.1:8000/replies` 
         ```json
-        [
+        example: x-token => 3;MoSalah
+        {
             "text": "Lando Norris won by a dominant 7.6-second margin.",
-            "topic_id": 5
-        ]
+            "topic_id": 6
+        }
         ```
-    - RESPONSE:
+    - RESPONSE: See Postman.
+
 - ✔ PUT /replies/{id}: WORKS
     - DESCRIPTION: Updates a Reply's text.
     - REQUEST: `PUT http://127.0.0.1:8000/replies/7` 
     ```json
-        [
+    example: x-token => 3;MoSalah
+        {
             "text": "Lando Norris won by a dominant 7.6-second margin over Max Verstappen's Redbull.",
             "topic_id": 5
-        ]
+        }
         ```
-    - RESPONSE:
+    - RESPONSE: See Postman.
+
 - ✔ DELETE /replies/{id}: WORKS
     - Description: Deletesa Reply.
-    - REQUEST: `DELETE http://127.0.0.1:8000/replies/7`
-    - RESPONSE:
+    - REQUEST: `DELETE http://127.0.0.1:8000/replies/7` x-token => 3;MoSalah
+    - RESPONSE: See Postman.
 
 ## 6. How to Install and Run the Project
 - Navigate to /server and open a terminal
