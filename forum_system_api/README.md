@@ -151,44 +151,11 @@
         }
         ```
     - RESPONSE: See Postman.
-
-- ✔ PUT /{topic_id}/replies:
-    - DESCRIPTION: Adds Replies to a specific Topic.
-    - REQUEST: `PUT http://127.0.0.1:8000/5/replies` 
-        ```json
-        [
-            to follow
-        ]
-        ```
-    - RESPONSE:
-        ```json
-        [
-            to follow
-        ]
-        ```
-- ✔ DELETE /{topic_id}/replies:
-    - DESCRIPTION: Removes Replies from a specific Topic.
-    - REQUEST: `DELETE http://127.0.0.1:8000/5/replies` 
-        ```json
-        [
-            to follow
-        ]
-        ```
-    - RESPONSE:
-        ```json
-        [
-            to follow
-        ]
-        ```
-- ✔ DELETE /topics:
+    
+- ✔ DELETE /topics: 
     - DESCRIPTION: Deletes a Topic resource and all of its Replies.
-    - REQUEST: `DELETE http://127.0.0.1:8000/topics/6` 
-    - RESPONSE:
-        ```json
-        [
-            Go to Postman.
-        ]
-        ```
+    - REQUEST: `DELETE http://127.0.0.1:8000/topics/6` x-token => 3;MoSalah
+    - RESPONSE: See Postman.
 
 ### 5.5. Reply  
 - ✔ POST /replies: WORKS
