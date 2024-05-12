@@ -76,6 +76,15 @@ def get_by_id(user: User | None, topic_id: int):
     return topic
 
 
+def has_topic_write_access(category_id: int, user: User):
+    data = read_query(f'''SELECT DISTINCT ca.category_id 
+                             FROM categories_access ca
+                             JOIN categories c ON ca.category_id = {category_id}
+                             WHERE ca.user_id = {user.id} AND ca.can_write = 1 ''')
+    
+    return len(data) > 0
+    
+    
 def create(topic: Topic, user: User):
     generated_id = insert_query(
         '''INSERT INTO topics(topic_id, title, date_time, category_id, user_id, best_reply, is_locked) 
