@@ -81,7 +81,13 @@
     "username": "Mike",
     "password": "1234"
     }
-    -
+
+    ADMIN CREDENTIALS
+    {
+    "username": "admin",
+    "password": "blacksheepwall"
+    }   
+    
 
 ### 5.2. Category
 - ✔ GET /categories: 
@@ -95,15 +101,44 @@
     -`GET http://127.0.0.1:8000/categories/privileged/{category_id}` - requires admin token
 
 - ✔ POST /categories:
-    - `POST http://127.0.0.1:8000/categories/privace`
+    - `POST http://127.0.0.1:8000/categories/privacy`
     changes the status of the privacy, requires admin token
+
+    {
+	"category_name": "Arts",
+	"is_private": 1,
+	"is_locked": 0
+    }
+
      -`POST http://127.0.0.1:8000/categories/membership`
     - requires admin token
+    {
+	"user_id": 8,
+	"category_id": 1,
+	"can_read": 1,
+	"can_write": 1
+    }
     - `POST http://127.0.0.1:8000/categories/new`
+    {
+	"category_name": "Cars",
+	"is_private": 1,
+	"is_locked":0
+    }
 
 
 - ✔ PUT/categories
-    -`PUT http://127.0.0.1:8000/categories/new`
+    
+    - `PUT http://127.0.0.1:8000/categories/privacy`
+    changes the status of the privacy, requires admin token
+
+    {
+	"category_name": "Arts",
+	"is_private": 1,
+	"is_locked": 0
+    }
+
+    - `PUT http://127.0.0.1:8000/categories/lock`
+    requires admin credential
 
 - ✔ DELETE / categories:
     - `DELETE http://127.0.0.1:8000/categories/new`
