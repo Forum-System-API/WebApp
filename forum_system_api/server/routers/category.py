@@ -165,9 +165,9 @@ def read_access(access: Categories_Access, x_token: str = Header()):
     category_service.read_access(access)
 
     if access.can_write == 1:
-        return f"User #{access.user_id} has write and read access granted"
+        return f"User #{access.user_id} has writing and reading access granted"
     if access.can_write == 0 and access.can_read == 1:
-        return f"User #{access.user_id} has only read access"
+        return f"User #{access.user_id} has reading access now"
 
     return f"User #{access.user_id} has no read or write access rights"
 
