@@ -128,6 +128,7 @@ def category_id_exists(category_id: int) -> bool:
 
 def delete_category(name: str, is_private: int, is_locked: int):
     update_query('DELETE FROM categories WHERE category_name = ?', (name,))
+    return "Category deleted!"
 
 
 def create(name: str, is_private:int, is_locked:int):
