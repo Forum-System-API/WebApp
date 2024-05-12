@@ -76,13 +76,19 @@ def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(None)):
 def create_topic(topic: Topic, x_token: str = Header()):  
     user = get_user_or_raise_401(x_token)
 
-    topic.date_time = datetime.now()
-    topic.date_time = topic.date_time.strftime("%Y/%m/%d %H:%M")
-    
     if not category_service.category_id_exists(topic.category_id):
-        return BadRequest(content=f'Category {topic.category_id} does not exist.') # status_code=400
+            return BadRequest(content=f'Category {topic.category_id} does not exist.') # status_code=400
 
-    return topic_service.create(topic, user)
+    access = topic_service.has_topic_write_access(topic.category_id, user)
+
+    if access:
+        topic.date_time = datetime.now()
+        topic.date_time = topic.date_time.strftime("%Y/%m/%d %H:%M")
+
+        return topic_service.create(topic, user)
+    
+    else:
+        return BadRequest(content=f'No access.') 
 
 
 @topics_router.put('/{topic_id}')  
