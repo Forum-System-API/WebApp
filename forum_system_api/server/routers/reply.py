@@ -13,16 +13,23 @@ replies_router = APIRouter(prefix='/replies')
 def create_reply(reply: Reply, x_token: str = Header()):
    user = get_user_or_raise_401(x_token)
 
-   reply.date_time = datetime.now()
-   reply.date_time = reply.date_time.strftime('%Y/%m/%d %H:%M')
-   
    if not topic_service.topic_id_exists(reply.topic_id):
       return BadRequest(content=f'Topic {reply.topic_id} does not exist.') # status_code=400
+
+   if reply_service.is_locked(reply.topic_id):
+      return BadRequest(content=f'This topic is locked  and you can\'t add replies.') 
+
+   reply_topic = topic_service.get_by_id(user, reply.topic_id)
+   category_topic = reply_topic.category_id
+
+   access = topic_service.has_topic_write_access(category_topic, user)
+
+   if access:
+      reply.date_time = datetime.now()
+      reply.date_time = reply.date_time.strftime('%Y/%m/%d %H:%M')
+      
+      return reply_service.create(reply, user)
    
-   # check if topic is locked or not
-
-   return reply_service.create(reply, user)
-
 
 @replies_router.put('/{reply_id}')  
 def update_reply(reply_id: int, data: ReplyUpdate, x_token: str = Header()):
@@ -76,10 +83,10 @@ def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()):
          return {'Message': 'You have changed your vote successfully.'}
 
    reply_service.create_vote(reply_id, vote)
-   return {'Message': 'You have votedsuccessfully.'}
+   return {'Message': 'You have voted successfully.'}
 
 
-@replies_router.put('/{reply_id}/votes')
+@replies_router.put('/id/{reply_id}/votes')
 def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()): 
    user = get_user_or_raise_401(x_token)
 
