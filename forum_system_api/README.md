@@ -39,8 +39,10 @@
 ### 4.3. `Category` model has the following attributes:
 - category_id &rarr; int 
 - category_name &rarr; str
-- is_private &rarr;  to follow
-- is_locked &rarr; to follow
+- is_private &rarr;  int
+    - in the schema, related column is is_private where 1 = private, 0 = public
+- is_locked &rarr; int
+    - in the schema, related column is is_locked where 1 = locked, 0 = unlocked
 
 ### 4.4.`Topic` model has the following attributes:
 - topic_id &rarr; int 
@@ -48,8 +50,8 @@
 - date_time &rarr; datetime
 - category_id &rarr; int
 - user_id &rarr; int
-- best_reply_id &rarr; int
-- is_locked &rarr; str
+- best_reply_id &rarr; str
+- is_locked &rarr; str (allowed values: 'locked' or 'unlocked')
     - in the schema, related column is is_locked where 1 = locked, 0 = unlocked
 
 ### 4.5.`Reply` model has the following attributes:
