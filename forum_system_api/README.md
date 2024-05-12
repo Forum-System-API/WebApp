@@ -89,11 +89,29 @@
     responds with a list of categories depending on the role and the privacy status
     -`GET http://127.0.0.1:8000/categories/name/Arts`
     responds the details of the category
-- ✔ POST /topics:
+    -`GET http://127.0.0.1:8000/categories/id/{category_id`
+    responds with the details of the category with id
+    -`GET http://127.0.0.1:8000/categories/{category_id}/topics` - requires admin token
+    -`GET http://127.0.0.1:8000/categories/privileged/{category_id}` - requires admin token
+
+- ✔ POST /categories:
     - `POST http://127.0.0.1:8000/categories/privace`
-    changes the status of the privacy
-    123
-    - post dasdasdasdadadada
+    changes the status of the privacy, requires admin token
+     -`POST http://127.0.0.1:8000/categories/membership`
+    - requires admin token
+    - `POST http://127.0.0.1:8000/categories/new`
+
+
+- ✔ PUT/categories
+    -`PUT http://127.0.0.1:8000/categories/new`
+
+- ✔ DELETE / categories:
+    - `DELETE http://127.0.0.1:8000/categories/new`
+         requires admin token
+    - `DELETE http://127.0.0.1:8000/categories/`
+         requires admin token
+
+
 
 ### 5.3. Message 
 
