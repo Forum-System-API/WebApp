@@ -77,10 +77,10 @@ def get_by_id(user: User | None, topic_id: int):
 
 
 def has_topic_write_access(category_id: int, user: User):
-    data = read_query(f'''SELECT DISTINCT ca.category_id 
-                             FROM categories_access ca
-                             JOIN categories c ON ca.category_id = {category_id}
-                             WHERE ca.user_id = {user.id} AND ca.can_write = 1 ''')
+    data = read_query(f'''SELECT DISTINCT c.category_id 
+                                FROM categories c
+                                JOIN categories_access ca ON c.category_id = {category_id}
+                                WHERE (ca.user_id = {user.id} AND ca.can_write = 1) OR c.is_private = 0''')
     
     return len(data) > 0
     
