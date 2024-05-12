@@ -24,8 +24,8 @@ def detail_view():
 def all_basic_user(user: User):
     data = read_query(f'''SELECT c.category_id, c.category_name FROM categories_access ca 
                       JOIN categories c JOIN users u WHERE (c.is_private = 0 AND u.user_id = {user.id}) OR 
-                      (c.is_private = 1 AND ca.can_write = 1 AND u.user_id = {user.id}) OR
-                      (c.is_private = 1 AND ca.can_read = 1 AND u.user_id = {user.id})''')
+                      (c.is_private = 1 AND ca.can_write = 1 AND ca.user_id = {user.id}) OR
+                      (c.is_private = 1 AND ca.can_read = 1 AND ca.user_id = {user.id})''')
 
     formatted_data = [{"category_id": row[0],
                        "category_name": row[1]} for row in data]
