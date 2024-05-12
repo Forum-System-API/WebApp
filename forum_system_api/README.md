@@ -205,7 +205,7 @@
     - REQUEST: `DELETE http://127.0.0.1:8000/replies/7` x-token => 3;MoSalah
     - RESPONSE: See Postman.
 
-- ✔ POST /replies/{reply_id}/votes: 
+- ✔ POST /replies/id/{reply_id}/votes: 
     - DESCRIPTION: Updates a Reply's text if you are the owner of the Reply.
     - REQUEST: `POST http://127.0.0.1:8000/replies/2/votes` 
     ```json
