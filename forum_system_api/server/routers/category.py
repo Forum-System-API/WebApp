@@ -18,19 +18,21 @@ def show_categories(x_token: str = Header()):
     return categories
 
 
-@category_router.get('/name/{name}')
+@category_router.get('/name/{category_name}')
 def show_category_by_name(category_name: str, x_token=Header()):
     user = get_user_or_raise_401(x_token)
-    category = category_service.grab_category_with_name(category_name)
-    category_access = category_service.check_privacy(user.id)
-    if category.is_private == 1:
-        if user.role != Role.ADMIN and not category_access:
-            return Response(status_code=403,
-                            content='You do not have category access rights')
 
     if not category_service.category_name_exists(category_name):
         return Response(status_code=400,
                         content=f'Category with name "{category_name}" does not exist')
+
+    category = category_service.grab_category_with_name(category_name)
+    category_access = category_service.check_privacy(user.id, category.category_id)
+
+    if category.is_private == 1 and user.role != Role.ADMIN:
+        if not category_access:
+            return Response(status_code=403,
+                            content='You do not have category access rights')
 
     category = category_service.find_by_name(category_name)
     return category
@@ -126,7 +128,7 @@ def create_category(category: Category, x_token: str = Header()):
 
 @category_router.put('/privacy')
 def set_privacy(category: Category, x_token: str = Header()):
-    user = get_user_or_raise_401(x_token)  ## to finish the logic
+    user = get_user_or_raise_401(x_token)
     id, username = x_token.split(';')
     get_category = category_service.grab_category_with_name(category.category_name)
     current_status = get_category.is_private
@@ -161,24 +163,23 @@ def read_access(access: Categories_Access, x_token: str = Header()):
 
     return f"User #{access.user_id} has no read or write access rights"
 
-    
+
 @category_router.get('/privileged/{category_id}')
-def privileged_users(category_id:int, x_token:str = Header()):
+def privileged_users(category_id: int, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
-    
+
     return category_service.get_privileged(category_id)
 
 
-@category_router.get('/{category_id}/topics') # this will be changed 
+@category_router.get('/{category_id}/topics')  # this will be changed
 def get_caegory_by_id(category_id: int,
-                   sort: str | None = None,
-                   sort_by: str | None = None,
-                   search: str | None = None,
-                   page: int = Query(1, gt=0),
-                   topics_per_page: int = Query(100, gt=0)):
-
+                      sort: str | None = None,
+                      sort_by: str | None = None,
+                      search: str | None = None,
+                      page: int = Query(1, gt=0),
+                      topics_per_page: int = Query(100, gt=0)):
     topic_list = topic_service.get_topics_by_category(category_id)
 
     if search:
