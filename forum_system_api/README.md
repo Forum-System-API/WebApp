@@ -98,7 +98,7 @@
 ### 5.3. Message 
 
 ### 5.4. Topic
-- ✔ GET /topics: 
+- ✔ GET /topics: ALL GOOD
     - DESCRIPTION: Responds with a list of Topic resources.
     - REQUEST:
         - example: no token added
@@ -115,6 +115,9 @@
 - ✔ GET /{topic_id}: 
     - DESCRIPTION: Responds with a single Topic resource and a list of Reply resources if there are any.
     - REQUEST:
+        - example: no token added
+        - example: token => 7;skankhunt42  `GET http://127.0.0.1:8000/topics/8` 
+        - example: token => 5;Eric
         - `GET http://127.0.0.1:8000/topics/3` 
         - `GET http://127.0.0.1:8000/topics/4` 
     - RESPONSE: See Postman.
