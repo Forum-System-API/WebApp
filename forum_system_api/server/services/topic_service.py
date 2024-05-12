@@ -1,20 +1,23 @@
-from data.models import Topic, User, TopicUpdate
+from data.models import Topic, User, TopicUpdate, Reply
 from data.database import read_query, insert_query, update_query
+from datetime import datetime
 
 
 def all(search: str = None):
     if search is None:
         data = read_query(
-            'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics')
+            '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked
+                   FROM topics''')
     else:
         data = read_query(
-            'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE title LIKE ?',
-            (f'%{search}%',))
+            '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics 
+                   WHERE title LIKE ?''',
+        (f'%{search}%',))
 
     topics_data = []
     for row in data:
         topic = Topic.from_query_result(*row)
-        topic.date_time = topic.date_time.strftime("%Y/%m/%d %H:%M")
+        topic.date_time = topic.date_time.strftime('%Y/%m/%d %H:%M')
         topics_data.append(topic)
 
     return topics_data
@@ -22,26 +25,31 @@ def all(search: str = None):
 
 def sort(topics: list[Topic], *, attribute='date_time', reverse=False):
     if attribute == 'date_time':
-        def sort_fn(t: Topic): return t.date_time.strftime("%Y/%m/%d %H:%M")
+        def sort_fn(t: Topic): return t.date_time
     elif attribute == 'title':
         def sort_fn(t: Topic): return t.title
-    else:
-        def sort_fn(t: Topic): return t.topic_id
 
     return sorted(topics, key=sort_fn, reverse=reverse)
 
 
 def get_by_id(topic_id: int):
     data = read_query(
-        'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?', 
+        '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
+               FROM topics WHERE topic_id = ?''', 
         (topic_id,))
-
-    return next((Topic.from_query_result(*row) for row in data), None)
+    
+    topic = next((Topic.from_query_result(*row) for row in data), None)
+    
+    if topic:
+        topic.date_time = topic.date_time.strftime('%Y/%m/%d %H:%M')
+    
+    return topic
 
 
 def create(topic: Topic, user: User):
     generated_id = insert_query(
-        'INSERT INTO topics(topic_id, title, date_time, category_id, user_id, best_reply, is_locked) VALUES(?,?,?,?,?,?,?,?)',
+        '''INSERT INTO topics(topic_id, title, date_time, category_id, user_id, best_reply, is_locked) 
+               VALUES(?,?,?,?,?,?,?)''',
         (topic.topic_id, topic.title, topic.date_time, topic.category_id, user.id, topic.best_reply,
                     0 if topic.is_locked == "unlocked" else 1))
 
@@ -49,27 +57,31 @@ def create(topic: Topic, user: User):
 
     return topic
 
-
-def topic_id_exists(topic_id: int):
-    return any(
-        read_query(
-                'SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked FROM topics WHERE topic_id = ?',
-                (topic_id,)))
-
-
 def update(topic_update: TopicUpdate, topic: Topic):
-    result = update_query('UPDATE topics SET best_reply = ? WHERE topic_id = ?',
-        (topic_update.best_reply, topic.topic_id))
+    result = update_query('''UPDATE topics SET best_reply = ? 
+                                 WHERE topic_id = ?''',
+                          (topic_update.best_reply, topic.topic_id))
+    
+    topic_result_id = read_query(
+        '''SELECT topic_id
+               FROM topics WHERE topic_id = ?''', 
+        (topic.topic_id,))
 
-    if result:
+    reply_result_id = read_query(
+        '''SELECT topic_id
+               FROM replies WHERE reply_id = ?''',
+        (topic_update.reply_id,))
+
+    if result and topic_result_id == reply_result_id:
         topic.best_reply= topic_update.best_reply
         return topic
     else:
-        return None
-       
-       
+        return f'You cannot choose a best reply from another topic.'
+    
+
 def delete(topic: Topic):
-    update_query('DELETE FROM topics WHERE topic_id = ?', 
+    update_query('''DELETE FROM topics 
+                        WHERE topic_id = ?''', 
                  (topic.topic_id,))
     
 
@@ -95,7 +107,14 @@ def unlock_topic(topic_id: int) -> Topic:
                  (0, topic.title))
 
     return topic
-    
+
+
+def topic_id_exists(topic_id: int):
+    return any(
+        read_query(
+                '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
+                       FROM topics WHERE topic_id = ?''',
+                (topic_id,)))
     
 # def get_topic_replies(topic_id: int) -> set[int]:
 #     data = read_query(
