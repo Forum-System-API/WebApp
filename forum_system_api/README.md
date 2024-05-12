@@ -98,48 +98,59 @@
 ### 5.3. Message 
 
 ### 5.4. Topic
-- ✔ GET /topics: WORKS
+- ✔ GET /topics: 
     - DESCRIPTION: Responds with a list of Topic resources.
     - REQUEST: 
         - `GET http://127.0.0.1:8000/topics`
         - `GET http://127.0.0.1:8000/topics?search=sprint`
         - `GET http://127.0.0.1:8000/topics?sort=asc&sort_by=title`
+        - `GET http://127.0.0.1:8000/topics?sort=desc&sort_by=date_time`
         - `GET http://127.0.0.1:8000/topics?search=sprint&sort=asc&sort_by=title`
-        - `GET http://127.0.0.1:8000/topics?page=1&topics_per_page=3`
-    - RESPONSE: 
+        - `GET http://127.0.0.1:8000/topics?page=1&topics_per_page=3&search=f1`
+    - RESPONSE: See Postman.
 
-- ✔ GET /{topic_id}: WORKS
-    - DESCRIPTION: Responds with a single Topic resource and s list of Reply resources.
-    - REQUEST: `GET http://127.0.0.1:8000/topics/3` 
-    - RESPONSE:
+- ✔ GET /{topic_id}: 
+    - DESCRIPTION: Responds with a single Topic resource and s list of Reply resources if there are any.
+    - REQUEST:
+        - `GET http://127.0.0.1:8000/topics/3` 
+        - `GET http://127.0.0.1:8000/topics/4` 
+    - RESPONSE: See Postman.
     
-- ✔ POST /topics: WORKS
+- ✔ POST /topics:
     - DESCRIPTION: Creates a new Topic.
     - REQUEST: `POST http://127.0.0.1:8000/topics` 
         ```json
-        [
-                "title": "F1 Miami GP Highlights",
-                "category_id": 2,
-                "is_locked": "unlocked",
-                "is_private": "nonprivate"
-        ]
-        [
-                "title": "F1 Miami GP Breaking News",
-                "category_id": 2,
-                "is_locked": "unlocked",
-                "is_private": "nonprivate"
-        ] 
+        example 1: x-token => 3;MoSalah
+        {
+            "title": "F1 Miami GP Highlights",
+            "category_id": 2,
+            "is_locked": "unlocked"
+        }
+        example 2: x-token => 3;MoSalah
+        {
+            "title": "F1 Miami GP Breaking News",
+            "category_id": 2,
+            "is_locked": "unlocked"
+        }
         ```
-    - RESPONSE:
-- ✔ PUT /{topic_id}: WORKS
-    - DESCRIPTION: Updates a Topic resourece with a best Reply resource.
-    - REQUEST: `PUT http://127.0.0.1:8000/topics/3` - this is for x-token: 5;Eric
+    - RESPONSE: See Postman.
+
+- ✔ PUT /{topic_id}: 
+    - DESCRIPTION: Updates a Topic resource with a best Reply resource.
+    - REQUEST: `PUT http://127.0.0.1:8000/topics/4` -
         ```json
-        [
-            "best_reply": "Daniel Ricciardo P4 and points for the RB pilot."
-        ]
+        example 1: x-token => 5;Eric
+        {
+            "best_reply": "Daniel Ricciardo P4 and points for the RB pilot.",
+            "reply_id": "4"
+        }
+        example 2: x-token => 5;Eric
+        {
+            "best_reply": "Daniel Ricciardo P4 and points for the RB pilot.",
+            "reply_id": "5"
+        }
         ```
-    - RESPONSE:
+    - RESPONSE: See Postman.
 
 - ✔ PUT /{topic_id}/replies:
     - DESCRIPTION: Adds Replies to a specific Topic.
