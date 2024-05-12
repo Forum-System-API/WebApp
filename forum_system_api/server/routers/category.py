@@ -181,7 +181,7 @@ def privileged_users(category_id:int, x_token:str = Header()):
     return category_service.get_privileged(category_id)
 
 
-@category_router.get('/{category_id}/topics')
+@category_router.get('/{category_id}/topics') # this will be changed 
 def get_caegory_by_id(category_id: int,
                    sort: str | None = None,
                    sort_by: str | None = None,
