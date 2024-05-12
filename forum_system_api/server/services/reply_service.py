@@ -1,6 +1,7 @@
 from data.database import insert_query, read_query, update_query
 from data.models import Reply, User, ReplyUpdate, Vote, VoteTypes
 from common.responses import BadRequest
+from datetime import datetime
 
 
 def create(reply: Reply, user: User):
@@ -54,8 +55,14 @@ def get_by_topic(topic_id: int):
     data = read_query(
         'SELECT reply_id, text, date_time, topic_id, user_id FROM replies WHERE topic_id = ?',
         (topic_id,))
+    
+    replies_data = []
+    for row in data:
+        reply = Reply.from_query_result(*row)
+        reply.date_time = reply.date_time.strftime('%Y/%m/%d %H:%M')
+        replies_data.append(reply)
 
-    return (Reply.from_query_result(*row) for row in data)
+    return replies_data
 
 
 def delete(reply: Reply):
