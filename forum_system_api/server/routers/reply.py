@@ -65,7 +65,6 @@ def delete_reply(reply_id: int, x_token: str = Header()):
 
    return NoContent()  # status_code=204
 
-
 @replies_router.post('/{reply_id}/votes')
 def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()): 
    user = get_user_or_raise_401(x_token)
@@ -84,6 +83,32 @@ def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()):
 
    reply_service.create_vote(reply_id, vote)
    return {'Message': 'You have voted successfully.'}
+
+# NOT WORKING:
+# @replies_router.post('/id/{reply_id}/votes')
+# def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()): 
+#    user = get_user_or_raise_401(x_token)
+
+#    if not user:
+#       return Unauthorized()  # status_code=401
+   
+#    reply = reply_service.get_by_id(reply_id)
+#    if reply is None:
+#       return NotFound()  # status_code=404
+   
+#    if reply_service.has_access(reply.topic_id, user):
+#       existing_vote = reply_service.get_vote(vote=vote)
+#       if existing_vote:
+#          if existing_vote == vote.type_of_vote:
+#             return BadRequest(content=f'You have already voted.') # status_code=400
+#          else:
+#             existing_vote = vote.type_of_vote
+#             reply_service.update_reply_vote(existing_vote=existing_vote, reply_id=reply_id, vote=vote)
+#             return {'Message': 'You have changed your vote successfully.'}
+
+#       reply_service.create_vote(reply_id, vote)
+#       return {'Message': 'You have voted successfully.'}
+#    return 'You cannot vote as the topic is locked.'
 
 
 @replies_router.put('/id/{reply_id}/votes')
