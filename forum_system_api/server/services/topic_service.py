@@ -119,7 +119,7 @@ def topic_id_exists(topic_id: int):
                 (topic_id,)))
 
 
-def get_topics_by_category(category_id: int):
+def get_topics_by_category(category_id: int):  # this will be changed too
     data = read_query(
                 '''SELECT topic_id, title, date_time, category_id, user_id, best_reply, is_locked 
                        FROM topics WHERE topic_id = ?''',
