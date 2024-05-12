@@ -170,7 +170,7 @@
         ```
     - RESPONSE: See Postman.
 
-- ✔ PUT /replies/{id}: WORKS
+- ✔ PUT /replies/{id}: 
     - DESCRIPTION: Updates a Reply's text.
     - REQUEST: `PUT http://127.0.0.1:8000/replies/7` 
     ```json
@@ -182,7 +182,7 @@
         ```
     - RESPONSE: See Postman.
 
-- ✔ DELETE /replies/{id}: WORKS
+- ✔ DELETE /replies/{id}: 
     - Description: Deletesa Reply.
     - REQUEST: `DELETE http://127.0.0.1:8000/replies/7` x-token => 3;MoSalah
     - RESPONSE: See Postman.
