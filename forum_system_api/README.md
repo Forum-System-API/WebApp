@@ -99,21 +99,16 @@
 - ✔ POST /categories:
     - `POST http://127.0.0.1:8000/categories/privacy`
     changes the status of the privacy, requires admin token
-
+    ```json
     {
 	"category_name": "Arts",
 	"is_private": 1,
 	"is_locked": 0
     }
-
+  ```
      -`POST http://127.0.0.1:8000/categories/membership`
     - requires admin token
-    {
-	"user_id": 8,
-	"category_id": 1,
-	"can_read": 1,
-	"can_write": 1
-    }
+
     - `POST http://127.0.0.1:8000/categories/new`
     {
 	"category_name": "Cars",
@@ -126,13 +121,13 @@
     
     - `PUT http://127.0.0.1:8000/categories/privacy`
     changes the status of the privacy, requires admin token
-
+```json
     {
 	"category_name": "Arts",
 	"is_private": 1,
 	"is_locked": 0
     }
-
+```
     - `PUT http://127.0.0.1:8000/categories/lock`
     requires admin credential
 

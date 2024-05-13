@@ -112,11 +112,10 @@ def delete(reply: Reply):
 def get_vote(vote: Vote):
     vote.type_of_vote = VoteTypes.STR_TO_INT[vote.type_of_vote]
     result = read_query(
-        '''SELECT type_of_vote 
-               FROM votes WHERE reply_id = ?''',
-        (vote.reply_id,))
+        f'''SELECT type_of_vote 
+               FROM votes WHERE reply_id = {vote.reply_id}''')
     
-    return result
+    return result[0][0]
 
 
 def update_reply_vote(existing_vote: int, reply_id: int, vote: Vote):
