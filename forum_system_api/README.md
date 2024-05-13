@@ -86,36 +86,46 @@
     
 
 ### 4.2. Category
-- ✔ GET /categories: 
-    -`GET http://127.0.0.1:8000/categories`
-    responds with a list of categories depending on the role and the privacy status
-    -`GET http://127.0.0.1:8000/categories/name/Arts`
-    responds the details of the category
-    -`GET http://127.0.0.1:8000/categories/id/{category_id`
-    responds with the details of the category with id
-    -`GET http://127.0.0.1:8000/categories/{category_id}/topics` - requires admin token
-    -`GET http://127.0.0.1:8000/categories/privileged/{category_id}` - requires admin token
+- ✔ GET /categories:
 
-- ✔ POST /categories:
-    - `POST http://127.0.0.1:8000/categories/privacy`
-    changes the status of the privacy, requires admin token
+-`GET http://127.0.0.1:8000/categories`
+responds with a list of categories depending on the role and the privacy status
+
+-`GET http://127.0.0.1:8000/categories/name/Arts`
+responds with the details of the category name
+
+-`GET http://127.0.0.1:8000/categories/id/{category_id}`
+responds with the details of the category with id
+
+-`GET http://127.0.0.1:8000/categories/{category_id}/topics`
+requires admin token or user category view/write access
+
+-`GET http://127.0.0.1:8000/categories/privileged/{category_id}`
+requires admin token
+
+  - ✔ POST /categories:
+- `POST http://127.0.0.1:8000/categories/privacy`
+- changes the status of the privacy, requires admin token
+  ```json
+      {
+      "category_name": "Arts",
+      "is_private": 1,
+      "is_locked": 0
+      }
+    ```
+-`POST http://127.0.0.1:8000/categories/membership`
+- requires admin token
     ```json
     {
-	"category_name": "Arts",
-	"is_private": 1,
-	"is_locked": 0
-    }
-  ```
-     -`POST http://127.0.0.1:8000/categories/membership`
-    - requires admin token
-    ```json
-{
     "user_id": 8,
     "category_id": 1,
     "can_read": 1,
     "can_write": 0
-}   ```
-   - `POST http://127.0.0.1:8000/categories/new`
+    }
+    ```
+  
+- `POST http://127.0.0.1:8000/categories/new`
+- requires admin token
 ```json
   {
   "category_name": "Cars",
