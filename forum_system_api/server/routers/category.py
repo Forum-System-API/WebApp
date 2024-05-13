@@ -3,6 +3,7 @@ from data.models import Category, Role, User, Categories_Access
 from services import category_service, topic_service
 from common.auth import get_user_or_raise_401
 
+
 category_router = APIRouter(prefix='/categories')
 
 
