@@ -205,10 +205,14 @@ def get_privileged(category_id: int):
     FROM users u
     JOIN categories_access ca ON u.user_id = ca.user_id
     JOIN categories c ON ca.category_id = c.category_id
-    WHERE c.category_id = 1''', (category_id,))
+    WHERE c.category_id = ?''', (category_id,))
     # privileged_data = []
     # for row in data:
     #
     #     pass
-
-    return data[0]
+    formatted_data = [{"username": row[0],
+                       "user_id": row[1],
+                       "can_read": row[2],
+                       "can_write": row[3],
+                       } for row in data]
+    return formatted_data
