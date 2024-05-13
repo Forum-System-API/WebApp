@@ -171,25 +171,3 @@ def privileged_users(category_id: int, x_token: str = Header()):
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
 
     return category_service.get_privileged(category_id)
-
-
-@category_router.get('/{category_id}/topics')  # this will be changed
-def get_caegory_by_id(category_id: int,
-                      sort: str | None = None,
-                      sort_by: str | None = None,
-                      search: str | None = None,
-                      page: int = Query(1, gt=0),
-                      topics_per_page: int = Query(100, gt=0)):
-    topic_list = topic_service.get_topics_by_category(category_id)
-
-    if search:
-        topic_list = [topic for topic in topic_list if search.lower() in topic.title.lower()]
-
-    start = (page - 1) * topics_per_page
-    end = start + topics_per_page
-    topic_list = topic_list[start:end]
-
-    if sort and (sort == 'asc' or sort == 'desc') and sort_by:
-        topic_list = topic_service.sort(topic_list, reverse=sort == 'desc', attribute=sort_by)
-
-    return topic_list
