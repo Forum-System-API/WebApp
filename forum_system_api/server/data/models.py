@@ -57,7 +57,7 @@ class Topic(BaseModel):
     category_id: int
     user_id: int | None = None
     best_reply: str | None = None
-    is_locked: constr(pattern='^locked|unlocked$')
+    is_locked: constr(pattern='^locked|unlocked$') = "unlocked"
 
     @classmethod
     def from_query_result(cls, topic_id, title, date_time, category_id, user_id, best_reply, is_locked):

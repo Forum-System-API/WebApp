@@ -195,7 +195,7 @@ def check_privacy(user_id: int, category_id):
     data = read_query('''SELECT ca.category_id 
                             FROM categories_access ca
                             JOIN categories c ON ca.category_id = ?
-                            WHERE ca.user_id = ? AND (ca.can_read OR ca.can_write)''', (user_id, category_id))
+                            WHERE ca.user_id = ? AND (ca.can_read = 1 OR ca.can_write = 1)''', (category_id, user_id))
 
     return len(data) > 0
 
