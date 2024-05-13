@@ -63,9 +63,7 @@
 ## 4. Endpoints
 ### 4.1. User 
 - ✔ GET /users: 
-- DESCRIPTION: Responds with a list of user resources
-    -`GET http://127.0.0.1:8000/users`
-    responds with a list of all registered users
+
     -`GET http://127.0.0.1:8000/users/info`
     recieves the username and the role of the user
 - ✔ POST / users
