@@ -138,35 +138,3 @@ def show_topic_by_id(topic_id: int, x_token=Header()):
 
     topic = topic_service.lock_topic(topic_id)
     return f'Topic {topic.title} is now locked!'
-
-# available for: admin, user - requires authentication token
-# @topics_router.put('/{topic_id}/replies')
-# def add_replies(topic_id: int, replies_ids: set[int]):
-#     if not topic_service.exists(topic_id):
-#         return Response(status_code=404)
-
-#     current_ids = topic_service.get_topic_replies(topic_id)
-#     replies_to_add = replies_ids.difference(current_ids)
-
-#     if len(replies_to_add) == 0:
-#         return {'added_replies_ids': []}
-
-#     topic_service.insert_replies_to_topic(topic_id, replies_to_add)
-
-#     return {'added_replies_ids': replies_to_add}
-
-
-# available for: admin, user - requires authentication token
-# @topics_router.delete('/{topic_id}/replies')
-# def remove_repliess(topic_id: int, replies_ids: set[int]):
-#     if not topic_service.exists(topic_id):
-#         return Response(status_code=404)
-
-#     current_ids = topic_service.get_topic_replies(topic_id)
-#     replies_to_delete = replies_ids.intersection(current_ids)
-#     if len(replies_to_delete) == 0:
-#         return {'deleted_replies_ids': []}
-
-#     topic_service.remove_replies_from_topic(topic_id, replies_to_delete)
-
-#     return {'deleted_replies_ids': replies_to_delete}
