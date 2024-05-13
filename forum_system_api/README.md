@@ -242,8 +242,8 @@
 - ✔ PUT /replies/{id}: 
     - DESCRIPTION: Updates a Reply's text if you are the owner of the Reply.
     - REQUEST: `PUT http://127.0.0.1:8000/replies/7` 
-    ```json
-    example: x-token => 3;MoSalah
+        ```json
+        example: x-token => 3;MoSalah
         {
             "text": "Lando Norris won by a dominant 7.6-second margin over Max Verstappen's Redbull.",
             "topic_id": 6
@@ -258,11 +258,12 @@
 
 - ✔ POST /replies/id/{reply_id}/votes: 
     - DESCRIPTION: Updates a Reply's text if you are the owner of the Reply.
-    - REQUEST: `POST http://127.0.0.1:8000/replies/2/votes` 
-    ```json
-    example: x-token => 3;MoSalah
+    - REQUEST: `POST http://127.0.0.1:8000/replies/id/5/votes` 
+        ```json
+        example: x-token => 3;MoSalah
         {
-            "reply_id": 2,
+            "user_id": 3,
+            "reply_id": 5,
             "type_of_vote": "downvote"
         }
         ```
@@ -271,8 +272,8 @@
 - ✔ PUT /replies/{reply_id}/votes: 
     - DESCRIPTION: Updates a Reply's text if you are the owner of the Reply.
     - REQUEST: `PUT http://127.0.0.1:8000/replies/3/votes` 
-    ```json
-    example: x-token => 3;MoSalah
+        ```json
+        example: x-token => 3;MoSalah
         {
             "reply_id": 3,
             "type_of_vote": "downvote"
