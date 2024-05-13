@@ -8,10 +8,8 @@
     - Users can read and create topics and message other users
     - Administrators manage users, topics and categories
 
-## 2. Table of contents: describe what you will see during demonstration.
 
-
-## 3. Database - relationships between tables
+## 2. Database - relationships between tables
 ![database](./database.png)
 
 - User to Category – Many-to-Many: Multiple users can have read access to multiple categories, and each category can be accessed by multiple Users. And only admins can create a Category.
@@ -22,21 +20,21 @@
 - Topic to Reply – One-to-many: A Topic can have multiple replies, but a single reply can only belong to one Topic.
 
 
-## 4. Models
-### 4.1. `User`model has the following attributes:
+## 3. Models
+### 3.1. `User`model has the following attributes:
 - id &rarr; int
 - username &rarr; str
 - password &rarr; str
 - role &rarr; str
 
-### 4.2. `Message` model has the following attributes:
+### 3.2. `Message` model has the following attributes:
 - message_id &rarr; int 
 - text &rarr; str
 - timestamp &rarr; datetime
 - sender_id &rarr; int
 - recipient_id &rarr; int
 
-### 4.3. `Category` model has the following attributes:
+### 3.3. `Category` model has the following attributes:
 - category_id &rarr; int 
 - category_name &rarr; str
 - is_private &rarr;  int
@@ -44,7 +42,7 @@
 - is_locked &rarr; int
     - in the schema, related column is is_locked where 1 = locked, 0 = unlocked
 
-### 4.4.`Topic` model has the following attributes:
+### 3.4.`Topic` model has the following attributes:
 - topic_id &rarr; int 
 - title &rarr; str
 - date_time &rarr; datetime
@@ -54,7 +52,7 @@
 - is_locked &rarr; str (allowed values: 'locked' or 'unlocked')
     - in the schema, related column is is_locked where 1 = locked, 0 = unlocked
 
-### 4.5.`Reply` model has the following attributes:
+### 3.5.`Reply` model has the following attributes:
 - reply_id &rarr; int 
 - text &rarr; str
 - date_time &rarr; datetime
@@ -62,8 +60,8 @@
 - user_id &rarr; int
 
 
-## 5. Endpoints
-### 5.1. User 
+## 4. Endpoints
+### 4.1. User 
 - ✔ GET /users: 
 - DESCRIPTION: Responds with a list of user resources
     -`GET http://127.0.0.1:8000/users`
@@ -89,7 +87,7 @@
     }   
     
 
-### 5.2. Category
+### 4.2. Category
 - ✔ GET /categories: 
     -`GET http://127.0.0.1:8000/categories`
     responds with a list of categories depending on the role and the privacy status
@@ -148,9 +146,9 @@
 
 
 
-### 5.3. Message 
+### 4.3. Message 
 
-### 5.4. Topic
+### 4.4. Topic
 - ✔ GET /topics: ALL GOOD
     - DESCRIPTION: Responds with a list of Topic resources.
     - REQUEST:
@@ -228,7 +226,7 @@
     - REQUEST: `DELETE http://127.0.0.1:8000/topics/6` x-token => 3;MoSalah
     - RESPONSE: See Postman.
 
-### 5.5. Reply  
+### 4.5. Reply  
 - ✔ POST /replies: 
     - DESCRIPTION: Creates a Reply data which is associated with a specific Topic.
     - REQUEST: `POST http://127.0.0.1:8000/replies` 
@@ -289,14 +287,7 @@
         - `GET http://127.0.0.1:8000/replies/1` 
     - RESPONSE: See Postman.
 
-## 6. How to Install and Run the Project
+## 5. How to Install and Run the Project
 - Navigate to /server and open a terminal
 - Run `uvicorn main:app`
 - Open a browser and type `http://127.0.0.1:8000/docs`. There should be documentation of the available endpoints.
-
-
-### What to Include in the README:
-- Project's Title: ✔ 
-- Project Description: **IN PROGRESS**
-- Table of Contents (Optional): **IN PROGRESS**
-- How to Install and Run the Project: ✔ 
