@@ -48,7 +48,7 @@ def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(None)):
     else:
         user = None 
 
-    topic = topic_service.get_by_id(user, topic_id)
+    topic = topic_service.get_by_id(user=user, topic_id=topic_id)
 
     if topic is None:
         return NotFound() # status_code=404
@@ -95,7 +95,7 @@ def create_topic(topic: Topic, x_token: str = Header()):
 def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     
-    topic = topic_service.get_by_id(topic_id)
+    topic = topic_service.get_by_id(topic_id=topic_id)
     if topic is None:
         return NotFound()  # status_code=404
 
@@ -113,7 +113,7 @@ def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Hea
 @topics_router.delete('/{topic_id}')  
 def delete_topic(topic_id: int, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
-    topic = topic_service.get_by_id(topic_id)
+    topic = topic_service.get_by_id(topic_id=topic_id)
 
     if topic is None:
         return NotFound() # status_code=404

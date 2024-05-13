@@ -103,7 +103,7 @@ class VoteTypes:
     STR_TO_INT = {'upvote':0, 'downvote':1}
 
 class Vote(BaseModel):
-    reply_id: int 
+    reply_id: int | None = None
     user_id: int | None = None
     type_of_vote: constr(pattern='^upvote|downvote$')
 

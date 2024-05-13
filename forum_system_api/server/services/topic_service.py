@@ -46,7 +46,7 @@ def sort(topics: list[Topic], *, attribute='date_time', reverse=False):
     return sorted(topics, key=sort_fn, reverse=reverse)
 
 
-def get_by_id(user: User | None, topic_id: int):
+def get_by_id(topic_id: int, user: User | None = None) -> Topic:
 
     public_topics = f'''SELECT DISTINCT t.topic_id, t.title, t.date_time, t.category_id, t.user_id, t.best_reply, t.is_locked
                         FROM topics t
