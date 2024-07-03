@@ -2,7 +2,8 @@ from datetime import datetime
 from pydantic import BaseModel, constr
 
 
-TUsername = constr(pattern='^\w{2,30}$')
+TUsername = constr(pattern='^\\w{2,30}$')
+
 
 
 class Role:

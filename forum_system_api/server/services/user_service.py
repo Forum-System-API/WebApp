@@ -1,7 +1,6 @@
 from data.database import read_query, update_query, insert_query
 from data.models import User, Role, Topic, Reply
 from mariadb import IntegrityError
-import jwt
 from datetime import datetime, timedelta
 from hashlib import sha256
 
