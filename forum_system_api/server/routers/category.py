@@ -198,27 +198,27 @@ def set_privacy(category: Category, x_token: str = Header()):
     return f"The status of category {category.category_name} updated to {category_status} successfully"
 
 
-    @category_router.post('/membership')
-    def read_access(access: Categories_Access, x_token: str = Header()):
-        '''
-        Manage user access rights to a category.
+@category_router.post('/membership')
+def read_access(access: Categories_Access, x_token: str = Header()):
+    '''
+    Manage user access rights to a category.
 
-        This endpoint allows an admin user to grant or revoke access rights 
-        (read and write) for a user to a specific category.
-        '''
+    This endpoint allows an admin user to grant or revoke access rights 
+    (read and write) for a user to a specific category.
+    '''
 
-        user = get_user_or_raise_401(x_token)
-        if user.role != "admin":
-            raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
+    user = get_user_or_raise_401(x_token)
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
 
-        category_service.read_access(access)
+    category_service.read_access(access)
 
-        if access.can_write == 1:
-            return f"User #{access.user_id} has writing and reading access to category #{access.category_id}"
-        if access.can_write == 0 and access.can_read == 1:
-            return f"User #{access.user_id} has reading access to category #{access.category_id}"
+    if access.can_write == 1:
+        return f"User #{access.user_id} has writing and reading access to category #{access.category_id}"
+    if access.can_write == 0 and access.can_read == 1:
+        return f"User #{access.user_id} has reading access to category #{access.category_id}"
 
-        return f"User #{access.user_id} has no read or write access rights to category #{access.category_id}"
+    return f"User #{access.user_id} has no read or write access rights to category #{access.category_id}"
 
 
 @category_router.get('/privileged/{category_id}')
