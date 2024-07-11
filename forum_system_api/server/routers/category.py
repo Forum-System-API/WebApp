@@ -4,11 +4,16 @@ from services import category_service, topic_service
 from common.auth import get_user_or_raise_401
 
 
-category_router = APIRouter(prefix='/categories')
+category_router = APIRouter(prefix='/categories', tags = ['categories'])
 
 
 @category_router.get('/')
 def show_categories(x_token: str = Header()):
+    '''
+    Retrieve categories with role-based access.
+
+    This endpoint fetches categories based on the user's role. Admin users receive detailed categories, while ordinary users receive basic categories.
+    '''
     user = get_user_or_raise_401(x_token)
 
     if user.role == Role.ADMIN:
@@ -21,6 +26,13 @@ def show_categories(x_token: str = Header()):
 
 @category_router.get('/name/{category_name}')
 def show_category_by_name(category_name: str, x_token=Header()):
+    '''
+    Retrieve category details by name.
+
+    This endpoint fetches a category by its name, considering the user's access rights. 
+    Admin users can access all categories, 
+    while other users need specific access to private categories.
+    '''
     user = get_user_or_raise_401(x_token)
 
     if not category_service.category_name_exists(category_name):
@@ -41,6 +53,12 @@ def show_category_by_name(category_name: str, x_token=Header()):
 
 @category_router.get('/id/{category_id}')
 def show_category_by_id(category_id: int, x_token=Header()):
+    '''
+    Retrieve category details by ID.
+
+    This endpoint fetches a category by its ID, considering the user's access rights. 
+    Admin users can access all categories, while other users need specific access to private categories.
+    '''
     user = get_user_or_raise_401(x_token)
 
     if not category_service.category_id_exists(category_id):
@@ -61,6 +79,12 @@ def show_category_by_id(category_id: int, x_token=Header()):
 
 @category_router.put('/lock')
 def show_category_by_id(category: Category, x_token=Header()):
+    '''
+    Lock or unlock a category.
+
+    This endpoint allows an admin user to lock or unlock a category. 
+    It verifies the user's role and the current status of the category before updating.
+    '''
     user = get_user_or_raise_401(x_token)
     current_category = category_service.grab_category_with_name(category.category_name)
     current_status = current_category.is_locked
@@ -85,6 +109,12 @@ def show_category_by_id(category: Category, x_token=Header()):
 
 @category_router.delete('/{category_id}')
 def delete_category_by_id(category_id: int, x_token: str = Header()):
+    '''
+    Delete a category by ID.
+
+    This endpoint allows an admin user to delete a category by its ID. 
+    It verifies the user's role and checks if the category exists before deleting.
+    '''
     user = get_user_or_raise_401(x_token)
     if not category_service.category_id_exists(category_id):
         return Response(status_code=400,
@@ -100,6 +130,12 @@ def delete_category_by_id(category_id: int, x_token: str = Header()):
 
 @category_router.delete('/')
 def delete_category_by_name(category: Category, x_token: str = Header()):
+    '''
+    Delete a category by name.
+
+    This endpoint allows an admin user to delete a category by its name. 
+    It verifies the user's role and checks if the category exists before deleting.
+    '''
     user = get_user_or_raise_401(x_token)
     if not category_service.category_name_exists(category.category_name):
         return Response(status_code=400,
@@ -115,6 +151,11 @@ def delete_category_by_name(category: Category, x_token: str = Header()):
 
 @category_router.post('/new')
 def create_category(category: Category, x_token: str = Header()):
+    '''
+    Create a new category.
+
+    This endpoint allows an admin user to create a new category. It verifies the user's role based on the token provided and creates the category with the specified properties.
+    '''
     user = get_user_or_raise_401(x_token)
 
     id, username = x_token.split(';')
@@ -129,6 +170,14 @@ def create_category(category: Category, x_token: str = Header()):
 
 @category_router.put('/privacy')
 def set_privacy(category: Category, x_token: str = Header()):
+    '''
+    Update privacy settings for a category.
+
+    This endpoint allows an admin user to update the 
+    privacy settings (public or private) for a category.
+    It verifies the user's role based on the token provided 
+    and updates the category's privacy status accordingly.
+    '''
     user = get_user_or_raise_401(x_token)
     id, username = x_token.split(';')
     get_category = category_service.grab_category_with_name(category.category_name)
@@ -151,6 +200,13 @@ def set_privacy(category: Category, x_token: str = Header()):
 
 @category_router.post('/membership')
 def read_access(access: Categories_Access, x_token: str = Header()):
+    '''
+    Manage user access rights to a category.
+
+    This endpoint allows an admin user to grant or revoke access rights 
+    (read and write) for a user to a specific category.
+    '''
+
     user = get_user_or_raise_401(x_token)
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
@@ -167,6 +223,13 @@ def read_access(access: Categories_Access, x_token: str = Header()):
 
 @category_router.get('/privileged/{category_id}')
 def privileged_users(category_id: int, x_token: str = Header()):
+    '''
+    Retrieve privileged users for a category.
+
+    This endpoint allows an admin user to retrieve a list of privileged users 
+    who have special access rights to a specific category.
+    '''
+
     user = get_user_or_raise_401(x_token)
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin credentials are required for this option!")
