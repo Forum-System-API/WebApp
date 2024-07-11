@@ -1,50 +1,45 @@
-from fastapi import APIRouter, Query, Header, HTTPException
+from fastapi import APIRouter, Query, Header
 from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized, NoContent
 from common.auth import get_user_or_raise_401
-from data.models import Topic, Reply, TopicUpdate
+from data.models.topics import Topic, TopicResponseModel, TopicUpdate
 from services import topic_service, reply_service, category_service, user_service
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
-
-class TopicResponseModel(BaseModel):
-    topic: Topic
-    replies: list[Reply]
 
 
 topics_router = APIRouter(prefix='/topics')
 
 
-@topics_router.get('/')  
+@topics_router.get(path='/')  
 def get_topics(sort: str | None = None,
             sort_by: str | None = None, 
             search: str | None = None, 
-            page: int = Query(1, gt=0),
-            topics_per_page: int = Query(100, gt=0),
-            x_token: Optional[str] = Header(None)):
+            page: int = Query(default=1, gt=0),
+            topics_per_page: int = Query(default=100, gt=0),
+            x_token: Optional[str] = Header(default=None)):
     
     if x_token:
-        user = get_user_or_raise_401(x_token)
+        user = get_user_or_raise_401(token=x_token)
     else:
         user = None 
     
-    topic_lst = topic_service.all(user,search)
+    topic_lst = topic_service.all(user=user,search=search)
 
     start = (page - 1) * topics_per_page
     end = start + topics_per_page
     topic_lst = topic_lst[start:end]
 
     if sort and (sort == 'asc' or sort == 'desc'):
-        return topic_service.sort(topic_lst, reverse=sort == 'desc', attribute=sort_by)
+        return topic_service.sort(topics=topic_lst, reverse=sort == 'desc', attribute=sort_by)
     else:
         return topic_lst
 
 
-@topics_router.get('/{topic_id}')  
-def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(None)):
+@topics_router.get(path='/{topic_id}')  
+def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(default=None)):
 
     if x_token:
-        user = get_user_or_raise_401(x_token)
+        user = get_user_or_raise_401(token=x_token)
     else:
         user = None 
 
@@ -53,9 +48,9 @@ def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(None)):
     if topic is None:
         return NotFound() # status_code=404
     else:
-        replies=reply_service.get_by_topic(topic.topic_id)
+        replies=reply_service.get_by_topic(topic_id=topic.topic_id)
         if replies:
-            return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic.topic_id))
+            return TopicResponseModel(topic=topic, replies=reply_service.get_by_topic(topic_id=topic.topic_id))
         else:
             topic_info = f'{topic}\n'
             no_replies_message = 'There are no replies under this topic.'
