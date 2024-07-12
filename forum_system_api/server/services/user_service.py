@@ -1,5 +1,7 @@
 from data.database import read_query, update_query, insert_query
-from data.models import User, Role, Topic, Reply
+from data.models.topics import Topic
+from data.models.replies import Reply
+from data.models.users import User, Role
 from mariadb import IntegrityError
 from datetime import datetime, timedelta
 from hashlib import sha256

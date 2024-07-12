@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from data.models import User
+from data.models.users import User
 from services.user_service import from_token, is_authenticated
 
 def get_user_or_raise_401(token: str) -> User:

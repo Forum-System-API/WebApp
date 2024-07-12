@@ -1,5 +1,5 @@
 from data.models.topics import Topic, TopicUpdate
-from data.models import User
+from data.models.users import User
 from data.database import read_query, insert_query, update_query
 
 

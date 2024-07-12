@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, status, HTTPException, Header
-from data.models import User, LoginData, Role
+from data.models.users import User, LoginData, Role
 from services import user_service
 from common.auth import get_user_or_raise_401
 

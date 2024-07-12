@@ -1,5 +1,7 @@
 from data.database import read_query, update_query, insert_query
-from data.models import Category, Topic, User, Categories_Access
+from data.models.topics import Topic
+from data.models.categories import Category, Categories_Access
+from data.models.users import User
 from mariadb import IntegrityError
 
 

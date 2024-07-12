@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Response, status, HTTPException, Header, Query
-from data.models import Category, Role, User, Categories_Access
+from data.models.categories import Category, Categories_Access
+from data.models.users import Role, User
 from services import category_service, topic_service
 from common.auth import get_user_or_raise_401
 

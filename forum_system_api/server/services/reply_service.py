@@ -1,7 +1,7 @@
 from data.database import insert_query, read_query, update_query
 from data.models.replies import Reply, ReplyUpdate
 from data.models.votes import Vote, VoteTypes
-from data.models import User
+from data.models.users import User
 from common.responses import BadRequest
 
 
