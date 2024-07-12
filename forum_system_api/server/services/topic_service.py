@@ -1,6 +1,6 @@
-from data.models import Topic, User, TopicUpdate, Reply , User
+from data.models.topics import Topic, TopicUpdate
+from data.models import User
 from data.database import read_query, insert_query, update_query
-from datetime import datetime
 
 
 def all(user: User | None, search: str = None):

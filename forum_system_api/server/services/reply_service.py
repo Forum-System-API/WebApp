@@ -1,7 +1,8 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Reply, User, ReplyUpdate, Vote, VoteTypes
+from data.models.replies import Reply, ReplyUpdate
+from data.models.votes import Vote, VoteTypes
+from data.models import User
 from common.responses import BadRequest
-from datetime import datetime
 
 
 def create(reply: Reply, user: User):

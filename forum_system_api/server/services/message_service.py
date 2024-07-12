@@ -1,9 +1,7 @@
-import datetime
 from services.user_service import find_name_by_id
 from data.database import read_query, update_query, insert_query
-from data.models import Message
+from data.models.messages import Message
 from routers.user import User
-from datetime import datetime, timedelta
 
 
 def view_all(logged_user: User):

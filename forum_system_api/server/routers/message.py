@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Response, Header
-from data.models import Message
+from fastapi import APIRouter, Header
+from data.models.messages import Message
 from services.user_service import find_by_username
-from services import message_service, user_service
+from services import message_service
 from common.auth import get_user_or_raise_401
 from datetime import datetime
 
