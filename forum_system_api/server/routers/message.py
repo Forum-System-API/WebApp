@@ -8,14 +8,14 @@ from datetime import datetime
 message_router = APIRouter(prefix='/messages')
 
 
-@message_router.get('/')
+@message_router.get(path='/', tags=['Messages'])
 def view_conversations(x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
     messages = message_service.view_all(logged_user)
     return messages
 
 
-@message_router.get('/{username}')
+@message_router.get(path='/{username}', tags=['Messages'])
 def view_conversations(username, x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
     recipient = find_by_username(username)
@@ -23,7 +23,7 @@ def view_conversations(username, x_token=Header()):
     return messages
 
 
-@message_router.post('/send/{username}')
+@message_router.post(path='/send/{username}', tags=['Messages'])
 def send_message(message: Message, username, x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
     recipient = find_by_username(username)
@@ -35,7 +35,7 @@ def send_message(message: Message, username, x_token=Header()):
 
 
 #Messages should be deleted only for the logged user instead of all messages with the logged user's id
-@message_router.delete('/all')
+@message_router.delete(path='/all', tags=['Messages'])
 def delete_message_history(x_token=Header()):
     logged_user = get_user_or_raise_401(x_token)
     message_service.delete_all(logged_user.id)

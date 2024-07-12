@@ -9,7 +9,7 @@ from datetime import datetime
 replies_router = APIRouter(prefix='/replies')
 
 
-@replies_router.post('/')
+@replies_router.post(path='/', tags=['Replies'])
 def create_reply(reply: Reply, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
 
@@ -31,7 +31,7 @@ def create_reply(reply: Reply, x_token: str = Header()):
         return reply_service.create(reply, user)
 
 
-@replies_router.put('/{reply_id}')
+@replies_router.put(path='/{reply_id}', tags=['Replies'])
 def update_reply(reply_id: int, data: ReplyUpdate, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
 
@@ -50,7 +50,7 @@ def update_reply(reply_id: int, data: ReplyUpdate, x_token: str = Header()):
         InternalServerError()  # status_code=500
 
 
-@replies_router.delete('/{reply_id}')
+@replies_router.delete(path='/{reply_id}', tags=['Replies'])
 def delete_reply(reply_id: int, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
 
@@ -66,7 +66,7 @@ def delete_reply(reply_id: int, x_token: str = Header()):
     return NoContent()  # status_code=204
 
 
-@replies_router.post('/id/{reply_id}')
+@replies_router.post(path='/id/{reply_id}', tags=['Replies'])
 def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     if not user:
@@ -97,7 +97,7 @@ def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()):
     return 'You cannot vote as the topic is locked.'
 
 
-@replies_router.put('/id/{reply_id}/votes')
+@replies_router.put(path='/id/{reply_id}/votes', tags=['Replies'])
 def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
 
@@ -120,7 +120,7 @@ def vote_reply(reply_id: int, vote: Vote, x_token: str = Header()):
     return updated_reply
 
 
-@replies_router.get('/{reply_id}')
+@replies_router.get(path='/{reply_id}', tags=['Replies'])
 def get_reply_by_id(reply_id: int):
     reply = reply_service.get_by_id_with_votes(reply_id)
 

@@ -1,22 +1,22 @@
 from fastapi import APIRouter, Query, Header
 from common.responses import NotFound, BadRequest, InternalServerError, Unauthorized, NoContent
 from common.auth import get_user_or_raise_401
-from data.models.topics import Topic, TopicResponseModel, TopicUpdate
+from data.models.topics import Topic, TopicView, TopicViewAll, TopicUpdate
 from services import topic_service, reply_service, category_service, user_service
+from typing import Optional, List
 from datetime import datetime
-from typing import Optional
 
 
 topics_router = APIRouter(prefix='/topics')
 
 
-@topics_router.get(path='/')  
+@topics_router.get(path='/', response_model=List[TopicViewAll], tags=['Topics'])  
 def get_topics(sort: str | None = None,
-            sort_by: str | None = None, 
-            search: str | None = None, 
-            page: int = Query(default=1, gt=0),
-            topics_per_page: int = Query(default=100, gt=0),
-            x_token: Optional[str] = Header(default=None)):
+               sort_by: str | None = None, 
+               search: str | None = None,
+               page: int = Query(default=1, gt=0),
+               topics_per_page: int = Query(default=100, gt=0),
+               x_token: Optional[str] = Header(default=None)):
     
     if x_token:
         user = get_user_or_raise_401(token=x_token)
@@ -35,7 +35,7 @@ def get_topics(sort: str | None = None,
         return topic_lst
 
 
-@topics_router.get(path='/{topic_id}')  
+@topics_router.get(path='/{topic_id}', tags=['Topics'])  
 def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(default=None)):
 
     if x_token:
@@ -67,26 +67,26 @@ def get_topic_by_id(topic_id: int, x_token: Optional[str] = Header(default=None)
                     }
     
 
-@topics_router.post('/')  
+@topics_router.post(path='/', tags=['Topics'])  
 def create_topic(topic: Topic, x_token: str = Header()):  
-    user = get_user_or_raise_401(x_token)
+    user = get_user_or_raise_401(token=x_token)
 
-    if not category_service.category_id_exists(topic.category_id):
+    if not category_service.category_id_exists(category_id=topic.category_id):
             return BadRequest(content=f'Category {topic.category_id} does not exist.') # status_code=400
 
-    access = topic_service.has_topic_write_access(topic.category_id, user)
+    access = topic_service.has_topic_write_access(category_id=topic.category_id, user=user)
 
     if access:
         topic.date_time = datetime.now()
-        topic.date_time = topic.date_time.strftime("%Y/%m/%d %H:%M")
+        topic.date_time = topic.date_time.strftime(format="%Y/%m/%d %H:%M")
 
-        return topic_service.create(topic, user)
+        return topic_service.create(topic=topic, user=user)
     
     else:
         return BadRequest(content=f'No access.') 
 
 
-@topics_router.put('/{topic_id}')  
+@topics_router.put(path='/{topic_id}', tags=['Topics'])  
 def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Header()):
     user = get_user_or_raise_401(x_token)
     
@@ -94,10 +94,10 @@ def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Hea
     if topic is None:
         return NotFound()  # status_code=404
 
-    if not user_service.owns_topic(user, topic):
-        return Unauthorized('Can`t edit others` topics.')  # status_code=401
+    if not user_service.owns_topic(user=user, topic=topic):
+        return Unauthorized(content='Can`t edit others` topics.')  # status_code=401
 
-    topic = topic_service.update(data, topic)
+    topic = topic_service.update(topic_update=data, topic=topic)
 
     if topic:
         return topic
@@ -105,31 +105,31 @@ def update_topic_best_reply(topic_id: int, data: TopicUpdate, x_token: str = Hea
         InternalServerError()  # status_code=500
 
 
-@topics_router.delete('/{topic_id}')  
+@topics_router.delete(path='/{topic_id}', tags=['Topics'])  
 def delete_topic(topic_id: int, x_token: str = Header()):
-    user = get_user_or_raise_401(x_token)
+    user = get_user_or_raise_401(token=x_token)
     topic = topic_service.get_by_id(topic_id=topic_id)
 
     if topic is None:
         return NotFound() # status_code=404
 
-    if not user_service.owns_topic(user, topic):
+    if not user_service.owns_topic(user=user, topic=topic):
         return Unauthorized('Can`t delete others` topics.') # status_code=401
     
-    topic_service.delete(topic)
+    topic_service.delete(topic=topic)
 
     return NoContent() # status_code=204
 
 
-@topics_router.put('/{topic_id}/lock')
+@topics_router.put(path='/{topic_id}/lock', tags=['Topics'])
 def show_topic_by_id(topic_id: int, x_token=Header()):
-    user = get_user_or_raise_401(x_token)
+    user = get_user_or_raise_401(token=x_token)
 
     if user.role != 'admin':
         return BadRequest(content=f'You need administrative rights to lock topics!') # status_code=400
     
-    if not topic_service.topic_id_exists(topic_id):
+    if not topic_service.topic_id_exists(topic_id=topic_id):
         return BadRequest(content=f'Topic {topic_id} does not exist.')
 
-    topic = topic_service.lock_topic(topic_id)
+    topic = topic_service.lock_topic(topic_id=topic_id)
     return f'Topic {topic.title} is now locked!'
